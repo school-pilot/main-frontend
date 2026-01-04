@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import Image from "../assets/image.js";
+
 
 /* ================= Animations ================= */
 
@@ -183,7 +183,7 @@ const RegisterAnimation = () => {
         {/* Logo */}
         <div className="flex justify-center mb-1">
           <motion.img
-            src={Image.Logo}
+           src='/logo.jpg'
             alt="Company Logo"
             className="w-20 h-20 object-contain"
             animate={{ y: [0, -6, 0] }}

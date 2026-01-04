@@ -173,7 +173,7 @@ const LoginAnimation = () => {
       >
         <div className="flex justify-center mb-3">
           <motion.img
-            src="./src/assets/logo.jpg"
+            src="/logo.jpg"
             alt="Company Logo"
             className="w-20 h-20 object-contain drop-shadow-[0_10px_25px_rgba(59,130,246,0.35)]"
             initial={{ opacity: 0, scale: 0.8 }}
