@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import Image from "../assets/image.js";
 
 /* ================= Animations ================= */
 
@@ -182,7 +183,7 @@ const RegisterAnimation = () => {
         {/* Logo */}
         <div className="flex justify-center mb-1">
           <motion.img
-            src="./src/assets/logo.jpg"
+            src={Image.Logo}
             alt="Company Logo"
             className="w-20 h-20 object-contain"
             animate={{ y: [0, -6, 0] }}
@@ -212,6 +213,7 @@ const RegisterAnimation = () => {
             <label className="text-sm font-medium">First Name</label>
             <input
               type="text"
+              required
               name="firstName"
               value={formData.firstName}
               onChange={handleChange}
@@ -224,6 +226,7 @@ const RegisterAnimation = () => {
             <label className="text-sm font-medium">Last Name</label>
             <input
               type="text"
+              required
               name="lastName"
               value={formData.lastName}
               onChange={handleChange}
@@ -236,6 +239,7 @@ const RegisterAnimation = () => {
             <label className="text-sm font-medium">Username</label>
             <input
               type="text"
+              required
               name="username"
               value={formData.username}
               onChange={handleChange}
@@ -263,7 +267,8 @@ const RegisterAnimation = () => {
           <motion.div variants={itemVariants} className="lg:col-span-1">
             <label className="text-sm font-medium">Email</label>
             <input
-              type="email"
+              type="email
+              required"
               name="email"
               value={formData.email}
               onChange={handleChange}
@@ -276,6 +281,7 @@ const RegisterAnimation = () => {
             <label className="text-sm font-medium">School</label>
             <input
               type="text"
+              required
               name="school"
               value={formData.school}
               onChange={handleChange}

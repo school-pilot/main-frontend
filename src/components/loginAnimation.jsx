@@ -226,6 +226,7 @@ const LoginAnimation = () => {
             </label>
             <input
               type="email"
+              required
               value={formData.email}
               name="email"
               onChange={handleChange}
@@ -239,6 +240,7 @@ const LoginAnimation = () => {
             </label>
             <input
               type="password"
+              required
               value={formData.password}
               name="password"
               onChange={handleChange}
