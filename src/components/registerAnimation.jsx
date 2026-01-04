@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 
 /* ================= Animations ================= */
@@ -325,9 +325,9 @@ const RegisterAnimation = () => {
           </motion.button>
 
           {/* Debug */}
-          {/* <pre className="lg:col-span-2 text-xs bg-gray-100 p-2 rounded">
-            {JSON.stringify(formData, null, 2)}
-          </pre> */}
+          
+            {console.log(JSON.stringify(formData, null, 2))}
+          
         </motion.form>
 
         <p className="text-center text-sm mt-6">

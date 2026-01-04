@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
-import Image from "../assets/image";
+
 
 /* ================= Animations (UNCHANGED) ================= */
 
@@ -56,9 +56,14 @@ const itemVariants = {
 /* ================= Component ================= */
 
 const LoginAnimation = () => {
+  const [formData, setFormData] = useState({ email: "", password: "" });
 
-const [email, setEmail] = useState(" ")
-const [password, setPassword] = useState(" ")
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   return (
     <div className="relative min-h-dvh flex items-center justify-center px-4 sm:px-6 overflow-hidden bg-gradient-to-br from-white-500 to-white">
@@ -168,7 +173,7 @@ const [password, setPassword] = useState(" ")
       >
         <div className="flex justify-center mb-3">
           <motion.img
-            src='./src/assets/logo.jpg'
+            src="./src/assets/logo.jpg"
             alt="Company Logo"
             className="w-20 h-20 object-contain drop-shadow-[0_10px_25px_rgba(59,130,246,0.35)]"
             initial={{ opacity: 0, scale: 0.8 }}
@@ -221,8 +226,9 @@ const [password, setPassword] = useState(" ")
             </label>
             <input
               type="email"
-              value={email}
-              onChange={(e)=> setEmail(e.target.value)}
+              value={formData.email}
+              name="email"
+              onChange={handleChange}
               className="w-full bg-blue-200 border-gray-400 border px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
             />
           </motion.div>
@@ -233,8 +239,9 @@ const [password, setPassword] = useState(" ")
             </label>
             <input
               type="password"
-               value={password}
-              onChange={(e)=> setPassword(e.target.value)}
+              value={formData.password}
+              name="password"
+              onChange={handleChange}
               className="w-full bg-blue-200 border-gray-400 border px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
             />
           </motion.div>
@@ -252,7 +259,8 @@ const [password, setPassword] = useState(" ")
             Sign In
           </motion.button>
 
-          <p>{email}, {password}</p>
+          {/* for debugging*/}
+          {console.log(`${formData.email} ${formData.password}`)}
         </motion.form>
 
         <p className="text-center text-sm mt-6">
