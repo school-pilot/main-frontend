@@ -19,7 +19,7 @@ const Login = () => {
       </div>
 
       {/* Form section */}
-      <div className="w-full md:w-1/2 min-h-screen">
+      <div className="w-full md:w-1/2 min-h-screen p-1">
         <LoginAnimation />
       </div>
     </div>

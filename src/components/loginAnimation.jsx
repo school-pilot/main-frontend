@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 
-
 /* ================= Animations (UNCHANGED) ================= */
 
 const floatVariants = {
@@ -220,31 +219,26 @@ const LoginAnimation = () => {
           initial="hidden"
           animate="visible"
         >
-          <motion.div variants={itemVariants}>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Email
-            </label>
+          <motion.div variants={itemVariants} className="lg:col-span-2">
+            <label className="text-sm font-medium">Email</label>
             <input
               type="email"
               required
               value={formData.email}
               name="email"
               onChange={handleChange}
-              className="w-full bg-blue-200 border-gray-400 border px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full bg-blue-100 px-3 py-2 rounded-lg outline-none"
             />
           </motion.div>
 
-          <motion.div variants={itemVariants}>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Password
-            </label>
+          <motion.div variants={itemVariants} className="lg:col-span-2">
+            <label className="text-sm font-medium">Password</label>
             <input
               type="password"
-              required
-              value={formData.password}
               name="password"
+              value={formData.password}
               onChange={handleChange}
-              className="w-full bg-blue-200 border-gray-400 border px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full bg-blue-100 px-3 py-2 rounded-lg outline-none"
             />
           </motion.div>
 
