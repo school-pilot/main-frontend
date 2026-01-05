@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { Mail, Lock, Eye, EyeOff, User } from "lucide-react";
 
 /* ================= Animations (UNCHANGED) ================= */
 
@@ -56,12 +57,31 @@ const itemVariants = {
 
 const LoginAnimation = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    
+    // Simulate API call
+    setTimeout(() => {
+      setLoading(false);
+      // Handle login logic here
+      console.log("Login attempt:", formData);
+    }, 1500);
   };
 
   return (
@@ -107,7 +127,7 @@ const LoginAnimation = () => {
           variants={bounceVariants}
           animate="medium"
         >
-          <span className="text-sm font-semibold text-green-300 bg-indigo-50 px-3 py-1 rounded-full shadow-sm">
+          <span className="text-sm font-semibold text-green-600 bg-green-50 px-3 py-1 rounded-full shadow-sm">
             Reliable
           </span>
         </motion.div>
@@ -137,7 +157,7 @@ const LoginAnimation = () => {
           variants={bounceVariants}
           animate="medium"
         >
-          <span className="text-sm font-semibold text-green-600 bg-indigo-50 px-3 py-1 rounded-full shadow-sm">
+          <span className="text-sm font-semibold text-green-600 bg-green-50 px-3 py-1 rounded-full shadow-sm">
             Education
           </span>
         </motion.div>
@@ -147,7 +167,7 @@ const LoginAnimation = () => {
           variants={bounceVariants}
           animate="medium"
         >
-          <span className="text-sm font-semibold text-yellow-500 bg-indigo-50 px-3 py-1 rounded-full shadow-sm">
+          <span className="text-sm font-semibold text-yellow-500 bg-yellow-50 px-3 py-1 rounded-full shadow-sm">
             Fast
           </span>
         </motion.div>
@@ -157,7 +177,7 @@ const LoginAnimation = () => {
           variants={bounceVariants}
           animate="medium"
         >
-          <span className="text-sm font-semibold text-pink-500 bg-indigo-50 px-3 py-1 rounded-full shadow-sm">
+          <span className="text-sm font-semibold text-pink-500 bg-pink-50 px-3 py-1 rounded-full shadow-sm">
             Easy
           </span>
         </motion.div>
@@ -171,10 +191,8 @@ const LoginAnimation = () => {
         animate="visible"
       >
         <div className="flex justify-center mb-3">
-          <motion.img
-            src="/logo.jpg"
-            alt="Company Logo"
-            className="w-20 h-20 object-contain drop-shadow-[0_10px_25px_rgba(59,130,246,0.35)]"
+          <motion.div
+            className="w-20 h-20 flex items-center justify-center bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full drop-shadow-[0_10px_25px_rgba(59,130,246,0.35)]"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{
               opacity: 1,
@@ -190,7 +208,11 @@ const LoginAnimation = () => {
                 ease: "easeInOut",
               },
             }}
-          />
+          >
+            <img   src="/logo.jpg"
+            alt="Company Logo"
+            className="w-20 h-20 object-contain drop-shadow-[0_10px_25px_rgba(59,130,246,0.35)]" />
+          </motion.div>
         </div>
 
         <motion.div
@@ -214,53 +236,98 @@ const LoginAnimation = () => {
         </motion.div>
 
         <motion.form
+          onSubmit={handleSubmit}
           className="space-y-4"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
         >
           <motion.div variants={itemVariants} className="lg:col-span-2">
-            <label className="text-sm font-medium">Email</label>
-            <input
-              type="email"
-              required
-              value={formData.email}
-              name="email"
-              onChange={handleChange}
-              className="w-full bg-blue-100 px-3 py-2 rounded-lg outline-none"
-            />
+            <label className="text-sm font-medium text-gray-700">Email</label>
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <input
+                type="email"
+                required
+                value={formData.email}
+                name="email"
+                onChange={handleChange}
+                className="w-full bg-blue-50 px-10 py-2.5 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors"
+                placeholder="Enter your email"
+              />
+            </div>
           </motion.div>
 
           <motion.div variants={itemVariants} className="lg:col-span-2">
-            <label className="text-sm font-medium">Password</label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              className="w-full bg-blue-100 px-3 py-2 rounded-lg outline-none"
-            />
+            <label className="text-sm font-medium text-gray-700">Password</label>
+            <div className="relative">
+              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                className="w-full bg-blue-50 px-10 pr-12 py-2.5 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors"
+                placeholder="Enter your password"
+              />
+              <button
+                type="button"
+                onClick={togglePasswordVisibility}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                {showPassword ? (
+                  <EyeOff className="w-5 h-5" />
+                ) : (
+                  <Eye className="w-5 h-5" />
+                )}
+              </button>
+            </div>
           </motion.div>
 
-          <div className="flex justify-end">
-            <a className="text-sm text-blue-600 hover:underline pointer" href="/change-password">
+          <div className="flex items-center justify-between">
+            <label className="flex items-center space-x-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+                className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+              />
+              <span className="text-sm text-gray-700">Remember me</span>
+            </label>
+            <a
+              className="text-sm text-blue-600 hover:underline pointer"
+              href="/change-password"
+            >
               Forgot password?
             </a>
           </div>
 
-          <motion.button
-            type="submit"
-            className="w-full py-3 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold shadow-lg"
-          >
-            Sign In
-          </motion.button>
+          <motion.div variants={itemVariants}>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold shadow-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+            >
+              {loading ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <span>Signing in...</span>
+                </>
+              ) : (
+                <>
+                  <Lock className="w-5 h-5" />
+                  <span>Sign In</span>
+                </>
+              )}
+            </button>
+          </motion.div>
 
-          {/* for debugging*/}
+          {/* for debugging */}
           {console.log(`${formData.email} ${formData.password}`)}
         </motion.form>
 
         <p className="text-center text-sm mt-6">
-          Don’t have an account?{" "}
+          Don't have an account?{" "}
           <a
             href="/register"
             className="text-blue-600 font-semibold hover:underline"

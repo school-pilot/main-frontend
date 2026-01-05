@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-
+import { 
+  User, Mail, Lock, Key, Eye, EyeOff, 
+  Building, GraduationCap, Shield, UserCircle 
+} from "lucide-react";
+import Loader from "./Loader";
 
 /* ================= Animations ================= */
 
@@ -68,12 +72,41 @@ const RegisterAnimation = () => {
   });
 
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    
+    // Simulate API call
+    setTimeout(() => {
+      setLoading(false);
+      setSuccess(true);
+      
+      // Reset success message after 3 seconds
+      setTimeout(() => {
+        setSuccess(false);
+        setFormData({
+          firstName: "",
+          lastName: "",
+          email: "",
+          username: "",
+          role: "",
+          school: "",
+          password: "",
+          confirmPassword: "",
+        });
+      }, 3000);
+    }, 1500);
   };
 
   return (
@@ -118,7 +151,7 @@ const RegisterAnimation = () => {
           variants={bounceVariants}
           animate="medium"
         >
-          <span className="text-sm font-semibold text-green-300 bg-indigo-50 px-3 py-1 rounded-full shadow-sm">
+          <span className="text-sm font-semibold text-green-600 bg-green-50 px-3 py-1 rounded-full shadow-sm">
             Reliable
           </span>
         </motion.div>
@@ -158,7 +191,7 @@ const RegisterAnimation = () => {
           variants={bounceVariants}
           animate="medium"
         >
-          <span className="text-sm font-semibold text-yellow-500 bg-indigo-50 px-3 py-1 rounded-full shadow-sm">
+          <span className="text-sm font-semibold text-yellow-500 bg-yellow-50 px-3 py-1 rounded-full shadow-sm">
             Fast
           </span>
         </motion.div>
@@ -168,177 +201,288 @@ const RegisterAnimation = () => {
           variants={bounceVariants}
           animate="medium"
         >
-          <span className="text-sm font-semibold text-pink-500 bg-indigo-50 px-3 py-1 rounded-full shadow-sm">
+          <span className="text-sm font-semibold text-pink-500 bg-pink-50 px-3 py-1 rounded-full shadow-sm">
             Easy
           </span>
         </motion.div>
       </div>
+
       {/* Card */}
       <motion.div
-        className="z-10 w-full max-w-sm sm:max-w-md lg:max-w-2xl p-6 rounded-xl shadow-xl bg-white/90 backdrop-blur"
+        className="z-10 w-full max-w-sm sm:max-w-md lg:max-w-2xl p-6 rounded-xl shadow-xl bg-white/90 backdrop-blur border border-gray-100"
         variants={fadeInUp}
         initial="hidden"
         animate="visible"
       >
         {/* Logo */}
-        <div className="flex justify-center mb-1">
-          <motion.img
-           src='/logo.jpg'
+        <div className="flex justify-center mb-4">
+          <motion.div
+            className="w-20 h-20 flex items-center justify-center bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full drop-shadow-[0_10px_25px_rgba(59,130,246,0.35)]"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{
+              opacity: 1,
+              scale: 1,
+              y: [0, -6, 0],
+            }}
+            transition={{
+              duration: 0.8,
+              ease: "easeOut",
+              y: {
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeInOut",
+              },
+            }}
+          >
+            <img   src="/logo.jpg"
             alt="Company Logo"
-            className="w-20 h-20 object-contain"
-            animate={{ y: [0, -6, 0] }}
-            transition={{ duration: 3, repeat: Infinity }}
-          />
+            className="w-20 h-20 object-contain drop-shadow-[0_10px_25px_rgba(59,130,246,0.35)]" />
+          </motion.div>
         </div>
 
         {/* Header */}
-        <div className="mb-2 text-center">
-          <h2 className="text-2xl font-bold text-gray-800">
-            Create Your School Account
-          </h2>
-          <p className="text-sm text-gray-600 mt-1">
-            Please enter your details
-          </p>
-        </div>
-
-        {/* FORM */}
-        <motion.form
-          className="grid grid-cols-1 lg:grid-cols-2 gap-4"
+        <motion.div
+          className="mb-6 text-center"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
         >
-          {/* First Name */}
-          <motion.div variants={itemVariants}>
-            <label className="text-sm font-medium">First Name</label>
-            <input
-              type="text"
-              required
-              name="firstName"
-              value={formData.firstName}
-              onChange={handleChange}
-              className="w-full bg-blue-100 px-3 py-2 rounded-lg outline-none"
-            />
-          </motion.div>
-
-          {/* Last Name */}
-          <motion.div variants={itemVariants}>
-            <label className="text-sm font-medium">Last Name</label>
-            <input
-              type="text"
-              required
-              name="lastName"
-              value={formData.lastName}
-              onChange={handleChange}
-              className="w-full bg-blue-100 px-3 py-2 rounded-lg outline-none"
-            />
-          </motion.div>
-
-          {/* Username */}
-          <motion.div variants={itemVariants}>
-            <label className="text-sm font-medium">Username</label>
-            <input
-              type="text"
-              required
-              name="username"
-              value={formData.username}
-              onChange={handleChange}
-              className="w-full bg-blue-100 px-3 py-2 rounded-lg outline-none"
-            />
-          </motion.div>
-
-          {/* Role */}
-          <motion.div variants={itemVariants}>
-            <label className="text-sm font-medium">Role</label>
-            <select
-              name="role"
-              value={formData.role}
-              onChange={handleChange}
-              className="w-full bg-blue-100 px-3 py-2 rounded-lg outline-none"
-            >
-              <option value="">Select role</option>
-              <option value="student">Student</option>
-              <option value="teacher">Teacher</option>
-              <option value="admin">Admin</option>
-            </select>
-          </motion.div>
-
-          {/* Email */}
-          <motion.div variants={itemVariants} className="lg:col-span-1">
-            <label className="text-sm font-medium">Email</label>
-            <input
-              type="email
-              required"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className="w-full bg-blue-100 px-3 py-2 rounded-lg outline-none"
-            />
-          </motion.div>
-
-          {/* School */}
-          <motion.div variants={itemVariants} className="lg:col-span-1">
-            <label className="text-sm font-medium">School</label>
-            <input
-              type="text"
-              required
-              name="school"
-              value={formData.school}
-              onChange={handleChange}
-              className="w-full bg-blue-100 px-3 py-2 rounded-lg outline-none"
-            />
-          </motion.div>
-
-          {/* Password */}
-          <motion.div variants={itemVariants} className="lg:col-span-2">
-            <label className="text-sm font-medium">Password</label>
-            <input
-              type={showPassword ? "text" : "password"}
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              className="w-full bg-blue-100 px-3 py-2 rounded-lg outline-none"
-            />
-          </motion.div>
-
-          {/* Confirm Password */}
-          <motion.div variants={itemVariants} className="lg:col-span-2">
-            <label className="text-sm font-medium">Confirm Password</label>
-            <input
-              type={showPassword ? "text" : "password"}
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              className="w-full bg-blue-100 px-3 py-2 rounded-lg outline-none"
-            />
-          </motion.div>
-
-          {/* Show Password */}
-          <div className="flex items-center gap-2 text-sm lg:col-span-2">
-            <input
-              type="checkbox"
-              onChange={() => setShowPassword(!showPassword)}
-            />
-            <span>{showPassword ? "Hide Password" : "Show Password"}</span>
-          </div>
-
-          {/* Submit */}
-          <motion.button
-            type="submit"
-            className="lg:col-span-2 w-full py-3 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold"
+          <motion.h2
+            className="text-2xl sm:text-3xl font-bold text-gray-800"
+            variants={itemVariants}
           >
-            Register
-          </motion.button>
+            Create Your School Account
+          </motion.h2>
+          <motion.p
+            className="text-sm sm:text-base text-gray-600 mt-1"
+            variants={itemVariants}
+          >
+            Please enter your details to get started
+          </motion.p>
+        </motion.div>
 
-          {/* Debug */}
-          
-            {console.log(JSON.stringify(formData, null, 2))}
-          
-        </motion.form>
+        {success ? (
+          <motion.div
+            className="p-4 bg-green-50 border border-green-200 rounded-lg text-center"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+          >
+            <Shield className="w-12 h-12 text-green-500 mx-auto mb-3" />
+            <h3 className="text-lg font-semibold text-green-800">Registration Successful!</h3>
+            <p className="text-green-600 mt-1">Your account has been created successfully.</p>
+          </motion.div>
+        ) : (
+          <motion.form
+            onSubmit={handleSubmit}
+            className="grid grid-cols-1 lg:grid-cols-2 gap-4"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            {/* First Name */}
+            <motion.div variants={itemVariants}>
+              <label className="text-sm font-medium text-gray-700">First Name</label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <input
+                  type="text"
+                  required
+                  name="firstName"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  className="w-full bg-blue-50 px-10 py-2.5 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors"
+                  placeholder="Enter first name"
+                />
+              </div>
+            </motion.div>
 
-        <p className="text-center text-sm mt-6">
+            {/* Last Name */}
+            <motion.div variants={itemVariants}>
+              <label className="text-sm font-medium text-gray-700">Last Name</label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <input
+                  type="text"
+                  required
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  className="w-full bg-blue-50 px-10 py-2.5 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors"
+                  placeholder="Enter last name"
+                />
+              </div>
+            </motion.div>
+
+            {/* Username */}
+            <motion.div variants={itemVariants}>
+              <label className="text-sm font-medium text-gray-700">Username</label>
+              <div className="relative">
+                <UserCircle className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <input
+                  type="text"
+                  required
+                  name="username"
+                  value={formData.username}
+                  onChange={handleChange}
+                  className="w-full bg-blue-50 px-10 py-2.5 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors"
+                  placeholder="Choose a username"
+                />
+              </div>
+            </motion.div>
+
+            {/* Role */}
+            <motion.div variants={itemVariants}>
+              <label className="text-sm font-medium text-gray-700">Role</label>
+              <div className="relative">
+                <GraduationCap className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <select
+                  name="role"
+                  value={formData.role}
+                  onChange={handleChange}
+                  className="w-full bg-blue-50 px-10 py-2.5 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors appearance-none"
+                >
+                  <option value="">Select role</option>
+                  <option value="student">Student</option>
+                  <option value="teacher">Teacher</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </div>
+            </motion.div>
+
+            {/* Email */}
+            <motion.div variants={itemVariants}>
+              <label className="text-sm font-medium text-gray-700">Email</label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <input
+                  type="email"
+                  required
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="w-full bg-blue-50 px-10 py-2.5 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors"
+                  placeholder="Enter email address"
+                />
+              </div>
+            </motion.div>
+
+            {/* School */}
+            <motion.div variants={itemVariants}>
+              <label className="text-sm font-medium text-gray-700">School</label>
+              <div className="relative">
+                <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <input
+                  type="text"
+                  required
+                  name="school"
+                  value={formData.school}
+                  onChange={handleChange}
+                  className="w-full bg-blue-50 px-10 py-2.5 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors"
+                  placeholder="Enter school name"
+                />
+              </div>
+            </motion.div>
+
+            {/* Password */}
+            <motion.div variants={itemVariants} className="lg:col-span-2">
+              <label className="text-sm font-medium text-gray-700">Password</label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="w-full bg-blue-50 px-10 py-2.5 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors pr-10"
+                  placeholder="Create a password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
+                </button>
+              </div>
+              <p className="text-xs text-gray-500 mt-1.5">
+                Password must be at least 8 characters long
+              </p>
+            </motion.div>
+
+            {/* Confirm Password */}
+            <motion.div variants={itemVariants} className="lg:col-span-2">
+              <label className="text-sm font-medium text-gray-700">Confirm Password</label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  className="w-full bg-blue-50 px-10 py-2.5 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors pr-10"
+                  placeholder="Confirm your password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
+                </button>
+              </div>
+            </motion.div>
+
+            {/* Show Password Toggle */}
+            <div className="flex items-center gap-2 text-sm text-gray-700 lg:col-span-2">
+              <input
+                type="checkbox"
+                id="showPassword"
+                checked={showPassword}
+                onChange={() => setShowPassword(!showPassword)}
+                className="rounded text-blue-600 focus:ring-blue-500"
+              />
+              <label htmlFor="showPassword" className="cursor-pointer">
+                Show Password
+              </label>
+            </div>
+
+            {/* Submit Button */}
+            <motion.div variants={itemVariants} className="lg:col-span-2">
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full py-3 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold shadow-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+              >
+                {loading ? (
+                  <>
+                    <Loader size="sm" />
+                    <span>Creating Account...</span>
+                  </>
+                ) : (
+                  <>
+                    <Shield className="w-5 h-5" />
+                    <span>Register Account</span>
+                  </>
+                )}
+              </button>
+            </motion.div>
+          </motion.form>
+        )}
+
+        <p className="text-center text-sm mt-6 text-gray-600">
           Already have an account?{" "}
-          <a href="/" className="text-blue-600 font-semibold">
+          <a
+            href="/"
+            className="text-blue-600 font-semibold hover:underline"
+          >
             Sign In
           </a>
         </p>
