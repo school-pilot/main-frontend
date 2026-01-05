@@ -1,7 +1,7 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import RequireAuth from '../components/RequireAuth';
 import RequireRole from '../components/RequireRole';
-import AuthLayout from '../Layouts/AuthLayout';
+
 import DashboardLayout from '../layouts/DashboardLayout';
 
 // Auth Pages
@@ -33,6 +33,7 @@ import StudentDashboard from '../dashboards/student/StudentDashboard';
 import MyResults from '../dashboards/student/MyResults';
 import Timetable from '../dashboards/student/Timetable';
 import Profile from '../dashboards/student/Profile';
+import AuthLayout from '../Layouts/AuthLayout';
 
 const AppRoutes = () => {
   return (
