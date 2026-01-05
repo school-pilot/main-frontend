@@ -1,47 +1,46 @@
-import { Routes, Route, Navigate } from "react-router-dom";
-import RequireAuth from "../components/RequireAuth";
-import RequireRole from "../components/RequireRole";
-import AuthLayout from "../Layouts/AuthLayout";
-import DashboardLayout from "../layouts/DashboardLayout";
+import { Routes, Route, Navigate } from 'react-router-dom';
+import RequireAuth from '../components/RequireAuth';
+import RequireRole from '../components/RequireRole';
+import AuthLayout from '../Layouts/AuthLayout';
+import DashboardLayout from '../layouts/DashboardLayout';
 
 // Auth Pages
-import Login from "../pages/auth/Login";
-import Register from "../pages/auth/Register";
-import ChangePassword from "../pages/auth/ChangePassword";
+import Login from '../pages/auth/Login';
+import Register from '../pages/auth/Register';
+import ChangePassword from '../pages/auth/ChangePassword';
 
 // Main Pages
-import Dashboard from "../pages/Dashboard";
-import NotificationsPage from "../pages/NotificationsPage";
-import NotFound from "../pages/NotFound";
+import Dashboard from '../pages/Dashboard';
+import NotificationsPage from '../pages/NotificationsPage';
+import NotFound from '../pages/NotFound';
 
 // Admin Pages
-import Students from "../dashboards/admin/Students";
-import Teachers from "../dashboards/admin/Teachers";
-import Fees from "../dashboards/admin/Fees";
-import Reports from "../dashboards/admin/Reports";
-import TimetableAdmin from "../dashboards/admin/TimetableAdmin";
+import Students from '../dashboards/admin/Students';
+import Teachers from '../dashboards/admin/Teachers';
+import Fees from '../dashboards/admin/Fees';
+import Reports from '../dashboards/admin/Reports';
+import TimetableAdmin from '../dashboards/admin/TimetableAdmin';
 
 // Teacher Pages
-import TeacherDashboard from "../dashboards/teacher/TeacherDashboard";
-import Attendance from "../dashboards/teacher/Attendance";
-import EnterScores from "../dashboards/teacher/EnterScores";
-import MyClasses from "../dashboards/teacher/MyClasses";
-import TeacherTimetable from "../dashboards/teacher/TeacherTimetable";
+import TeacherDashboard from '../dashboards/teacher/TeacherDashboard';
+import Attendance from '../dashboards/teacher/Attendance';
+import EnterScores from '../dashboards/teacher/EnterScores';
+import MyClasses from '../dashboards/teacher/MyClasses';
+import TeacherTimetable from '../dashboards/teacher/TeacherTimetable';
 
 // Student Pages
-import StudentDashboard from "../dashboards/student/StudentDashboard";
-import MyResults from "../dashboards/student/MyResults";
-import Timetable from "../dashboards/student/Timetable";
-import Profile from "../dashboards/student/Profile";
+import StudentDashboard from '../dashboards/student/StudentDashboard';
+import MyResults from '../dashboards/student/MyResults';
+import Timetable from '../dashboards/student/Timetable';
+import Profile from '../dashboards/student/Profile';
 
 const AppRoutes = () => {
   return (
     <Routes>
       {/* Public Routes */}
       <Route element={<AuthLayout />}>
-        <Route path="/login" element={<Login />} />{" "}
+        <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-         <Route path="change-password" element={<ChangePassword />} />
       </Route>
 
       {/* Protected Routes */}
@@ -61,9 +60,7 @@ const AppRoutes = () => {
         <Route
           path="admin"
           element={
-            <RequireRole
-              allowedRoles={["super_admin", "school_admin", "admin"]}
-            >
+            <RequireRole allowedRoles={['super_admin', 'school_admin', 'admin']}>
               <DashboardLayout />
             </RequireRole>
           }
@@ -79,7 +76,7 @@ const AppRoutes = () => {
         <Route
           path="teacher"
           element={
-            <RequireRole allowedRoles={["teacher"]}>
+            <RequireRole allowedRoles={['teacher']}>
               <DashboardLayout />
             </RequireRole>
           }
@@ -95,7 +92,7 @@ const AppRoutes = () => {
         <Route
           path="student"
           element={
-            <RequireRole allowedRoles={["student"]}>
+            <RequireRole allowedRoles={['student']}>
               <DashboardLayout />
             </RequireRole>
           }
