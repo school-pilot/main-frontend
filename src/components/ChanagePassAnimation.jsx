@@ -2,6 +2,8 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Lock, Key, Shield, CheckCircle, Eye, EyeOff } from "lucide-react";
 import Loader from "./Loader";
+import toast from "react-hot-toast";
+import { useAuth } from "../context/AuthContext";
 
 /* ================= Animations (REUSED) ================= */
 
@@ -99,35 +101,39 @@ const ChangePassAnimation = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (formData.new_password !== formData.confirm_password) {
+      toast.error("New passwords do not match");
+      return;
+    }
+
+    if (formData.new_password.length < 8) {
+      toast.error("Password must be at least 8 characters long");
+      return;
+    }
+
     setLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false);
-      setSuccess(true);
+     const success = await changePassword({
+      current_password: formData.current_password,
+      new_password: formData.new_password,
+    });
 
-      // Reset success message after 3 seconds
-      setTimeout(() => {
-        setSuccess(false);
-        setFormData({
-          current_password: "",
-          new_password: "",
-          confirm_password: "",
-        });
-        // Reset password visibility when form is cleared
-        setShowPassword({
-          current: false,
-          new: false,
-          confirm: false,
-        });
-      }, 3000);
-    }, 1500);
+    setLoading(false);
+
+    if (success) {
+      setFormData({
+        current_password: '',
+        new_password: '',
+        confirm_password: '',
+      });
+    }
   };
 
   return (
-    <div className="relative min-h-dvh flex items-center justify-center px-4 sm:px-6 overflow-hidden bg-gradient-to-br from-white-500 to-white">
+    <div className="relative  sm:min-h-dvh  h-[700px] flex items-center justify-center px-4 sm:px-6 overflow-hidden ">
       {/* Background blobs */}
-      <div className="absolute inset-0 overflow-hidden">
+      <div  className="sm:absolute sm:inset-0 hidden sm:block sm:overflow-hidden">
         <motion.div
           className="absolute -top-20 -right-20 w-48 sm:w-64 h-48 sm:h-64 bg-blue-400 sm:bg-blue-100 rounded-full opacity-20"
           variants={floatVariants}

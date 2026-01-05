@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Mail, Lock, Eye, EyeOff, User } from "lucide-react";
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from "../context/AuthContext";
+import Loader from "./Loader";
 
 /* ================= Animations (UNCHANGED) ================= */
 
@@ -61,6 +64,12 @@ const LoginAnimation = () => {
   const [loading, setLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
 
+   const { login } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+    const from = location.state?.from?.pathname || '/';
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -76,18 +85,22 @@ const LoginAnimation = () => {
     e.preventDefault();
     setLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false);
-      // Handle login logic here
-      console.log("Login attempt:", formData);
-    }, 1500);
+     const success = await login({
+      email: formData.email,
+      password: formData.password,
+    });
+
+    setLoading(false);
+    
+    if (success) {
+      navigate(from, { replace: true });
+    }
   };
 
   return (
-    <div className="relative min-h-dvh flex items-center justify-center px-4 sm:px-6 overflow-hidden bg-gradient-to-br from-white-500 to-white">
+    <div className="relative sm:min-h-dvh  h-[700px] flex items-center justify-center px-4 sm:px-6 overflow-hidden ">
       {/* Background blobs */}
-      <div className="absolute inset-0 overflow-hidden">
+      <div className="sm:absolute sm:inset-0 hidden sm:block sm:overflow-hidden">
         <motion.div
           className="absolute -top-20 -right-20 w-48 sm:w-64 h-48 sm:h-64 bg-blue-400 sm:bg-blue-100 rounded-full opacity-20"
           variants={floatVariants}
@@ -309,10 +322,7 @@ const LoginAnimation = () => {
               className="w-full py-3 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold shadow-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
             >
               {loading ? (
-                <>
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  <span>Signing in...</span>
-                </>
+               <Loader size='sm'/>
               ) : (
                 <>
                   <Lock className="w-5 h-5" />

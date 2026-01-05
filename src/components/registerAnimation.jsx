@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { use, useState } from "react";
 import { motion } from "framer-motion";
 import {
   User,
@@ -13,6 +13,8 @@ import {
   UserCircle,
 } from "lucide-react";
 import Loader from "./Loader";
+import { useNavigate  } from "react-router-dom";
+import { useAuth } from '../context/AuthContext';
 
 /* ================= Animations ================= */
 
@@ -83,6 +85,8 @@ const RegisterAnimation = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const { register } = useAuth();
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
@@ -93,33 +97,35 @@ const RegisterAnimation = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (formData.password !== formData.confirmPassword) {
+      alert("Passwords do not match!");
+      return;
+    }
+
     setLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false);
-      setSuccess(true);
+    const UserData = {
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      email: formData.email,
+      username: formData.username,
+      role: formData.role,
+      school: formData.school,
+      password: formData.password,
+    };
 
-      // Reset success message after 3 seconds
-      setTimeout(() => {
-        setSuccess(false);
-        setFormData({
-          firstName: "",
-          lastName: "",
-          email: "",
-          username: "",
-          role: "",
-          school: "",
-          password: "",
-          confirmPassword: "",
-        });
-      }, 3000);
-    }, 1500);
+    const successful = await register(UserData);
+    setLoading(false);
+
+    if (successful) {
+      navigate("/");
+    }
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-white to-white overflow-hidden">
-      <div className="absolute inset-0 overflow-hidden">
+    <div className="relative min-h-screen flex items-center justify-center px-4  overflow-hidden">
+      <div  className="sm:absolute sm:inset-0 hidden sm:block sm:overflow-hidden">
         <motion.div
           className="absolute -top-20 -right-20 w-48 sm:w-64 h-48 sm:h-64 bg-blue-400 sm:bg-blue-100 rounded-full opacity-20"
           variants={floatVariants}
