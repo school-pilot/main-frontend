@@ -106,7 +106,7 @@ const AuthLayout = () => {
           />
         </div>
         {/* Logo - Keep this if you want it */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-6">
           <div className="inline-flex rounded-2xl mb-1">
             <img
               src="/logo.jpg"
@@ -130,7 +130,7 @@ const AuthLayout = () => {
         </motion.div>
 
         {/* Footer */}
-        <p className="text-center text-gray-500 text-sm mt-6">
+        <p className="text-center text-gray-500 text-sm mt-5">
           © {new Date().getFullYear()} SchoolPilot. All rights reserved.
         </p>
       </motion.div>

@@ -126,7 +126,7 @@ const RegisterAnimation = () => {
   return (
     <div className="relative min-h-dvh flex items-center justify-center px-4 sm:px-6 py-8 overflow-hidden">
       {/* Background elements */}
-      <div className="absolute inset-0 overflow-hidden">
+      {/* <div className="absolute inset-0 overflow-hidden">
         <motion.div
           className="absolute -top-20 -right-20 w-48 sm:w-64 h-48 sm:h-64 bg-blue-400 sm:bg-blue-100 rounded-full opacity-20"
           variants={floatVariants}
@@ -142,7 +142,7 @@ const RegisterAnimation = () => {
           variants={floatVariants}
           animate="fast"
         />
-      </div>
+      </div> */}
 
       {/* Floating labels */}
       <div className="hidden sm:block">
@@ -185,7 +185,7 @@ const RegisterAnimation = () => {
         {/* Back button for mobile */}
         <motion.button
           onClick={() => navigate(-1)}
-          className="sm:hidden flex items-center gap-2 text-gray-600 mb-4 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+          className="sm:hidden flex items-center gap-2 text-gray-600 mb-1 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
           whileHover={{ x: -5 }}
           whileTap={{ scale: 0.95 }}
         >

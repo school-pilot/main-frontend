@@ -131,9 +131,9 @@ const ChangePassAnimation = () => {
   };
 
   return (
-    <div className="relative  sm:min-h-dvh  h-[700px] flex items-center justify-center px-4 sm:px-6 overflow-hidden ">
+    <div className="relative min-h-dvh flex items-center justify-center px-4 sm:px-6 overflow-hidden bg-gradient-to-br from-white-500 to-white">
       {/* Background blobs */}
-      <div  className="sm:absolute sm:inset-0 hidden sm:block sm:overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden">
         <motion.div
           className="absolute -top-20 -right-20 w-48 sm:w-64 h-48 sm:h-64 bg-blue-400 sm:bg-blue-100 rounded-full opacity-20"
           variants={floatVariants}

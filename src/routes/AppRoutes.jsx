@@ -41,6 +41,7 @@ const AppRoutes = () => {
       <Route element={<AuthLayout />}>
         <Route path="/login" element={<Login />} />{" "}
         <Route path="/register" element={<Register />} />
+         <Route path="change-password" element={<ChangePassword />} />
       </Route>
 
       {/* Protected Routes */}
