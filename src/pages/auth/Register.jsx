@@ -21,7 +21,7 @@ const Register = () => {
       </div>
 
       {/* Form section */}
-      <div className="w-full md:w-1/2 min-h-screen p-1">
+      <div className="w-full md:w-1/2 p-1">
        <RegisterAnimation />
       </div>
     </div>
