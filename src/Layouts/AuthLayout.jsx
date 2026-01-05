@@ -2,7 +2,7 @@
 import { motion } from "framer-motion";
 import { Outlet, Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { School } from "lucide-react";
+
 
 const AuthLayout = () => {
   const { isAuthenticated } = useAuth();
