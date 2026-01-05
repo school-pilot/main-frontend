@@ -33,17 +33,13 @@ import StudentDashboard from "../dashboards/student/StudentDashboard";
 import MyResults from "../dashboards/student/MyResults";
 import Timetable from "../dashboards/student/Timetable";
 import Profile from "../dashboards/student/Profile";
-import AuthLayout from "../Layouts/AuthLayout";
+
 
 const AppRoutes = () => {
   return (
     <Routes>
-      {/* Public Routes */}
-      <Route element={<AuthLayout />}>
-        <Route path="/login" element={<Login />} />
+ <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-      </Route>
-
       {/* Protected Routes */}
       <Route
         path="/"
