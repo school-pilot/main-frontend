@@ -1,6 +1,7 @@
 import React from "react";
-import Image from "../assets/image.js";
-import RegisterAnimation from "../components/registerAnimation.jsx";
+
+import RegisterAnimation from "../../components/registerAnimation.jsx";
+import Image from "../../assets/image.js";
 
 
 const Register = () => {

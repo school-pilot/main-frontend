@@ -1,6 +1,7 @@
 import React from "react";
-import Image from "../assets/image.js";
-import LoginAnimation from "../components/loginAnimation.jsx";
+
+import LoginAnimation from "../../components/loginAnimation.jsx";
+import Image from "../../assets/image.js";
 
 const Login = () => {
   return (

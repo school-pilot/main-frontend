@@ -243,7 +243,7 @@ const LoginAnimation = () => {
           </motion.div>
 
           <div className="flex justify-end">
-            <a className="text-sm text-blue-600 hover:underline">
+            <a className="text-sm text-blue-600 hover:underline pointer" href="/change-password">
               Forgot password?
             </a>
           </div>
