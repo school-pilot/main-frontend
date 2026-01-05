@@ -1,8 +1,16 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { 
-  User, Mail, Lock, Key, Eye, EyeOff, 
-  Building, GraduationCap, Shield, UserCircle 
+import {
+  User,
+  Mail,
+  Lock,
+  Key,
+  Eye,
+  EyeOff,
+  Building,
+  GraduationCap,
+  Shield,
+  UserCircle,
 } from "lucide-react";
 import Loader from "./Loader";
 
@@ -86,12 +94,12 @@ const RegisterAnimation = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    
+
     // Simulate API call
     setTimeout(() => {
       setLoading(false);
       setSuccess(true);
-      
+
       // Reset success message after 3 seconds
       setTimeout(() => {
         setSuccess(false);
@@ -234,9 +242,11 @@ const RegisterAnimation = () => {
               },
             }}
           >
-            <img   src="/logo.jpg"
-            alt="Company Logo"
-            className="w-20 h-20 object-contain drop-shadow-[0_10px_25px_rgba(59,130,246,0.35)]" />
+            <img
+              src="/logo.jpg"
+              alt="Company Logo"
+              className="w-20 h-20 object-contain drop-shadow-[0_10px_25px_rgba(59,130,246,0.35)]"
+            />
           </motion.div>
         </div>
 
@@ -268,8 +278,12 @@ const RegisterAnimation = () => {
             animate={{ opacity: 1, scale: 1 }}
           >
             <Shield className="w-12 h-12 text-green-500 mx-auto mb-3" />
-            <h3 className="text-lg font-semibold text-green-800">Registration Successful!</h3>
-            <p className="text-green-600 mt-1">Your account has been created successfully.</p>
+            <h3 className="text-lg font-semibold text-green-800">
+              Registration Successful!
+            </h3>
+            <p className="text-green-600 mt-1">
+              Your account has been created successfully.
+            </p>
           </motion.div>
         ) : (
           <motion.form
@@ -281,7 +295,9 @@ const RegisterAnimation = () => {
           >
             {/* First Name */}
             <motion.div variants={itemVariants}>
-              <label className="text-sm font-medium text-gray-700">First Name</label>
+              <label className="text-sm font-medium text-gray-700">
+                First Name
+              </label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
@@ -298,7 +314,9 @@ const RegisterAnimation = () => {
 
             {/* Last Name */}
             <motion.div variants={itemVariants}>
-              <label className="text-sm font-medium text-gray-700">Last Name</label>
+              <label className="text-sm font-medium text-gray-700">
+                Last Name
+              </label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
@@ -315,7 +333,9 @@ const RegisterAnimation = () => {
 
             {/* Username */}
             <motion.div variants={itemVariants}>
-              <label className="text-sm font-medium text-gray-700">Username</label>
+              <label className="text-sm font-medium text-gray-700">
+                Username
+              </label>
               <div className="relative">
                 <UserCircle className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
@@ -368,7 +388,9 @@ const RegisterAnimation = () => {
 
             {/* School */}
             <motion.div variants={itemVariants}>
-              <label className="text-sm font-medium text-gray-700">School</label>
+              <label className="text-sm font-medium text-gray-700">
+                School
+              </label>
               <div className="relative">
                 <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
@@ -385,7 +407,9 @@ const RegisterAnimation = () => {
 
             {/* Password */}
             <motion.div variants={itemVariants} className="lg:col-span-2">
-              <label className="text-sm font-medium text-gray-700">Password</label>
+              <label className="text-sm font-medium text-gray-700">
+                Password
+              </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
@@ -415,7 +439,9 @@ const RegisterAnimation = () => {
 
             {/* Confirm Password */}
             <motion.div variants={itemVariants} className="lg:col-span-2">
-              <label className="text-sm font-medium text-gray-700">Confirm Password</label>
+              <label className="text-sm font-medium text-gray-700">
+                Confirm Password
+              </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
@@ -479,10 +505,7 @@ const RegisterAnimation = () => {
 
         <p className="text-center text-sm mt-6 text-gray-600">
           Already have an account?{" "}
-          <a
-            href="/"
-            className="text-blue-600 font-semibold hover:underline"
-          >
+          <a href="/" className="text-blue-600 font-semibold hover:underline">
             Sign In
           </a>
         </p>
