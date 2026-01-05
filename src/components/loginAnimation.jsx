@@ -98,7 +98,7 @@ const LoginAnimation = () => {
   };
 
   return (
-    <div className="relative sm:min-h-dvh  h-[700px] flex items-center justify-center mt-[-60px] px-4 sm:px-6 overflow-hidden ">
+    <div className="relative sm:min-h-dvh  h-[700px] flex items-center justify-center px-4 sm:px-6 overflow-hidden ">
       {/* Background blobs */}
       <div className="sm:absolute sm:inset-0 hidden sm:block sm:overflow-hidden">
         <motion.div
