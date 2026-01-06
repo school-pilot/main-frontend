@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import RequireAuth from "../components/RequireAuth";
 import RequireRole from "../components/RequireRole";
 
-import DashboardLayout from "../layouts/DashboardLayout";
+import DashboardLayout from "../Layouts/DashboardLayout";
 
 // Auth Pages
 import Login from "../pages/auth/Login";
