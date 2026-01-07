@@ -71,18 +71,18 @@ const itemVariants = {
 
 const RegisterAnimation = () => {
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    first_name: "",
+    last_name: "",
     email: "",
     username: "",
     role: "",
     school: "",
-    password: "",
-    confirmPassword: "",
+    password1: "",
+    password2: "",
   });
 
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showPassword1, setShowPassword1] = useState(false);
+  const [showPassword2, setShowPassword2] = useState(false);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const { register } = useAuth();
@@ -98,52 +98,55 @@ const RegisterAnimation = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (formData.password !== formData.confirmPassword) {
+    // Validate passwords match
+    if (formData.password1 !== formData.password2) {
       alert("Passwords do not match!");
+      return;
+    }
+
+    // Basic validation
+    if (!formData.first_name || !formData.last_name || !formData.email || 
+        !formData.username || !formData.password1 || !formData.password2) {
+      alert("Please fill in all required fields!");
       return;
     }
 
     setLoading(true);
 
-    const UserData = {
-      firstName: formData.firstName,
-      lastName: formData.lastName,
+    // Format data to match Django API expectations
+    const userData = {
+      first_name: formData.first_name,
+      last_name: formData.last_name,
       email: formData.email,
       username: formData.username,
-      role: formData.role,
-      school: formData.school,
-      password: formData.password,
+      password1: formData.password1,
+      password2: formData.password2,
+      role: formData.role || "student", // Default role if not selected
+      school_name: formData.school || "", // Might need to be school_id instead
     };
 
-    const successful = await register(UserData);
-    setLoading(false);
+    try {
+      const successful = await register(userData);
+      setLoading(false);
 
-    if (successful) {
-      navigate("/");
+      if (successful) {
+        setSuccess(true);
+        // Navigate to login after 2 seconds
+        setTimeout(() => {
+          navigate("/login");
+        }, 2000);
+      } else {
+        alert("Registration failed. Please try again.");
+      }
+    } catch (error) {
+      setLoading(false);
+      alert("An error occurred. Please check your network connection.");
+      console.error("Registration error:", error);
     }
   };
 
   return (
     <div className="relative min-h-dvh flex items-center justify-center px-4 sm:px-6 py-8 overflow-hidden">
-      {/* Background elements */}
-      {/* <div className="absolute inset-0 overflow-hidden">
-        <motion.div
-          className="absolute -top-20 -right-20 w-48 sm:w-64 h-48 sm:h-64 bg-blue-400 sm:bg-blue-100 rounded-full opacity-20"
-          variants={floatVariants}
-          animate="slow"
-        />
-        <motion.div
-          className="absolute top-1/4 -left-16 w-36 sm:w-48 h-36 sm:h-48 bg-indigo-500 sm:bg-indigo-100 rounded-full opacity-15"
-          variants={floatVariants}
-          animate="medium"
-        />
-        <motion.div
-          className="absolute bottom-1/3 right-1/4 w-24 sm:w-32 h-24 sm:h-32 bg-purple-600 sm:bg-purple-100 rounded-full opacity-10"
-          variants={floatVariants}
-          animate="fast"
-        />
-      </div> */}
-
       {/* Floating labels */}
       <div className="hidden sm:block">
         <motion.div
@@ -252,7 +255,7 @@ const RegisterAnimation = () => {
                   Registration Successful!
                 </h3>
                 <p className="text-green-600 mt-1">
-                  Your account has been created successfully.
+                  Your account has been created successfully. Redirecting to login...
                 </p>
               </motion.div>
             ) : (
@@ -277,15 +280,15 @@ const RegisterAnimation = () => {
                     {/* First Name */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        First Name
+                        First Name *
                       </label>
                       <div className="relative">
                         <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                         <input
                           type="text"
                           required
-                          name="firstName"
-                          value={formData.firstName}
+                          name="first_name"
+                          value={formData.first_name}
                           onChange={handleChange}
                           className="w-full bg-blue-50 px-10 py-2 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors text-sm"
                           placeholder="Enter first name"
@@ -296,15 +299,15 @@ const RegisterAnimation = () => {
                     {/* Last Name */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Last Name
+                        Last Name *
                       </label>
                       <div className="relative">
                         <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                         <input
                           type="text"
                           required
-                          name="lastName"
-                          value={formData.lastName}
+                          name="last_name"
+                          value={formData.last_name}
                           onChange={handleChange}
                           className="w-full bg-blue-50 px-10 py-2 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors text-sm"
                           placeholder="Enter last name"
@@ -328,7 +331,7 @@ const RegisterAnimation = () => {
                     {/* Username */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Username
+                        Username *
                       </label>
                       <div className="relative">
                         <UserCircle className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -347,7 +350,7 @@ const RegisterAnimation = () => {
                     {/* Email */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Email
+                        Email *
                       </label>
                       <div className="relative">
                         <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -406,12 +409,11 @@ const RegisterAnimation = () => {
                         <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                         <input
                           type="text"
-                          required
                           name="school"
                           value={formData.school}
                           onChange={handleChange}
                           className="w-full bg-blue-50 px-10 py-2 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors text-sm"
-                          placeholder="Enter school name"
+                          placeholder="Enter school name (optional)"
                         />
                       </div>
                     </div>
@@ -429,28 +431,29 @@ const RegisterAnimation = () => {
                   </div>
                   
                   <div className="space-y-4">
-                    {/* Password */}
+                    {/* Password 1 */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Password
+                        Password *
                       </label>
                       <div className="relative">
                         <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                         <input
-                          type={showPassword ? "text" : "password"}
+                          type={showPassword1 ? "text" : "password"}
                           required
-                          name="password"
-                          value={formData.password}
+                          name="password1"
+                          value={formData.password1}
                           onChange={handleChange}
                           className="w-full bg-blue-50 px-10 py-2 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors text-sm pr-10"
                           placeholder="Create a password"
+                          minLength="8"
                         />
                         <button
                           type="button"
-                          onClick={() => setShowPassword(!showPassword)}
+                          onClick={() => setShowPassword1(!showPassword1)}
                           className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                         >
-                          {showPassword ? (
+                          {showPassword1 ? (
                             <EyeOff className="w-4 h-4" />
                           ) : (
                             <Eye className="w-4 h-4" />
@@ -462,28 +465,29 @@ const RegisterAnimation = () => {
                       </p>
                     </div>
 
-                    {/* Confirm Password */}
+                    {/* Password 2 (Confirm) */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Confirm Password
+                        Confirm Password *
                       </label>
                       <div className="relative">
                         <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                         <input
-                          type={showConfirmPassword ? "text" : "password"}
+                          type={showPassword2 ? "text" : "password"}
                           required
-                          name="confirmPassword"
-                          value={formData.confirmPassword}
+                          name="password2"
+                          value={formData.password2}
                           onChange={handleChange}
                           className="w-full bg-blue-50 px-10 py-2 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors text-sm pr-10"
                           placeholder="Confirm your password"
+                          minLength="8"
                         />
                         <button
                           type="button"
-                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                          onClick={() => setShowPassword2(!showPassword2)}
                           className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                         >
-                          {showConfirmPassword ? (
+                          {showPassword2 ? (
                             <EyeOff className="w-4 h-4" />
                           ) : (
                             <Eye className="w-4 h-4" />
@@ -492,19 +496,37 @@ const RegisterAnimation = () => {
                       </div>
                     </div>
 
-                    {/* Show Password Toggle */}
+                    {/* Show Password Toggle for password1 */}
                     <div className="flex items-center gap-2 text-sm text-gray-700">
                       <input
                         type="checkbox"
-                        id="showPassword"
-                        checked={showPassword}
-                        onChange={() => setShowPassword(!showPassword)}
+                        id="showPassword1"
+                        checked={showPassword1}
+                        onChange={() => setShowPassword1(!showPassword1)}
                         className="rounded text-blue-600 focus:ring-blue-500"
                       />
-                      <label htmlFor="showPassword" className="cursor-pointer">
+                      <label htmlFor="showPassword1" className="cursor-pointer">
                         Show Password
                       </label>
                     </div>
+                  </div>
+                </motion.div>
+
+                {/* Terms and Conditions */}
+                <motion.div 
+                  className="pt-2"
+                  variants={itemVariants}
+                >
+                  <div className="flex items-start gap-2 text-sm text-gray-600">
+                    <input
+                      type="checkbox"
+                      id="terms"
+                      required
+                      className="mt-0.5 rounded text-blue-600 focus:ring-blue-500"
+                    />
+                    <label htmlFor="terms" className="cursor-pointer">
+                      I agree to the Terms of Service and Privacy Policy
+                    </label>
                   </div>
                 </motion.div>
 

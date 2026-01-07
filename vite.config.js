@@ -9,10 +9,11 @@ export default defineConfig({
   server: {
     port: 5170,
     proxy: {
-      "/api": {
-        target: "https://school-pilot-api.vercel.app",
+      '/api': {
+        target: 'https://school-pilot-api.vercel.app',
         changeOrigin: true,
-      },
-    },
-  },
+        secure: false,
+      }
+    }
+  }
 });

@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import { Lock, Key, Shield, CheckCircle, Eye, EyeOff } from "lucide-react";
 import Loader from "./Loader";
 import toast from "react-hot-toast";
-import { useAuth } from "../context/AuthContext";
 
 /* ================= Animations (REUSED) ================= */
 
@@ -60,9 +59,9 @@ const itemVariants = {
 
 const ChangePassAnimation = () => {
   const [formData, setFormData] = useState({
-    current_password: "",
+    old_password: "",
     new_password: "",
-    confirm_password: "",
+    confirm_new_password: "",
   });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -102,7 +101,7 @@ const ChangePassAnimation = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (formData.new_password !== formData.confirm_password) {
+    if (formData.new_password !== formData.confirm_new_password) {
       toast.error("New passwords do not match");
       return;
     }
@@ -114,7 +113,7 @@ const ChangePassAnimation = () => {
 
     setLoading(true);
 
-     const success = await changePassword({
+    const success = await changePassword({
       current_password: formData.current_password,
       new_password: formData.new_password,
     });
@@ -123,9 +122,9 @@ const ChangePassAnimation = () => {
 
     if (success) {
       setFormData({
-        current_password: '',
-        new_password: '',
-        confirm_password: '',
+        current_password: "",
+        new_password: "",
+        confirm_new_password: "",
       });
     }
   };
@@ -133,7 +132,7 @@ const ChangePassAnimation = () => {
   return (
     <div className="relative min-h-dvh flex items-center justify-center px-4 sm:px-6 overflow-hidden bg-gradient-to-br from-white-500 to-white">
       {/* Background blobs */}
-      <div className="absolute inset-0 overflow-hidden">
+      {/* <div className="absolute inset-0 overflow-hidden">
         <motion.div
           className="absolute -top-20 -right-20 w-48 sm:w-64 h-48 sm:h-64 bg-blue-400 sm:bg-blue-100 rounded-full opacity-20"
           variants={floatVariants}
@@ -154,7 +153,7 @@ const ChangePassAnimation = () => {
           variants={floatVariants}
           animate="slow"
         />
-      </div>
+      </div> */}
 
       {/* Floating labels */}
       <div className="hidden sm:block">
@@ -375,7 +374,7 @@ const ChangePassAnimation = () => {
                 <input
                   type={showPassword.confirm ? "text" : "password"}
                   name="confirm_password"
-                  value={formData.confirm_password}
+                  value={formData.confirm_new_password}
                   onChange={handleChange}
                   required
                   className="w-full bg-blue-50 px-10 py-2.5 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors"

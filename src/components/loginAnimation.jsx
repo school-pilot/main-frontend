@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Mail, Lock, Eye, EyeOff, User } from "lucide-react";
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Loader from "./Loader";
 
@@ -64,11 +64,11 @@ const LoginAnimation = () => {
   const [loading, setLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
 
-   const { login } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
-    const from = location.state?.from?.pathname || '/';
+  const from = location.state?.from?.pathname || "/";
 
   const handleChange = (e) => {
     setFormData({
@@ -84,14 +84,14 @@ const LoginAnimation = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    
-     const success = await login({
+
+    const success = await login({
       email: formData.email,
       password: formData.password,
     });
 
     setLoading(false);
-    
+
     if (success) {
       navigate(from, { replace: true });
     }
@@ -222,9 +222,11 @@ const LoginAnimation = () => {
               },
             }}
           >
-            <img   src="/logo.jpg"
-            alt="Company Logo"
-            className="w-20 h-20 object-contain drop-shadow-[0_10px_25px_rgba(59,130,246,0.35)]" />
+            <img
+              src="/logo.jpg"
+              alt="Company Logo"
+              className="w-20 h-20 object-contain drop-shadow-[0_10px_25px_rgba(59,130,246,0.35)]"
+            />
           </motion.div>
         </div>
 
@@ -272,7 +274,9 @@ const LoginAnimation = () => {
           </motion.div>
 
           <motion.div variants={itemVariants} className="lg:col-span-2">
-            <label className="text-sm font-medium text-gray-700">Password</label>
+            <label className="text-sm font-medium text-gray-700">
+              Password
+            </label>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
@@ -322,7 +326,7 @@ const LoginAnimation = () => {
               className="w-full py-3 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold shadow-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
             >
               {loading ? (
-               <Loader size='sm'/>
+                <Loader size="sm" />
               ) : (
                 <>
                   <Lock className="w-5 h-5" />
@@ -331,9 +335,6 @@ const LoginAnimation = () => {
               )}
             </button>
           </motion.div>
-
-          {/* for debugging */}
-          {console.log(`${formData.email} ${formData.password}`)}
         </motion.form>
 
         <p className="text-center text-sm mt-6">
