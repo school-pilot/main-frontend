@@ -27,20 +27,20 @@ function App() {
   useEffect(() => {
     // CORS check
     console.log("🌍 Checking CORS...");
-    fetch(`${API_URL}/api/accounts/register/`, {
+    fetch(`${API_URL}/api/accounts/register`, {
       method: "OPTIONS",
       mode: "cors",
     })
       .then((response) => {
         console.log("🌍 CORS Check:", {
-          url: `${API_URL}/api/accounts/register/`,
+          url: `${API_URL}`,
           status: response.status,
           ok: response.ok,
           headers: Object.fromEntries(response.headers.entries()),
         });
 
         // Also check if we can actually reach the API
-        return fetch(`${API_URL}/api/accounts/register/`, {
+        return fetch(`${API_URL}`, {
           method: "GET",
           mode: "cors",
         });
