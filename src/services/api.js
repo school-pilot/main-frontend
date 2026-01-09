@@ -151,7 +151,7 @@ export const studentsAPI = {
     api.post(`/api/students/${id}/promote/`),
   profile: (id) =>
     api.get(`/api/students/${id}/profile/`),
-  bulkUpload: (file) => {
+  bulkUpload: (file) => {z
     const formData = new FormData();
     formData.append("file", file);
     return api.post("/api/students/bulk-upload/", formData, {
