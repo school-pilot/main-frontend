@@ -119,7 +119,7 @@ const RegisterAnimation = () => {
       last_name: formData.last_name,
       email: formData.email,
       username: formData.username,
-      password1: formData.password1,
+      password: formData.password1,
       password2: formData.password2,
       role: formData.role || "student", // Default role if not selected
       school: formData.school || "", // Might need to be school_id instead
