@@ -13,9 +13,13 @@ const Dashboard = () => {
   }
 
   const renderDashboard = () => {
-    if (['super_admin', 'school_admin', 'admin'].includes(user?.role)) {
-      return <AdminDashboard />;
-    }
+    if (user?.role === 'super_admin') {
+  return <SuperAdminDashboard />;
+}
+
+if (['school_admin', 'admin'].includes(user?.role)) {
+  return <AdminDashboard />;
+}
     
     if (user?.role === 'teacher') {
       return <TeacherDashboard />;

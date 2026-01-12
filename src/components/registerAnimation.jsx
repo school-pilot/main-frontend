@@ -126,10 +126,10 @@ const RegisterAnimation = () => {
       last_name: formData.last_name,
       email: formData.email,
       username: formData.username,
-      password1: formData.password1,
+      password: formData.password1,
       password2: formData.password2,
-      role: formData.role || "student",
-      school_name: formData.school || "",
+      role: formData.role || "student", // Default role if not selected
+      school: formData.school || "", // Might need to be school_id instead
     };
 
     try {
@@ -414,6 +414,7 @@ const RegisterAnimation = () => {
                         <GraduationCap className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                         <select
                           name="role"
+                          Required
                           value={formData.role}
                           onChange={handleChange}
                           className="w-full bg-blue-50 px-10 py-2 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors text-sm appearance-none"
