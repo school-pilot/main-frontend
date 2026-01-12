@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import Loader from "./Loader";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from "../context/AuthContext";
 
 /* ================= Animations ================= */
 
@@ -100,18 +100,25 @@ const RegisterAnimation = () => {
 
     // Validate passwords match
     if (formData.password1 !== formData.password2) {
-      alert("Passwords do not match!");
+      toast.error("Passwords do not match!");
       return;
     }
 
     // Basic validation
-    if (!formData.first_name || !formData.last_name || !formData.email || 
-        !formData.username || !formData.password1 || !formData.password2) {
-      alert("Please fill in all required fields!");
+    if (
+      !formData.first_name ||
+      !formData.last_name ||
+      !formData.email ||
+      !formData.username ||
+      !formData.password1 ||
+      !formData.password2
+    ) {
+      toast.error("Please fill in all required fields!");
       return;
     }
 
     setLoading(true);
+    setSuccess(false); // Reset success state
 
     // Format data to match Django API expectations
     const userData = {
@@ -121,30 +128,57 @@ const RegisterAnimation = () => {
       username: formData.username,
       password1: formData.password1,
       password2: formData.password2,
-      role: formData.role || "student", // Default role if not selected
-      school_name: formData.school || "", // Might need to be school_id instead
+      role: formData.role || "student",
+      school_name: formData.school || "",
     };
 
     try {
-      const successful = await register(userData);
+      console.log("🔄 Sending registration request...");
+
+      // Call register and WAIT for response
+      const result = await register(userData);
+      console.log("📋 Registration result:", result);
+
       setLoading(false);
 
-      if (successful) {
+      // FIX: Only show success if backend actually succeeded
+      if (result && result.success) {
+        console.log("✅ Registration successful on backend");
         setSuccess(true);
-        // Navigate to login after 2 seconds
-        setTimeout(() => {
-          navigate("/login");
-        }, 2000);
+
+        // Show success message
+        toast.success(
+          result.hasTokens
+            ? "Registration successful! You are now logged in."
+            : "Registration successful! Please login."
+        );
+
+        // Only navigate if we have tokens (auto-login)
+        if (result.hasTokens) {
+          setTimeout(() => {
+            navigate("/");
+          }, 2000);
+        } else {
+          setTimeout(() => {
+            navigate("/login");
+          }, 2000);
+        }
       } else {
-        alert("Registration failed. Please try again.");
+        // Registration failed - show error
+        const errorMsg =
+          result?.error || "Registration failed. Please try again.";
+        console.error("❌ Registration failed:", errorMsg);
+        toast.error(errorMsg);
       }
     } catch (error) {
       setLoading(false);
-      alert("An error occurred. Please check your network connection.");
-      console.error("Registration error:", error);
+      console.error("🔥 Registration error caught:", error);
+      toast.error(
+        "An unexpected error occurred. Please check your network connection."
+      );
     }
   };
-
+  
   return (
     <div className="relative min-h-dvh flex items-center justify-center px-4 sm:px-6 py-8 overflow-hidden">
       {/* Floating labels */}
@@ -224,7 +258,7 @@ const RegisterAnimation = () => {
                   className="w-16 h-16 object-contain drop-shadow-[0_10px_25px_rgba(59,130,246,0.35)]"
                 />
               </motion.div>
-              
+
               <div className="text-center sm:text-left">
                 <motion.h2
                   className="text-xl sm:text-2xl font-bold text-gray-800"
@@ -255,7 +289,8 @@ const RegisterAnimation = () => {
                   Registration Successful!
                 </h3>
                 <p className="text-green-600 mt-1">
-                  Your account has been created successfully. Redirecting to login...
+                  Your account has been created successfully. Redirecting to
+                  login...
                 </p>
               </motion.div>
             ) : (
@@ -267,15 +302,12 @@ const RegisterAnimation = () => {
                 animate="visible"
               >
                 {/* Personal Information Section */}
-                <motion.div 
-                  className="space-y-4"
-                  variants={itemVariants}
-                >
+                <motion.div className="space-y-4" variants={itemVariants}>
                   <div className="flex items-center gap-2 text-gray-700 mb-2">
                     <User className="w-5 h-5" />
                     <h3 className="font-semibold">Personal Information</h3>
                   </div>
-                  
+
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {/* First Name */}
                     <div>
@@ -318,15 +350,12 @@ const RegisterAnimation = () => {
                 </motion.div>
 
                 {/* Account Information Section */}
-                <motion.div 
-                  className="space-y-4"
-                  variants={itemVariants}
-                >
+                <motion.div className="space-y-4" variants={itemVariants}>
                   <div className="flex items-center gap-2 text-gray-700 mb-2">
                     <UserCircle className="w-5 h-5" />
                     <h3 className="font-semibold">Account Information</h3>
                   </div>
-                  
+
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {/* Username */}
                     <div>
@@ -369,15 +398,12 @@ const RegisterAnimation = () => {
                 </motion.div>
 
                 {/* School Information Section */}
-                <motion.div 
-                  className="space-y-4"
-                  variants={itemVariants}
-                >
+                <motion.div className="space-y-4" variants={itemVariants}>
                   <div className="flex items-center gap-2 text-gray-700 mb-2">
                     <Building className="w-5 h-5" />
                     <h3 className="font-semibold">School Information</h3>
                   </div>
-                  
+
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {/* Role */}
                     <div>
@@ -421,15 +447,12 @@ const RegisterAnimation = () => {
                 </motion.div>
 
                 {/* Password Section */}
-                <motion.div 
-                  className="space-y-4"
-                  variants={itemVariants}
-                >
+                <motion.div className="space-y-4" variants={itemVariants}>
                   <div className="flex items-center gap-2 text-gray-700 mb-2">
                     <Lock className="w-5 h-5" />
                     <h3 className="font-semibold">Password</h3>
                   </div>
-                  
+
                   <div className="space-y-4">
                     {/* Password 1 */}
                     <div>
@@ -513,10 +536,7 @@ const RegisterAnimation = () => {
                 </motion.div>
 
                 {/* Terms and Conditions */}
-                <motion.div 
-                  className="pt-2"
-                  variants={itemVariants}
-                >
+                <motion.div className="pt-2" variants={itemVariants}>
                   <div className="flex items-start gap-2 text-sm text-gray-600">
                     <input
                       type="checkbox"
@@ -531,10 +551,7 @@ const RegisterAnimation = () => {
                 </motion.div>
 
                 {/* Submit Button */}
-                <motion.div 
-                  className="pt-4"
-                  variants={itemVariants}
-                >
+                <motion.div className="pt-4" variants={itemVariants}>
                   <button
                     type="submit"
                     disabled={loading}
@@ -561,7 +578,10 @@ const RegisterAnimation = () => {
           <div className="p-4 border-t border-gray-100 bg-gray-50/50">
             <p className="text-center text-sm text-gray-600">
               Already have an account?{" "}
-              <a href="/" className="text-blue-600 font-semibold hover:underline">
+              <a
+                href="/"
+                className="text-blue-600 font-semibold hover:underline"
+              >
                 Sign In
               </a>
             </p>
