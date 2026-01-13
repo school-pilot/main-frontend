@@ -75,7 +75,6 @@ const RegisterAnimation = () => {
     last_name: "",
     email: "",
     username: "",
-    school: "",
     password1: "",
     password2: "",
   });
@@ -128,7 +127,6 @@ const RegisterAnimation = () => {
       password: formData.password1,
       password2: formData.password2,
       role: "school_admin", // Set role to school_admin internally
-      school: formData.school || "", // Might need to be school_id instead
     };
 
     try {
@@ -392,32 +390,6 @@ const RegisterAnimation = () => {
                           placeholder="Enter email address"
                         />
                       </div>
-                    </div>
-                  </div>
-                </motion.div>
-
-                {/* School Information Section */}
-                <motion.div className="space-y-4" variants={itemVariants}>
-                  <div className="flex items-center gap-2 text-gray-700 mb-2">
-                    <Building className="w-5 h-5" />
-                    <h3 className="font-semibold">School Information</h3>
-                  </div>
-
-                  {/* School Name Input Only */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      School Name
-                    </label>
-                    <div className="relative">
-                      <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                      <input
-                        type="text"
-                        name="school"
-                        value={formData.school}
-                        onChange={handleChange}
-                        className="w-full bg-blue-50 px-10 py-2 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors text-sm"
-                        placeholder="Enter your school name"
-                      />
                     </div>
                   </div>
                 </motion.div>
