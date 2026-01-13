@@ -104,7 +104,7 @@ import {
   Delete as DeleteIcon,
   MarkEmailRead as MarkEmailReadIcon,
 } from '@mui/icons-material';
-import { communicationsAPI } from '../services/api';
+import { communicationsAPI } from '../../services/api.js';
 import toast from 'react-hot-toast';
 
 const Notifications = () => {

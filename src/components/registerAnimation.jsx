@@ -75,7 +75,6 @@ const RegisterAnimation = () => {
     last_name: "",
     email: "",
     username: "",
-    role: "",
     school: "",
     password1: "",
     password2: "",
@@ -128,7 +127,7 @@ const RegisterAnimation = () => {
       username: formData.username,
       password: formData.password1,
       password2: formData.password2,
-      role: formData.role || "student", // Default role if not selected
+      role: "school_admin", // Set role to school_admin internally
       school: formData.school || "", // Might need to be school_id instead
     };
 
@@ -178,7 +177,7 @@ const RegisterAnimation = () => {
       );
     }
   };
-  
+
   return (
     <div className="relative min-h-dvh flex items-center justify-center px-4 sm:px-6 py-8 overflow-hidden">
       {/* Floating labels */}
@@ -404,45 +403,21 @@ const RegisterAnimation = () => {
                     <h3 className="font-semibold">School Information</h3>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {/* Role */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Role
-                      </label>
-                      <div className="relative">
-                        <GraduationCap className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                        <select
-                          name="role"
-                          Required
-                          value={formData.role}
-                          onChange={handleChange}
-                          className="w-full bg-blue-50 px-10 py-2 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors text-sm appearance-none"
-                        >
-                          <option value="">Select role</option>
-                          <option value="student">Student</option>
-                          <option value="teacher">Teacher</option>
-                          <option value="admin">Admin</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    {/* School */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        School
-                      </label>
-                      <div className="relative">
-                        <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                        <input
-                          type="text"
-                          name="school"
-                          value={formData.school}
-                          onChange={handleChange}
-                          className="w-full bg-blue-50 px-10 py-2 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors text-sm"
-                          placeholder="Enter school name (optional)"
-                        />
-                      </div>
+                  {/* School Name Input Only */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      School Name
+                    </label>
+                    <div className="relative">
+                      <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                      <input
+                        type="text"
+                        name="school"
+                        value={formData.school}
+                        onChange={handleChange}
+                        className="w-full bg-blue-50 px-10 py-2 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors text-sm"
+                        placeholder="Enter your school name"
+                      />
                     </div>
                   </div>
                 </motion.div>

@@ -67,3 +67,51 @@ export const debounce = (func, wait) => {
 export const generateId = () => {
   return '_' + Math.random().toString(36).substr(2, 9);
 };
+
+export const checkAuthStatus = async () => {
+  const token = localStorage.getItem('access_token');
+  const savedProfile = localStorage.getItem('user_profile');
+  
+  if (!token) {
+    setLoading(false);
+    return;
+  }
+
+  try {
+    // Try to restore from saved profile first
+    if (savedProfile) {
+      const profile = JSON.parse(savedProfile);
+      setUser(profile);
+      setIsAuthenticated(true);
+      setLoading(false);
+      return;
+    }
+    
+    // Decode token to get user_id
+    const tokenParts = token.split('.');
+    if (tokenParts.length === 3) {
+      const payload = JSON.parse(atob(tokenParts[1]));
+      const userId = payload.user_id;
+      
+      // Fetch user profile
+      const userResponse = await accountsAPI.getUser(userId);
+      const userProfile = userResponse.data;
+      
+      if (userProfile) {
+        // Ensure role is set
+        if (!userProfile.role && userProfile.email) {
+          userProfile.role = inferRoleFromEmail(userProfile.email);
+        }
+        
+        setUser(userProfile);
+        setIsAuthenticated(true);
+        localStorage.setItem('user_profile', JSON.stringify(userProfile));
+      }
+    }
+  } catch (error) {
+    console.error('Auth check failed:', error);
+    localStorage.clear();
+  } finally {
+    setLoading(false);
+  }
+};

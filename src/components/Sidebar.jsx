@@ -1,6 +1,6 @@
-import { motion } from 'framer-motion';
-import { NavLink } from 'react-router-dom';
-import { 
+import { motion } from "framer-motion";
+import { NavLink } from "react-router-dom";
+import {
   LayoutDashboard,
   Users,
   BookOpen,
@@ -14,76 +14,88 @@ import {
   School,
   UserCircle,
   GraduationCap,
-  ClipboardCheck
-} from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
-import { useState } from 'react';
+  ClipboardCheck,
+} from "lucide-react";
+import { useAuth } from "../context/AuthContext";
+import { useState } from "react";
 
 const Sidebar = ({ isOpen, onClose }) => {
   const { user } = useAuth();
   const [expandedMenus, setExpandedMenus] = useState({});
 
   const toggleMenu = (menu) => {
-    setExpandedMenus(prev => ({
+    setExpandedMenus((prev) => ({
       ...prev,
-      [menu]: !prev[menu]
+      [menu]: !prev[menu],
     }));
   };
 
   const baseNavItems = [
-    { path: '/', icon: LayoutDashboard, label: 'Dashboard' },
-    { path: '/notifications', icon: Bell, label: 'Notifications' },
+    { path: "/", icon: LayoutDashboard, label: "Dashboard" },
+    { path: "/notifications", icon: Bell, label: "Notifications" },
   ];
 
   const adminNavItems = [
-    { path: '/admin/students', icon: Users, label: 'Students' },
-    { path: '/admin/teachers', icon: UserCircle, label: 'Teachers' },
-    { path: '/admin/fees', icon: CreditCard, label: 'Fees' },
-    { path: '/admin/timetable', icon: Clock, label: 'Timetable' },
-    { path: '/admin/reports', icon: BarChart3, label: 'Reports' },
+    { path: "/admin/students", icon: Users, label: "Students" },
+    { path: "/admin/teachers", icon: UserCircle, label: "Teachers" },
+    { path: "/admin/fees", icon: CreditCard, label: "Fees" },
+    { path: "/admin/timetable", icon: Clock, label: "Timetable" },
+    { path: "/admin/reports", icon: BarChart3, label: "Reports" },
   ];
 
   const teacherNavItems = [
-    { path: '/teacher/attendance', icon: ClipboardCheck, label: 'Attendance' },
-    { path: '/teacher/scores', icon: BookOpen, label: 'Enter Scores' },
-    { path: '/teacher/classes', icon: School, label: 'My Classes' },
-    { path: '/teacher/timetable', icon: Clock, label: 'My Timetable' },
+    { path: "/teacher/attendance", icon: ClipboardCheck, label: "Attendance" },
+    { path: "/teacher/scores", icon: BookOpen, label: "Enter Scores" },
+    { path: "/teacher/classes", icon: School, label: "My Classes" },
+    { path: "/teacher/timetable", icon: Clock, label: "My Timetable" },
   ];
 
   const studentNavItems = [
-    { path: '/student/results', icon: FileText, label: 'My Results' },
-    { path: '/student/timetable', icon: Clock, label: 'Timetable' },
-    { path: '/student/profile', icon: UserCircle, label: 'Profile' },
+    { path: "/student/results", icon: FileText, label: "My Results" },
+    { path: "/student/timetable", icon: Clock, label: "Timetable" },
+    { path: "/student/profile", icon: UserCircle, label: "Profile" },
+  ];
+
+  const superAdminNavItems = [
+    { path: "/super-admin/schools", icon: School, label: "Schools" },
+    { path: "/super-admin/admins", icon: Users, label: "Admins" },
+    { path: "/super-admin/settings", icon: Settings, label: "System Settings" },
   ];
 
   const academicNavItems = [
-    { path: '/academics/classes', icon: School, label: 'Classes' },
-    { path: '/academics/subjects', icon: BookOpen, label: 'Subjects' },
-    { path: '/academics/calendar', icon: Calendar, label: 'Calendar' },
+    { path: "/academics/classes", icon: School, label: "Classes" },
+    { path: "/academics/subjects", icon: BookOpen, label: "Subjects" },
+    { path: "/academics/calendar", icon: Calendar, label: "Calendar" },
   ];
 
   const getNavItems = () => {
     let items = [...baseNavItems];
-    
-    if (user?.role === 'super_admin' || user?.role === 'school_admin' || user?.role === 'admin') {
+
+    if (user?.role === "super_admin") {
+      items = [...items, ...superAdminNavItems];
+    }
+
+    if (user?.role === "school_admin" || user?.role === "admin") {
       items = [...items, ...adminNavItems];
     }
-    
-    if (user?.role === 'teacher') {
+
+    if (user?.role === "teacher") {
       items = [...items, ...teacherNavItems];
     }
-    
-    if (user?.role === 'student') {
+
+    if (user?.role === "student") {
       items = [...items, ...studentNavItems];
     }
 
     // Add academics for appropriate roles
-    if (['admin', 'teacher', 'super_admin', 'school_admin'].includes(user?.role)) {
+    if (
+      ["admin", "teacher", "super_admin", "school_admin"].includes(user?.role)
+    ) {
       items.push({
-        path: '#',
+        path: "#",
         icon: GraduationCap,
-        label: 'Academics',
-        children: academicNavItems
+        label: "Academics",
+        children: academicNavItems,
       });
     }
 
@@ -111,17 +123,22 @@ const Sidebar = ({ isOpen, onClose }) => {
               stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
             </motion.svg>
           </button>
-          
+
           {expandedMenus[item.label] && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
+              animate={{ opacity: 1, height: "auto" }}
               className="ml-8 space-y-1"
             >
-              {item.children.map(child => (
+              {item.children.map((child) => (
                 <NavLink
                   key={child.path}
                   to={child.path}
@@ -129,8 +146,8 @@ const Sidebar = ({ isOpen, onClose }) => {
                   className={({ isActive }) =>
                     `flex items-center space-x-3 p-2 rounded-lg text-sm ${
                       isActive
-                        ? 'bg-primary-50 text-primary-600'
-                        : 'text-gray-600 hover:bg-gray-100'
+                        ? "bg-primary-50 text-primary-600"
+                        : "text-gray-600 hover:bg-gray-100"
                     }`
                   }
                 >
@@ -152,8 +169,8 @@ const Sidebar = ({ isOpen, onClose }) => {
         className={({ isActive }) =>
           `flex items-center space-x-3 p-3 rounded-lg ${
             isActive
-              ? 'bg-primary-50 text-primary-600'
-              : 'text-gray-700 hover:bg-gray-100'
+              ? "bg-primary-50 text-primary-600"
+              : "text-gray-700 hover:bg-gray-100"
           }`
         }
       >
@@ -178,9 +195,11 @@ const Sidebar = ({ isOpen, onClose }) => {
         initial={false}
         animate={{
           x: isOpen ? 0 : -280,
-          opacity: isOpen ? 1 : 0
         }}
-        className="fixed lg:static inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-200 flex flex-col lg:translate-x-0"
+        className="
+    fixed inset-y-0 left-0 z-40 w-64 bg-white border-r
+    lg:static lg:translate-x-0
+  "
       >
         {/* Logo */}
         <div className="p-6 border-b border-gray-200">
