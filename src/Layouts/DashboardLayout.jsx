@@ -62,7 +62,7 @@ const DashboardLayout = () => {
           { text: 'Create School', icon: <SchoolIcon />, path: '/super-admin/create-school' },
           { text: 'Activate Accounts', icon: <AccountCircleIcon />, path: '/super-admin/activate-accounts' },
           { text: 'Audit Logs', icon: <HistoryIcon />, path: '/super-admin/audit-logs' },
-          { text: 'Settings', icon: <SettingsIcon />, path: '/settings' },
+          { text: 'Settings', icon: <SettingsIcon />, path: '/super-admin/settings' },
         ];
       case 'school_admin':
         return [
@@ -70,7 +70,7 @@ const DashboardLayout = () => {
           { text: 'Create Teacher', icon: <PeopleIcon />, path: '/school-admin/create-teacher' },
           { text: 'Create Student', icon: <PeopleIcon />, path: '/school-admin/create-student' },
           { text: 'Create Parent', icon: <PeopleIcon />, path: '/school-admin/create-parent' },
-          { text: 'School Settings', icon: <SchoolIcon />, path: '/school-admin/settings' },
+          { text: 'School Settings', icon: <SchoolIcon />, path: '/school-admin/school-settings' },
           { text: 'Manage Classes', icon: <SchoolIcon />, path: '/school-admin/classes' },
           { text: 'Manage Sessions', icon: <CalendarIcon />, path: '/school-admin/sessions' },
           { text: 'Reports', icon: <AssessmentIcon />, path: '/school-admin/reports' },

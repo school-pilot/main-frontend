@@ -1,121 +1,69 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import { Toaster } from "react-hot-toast";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
+import { useAuth } from "../context/AuthContext";
 
-import { AuthProvider, useAuth } from "../context/AuthContext";
-import PrivateRoute from "../routes/PrivateRoute";
+/* Guards */
 import RequireAuth from "../components/RequireAuth";
 import RequireRole from "../components/RequireRole";
 
+/* Layouts */
 import DashboardLayout from "../Layouts/DashboardLayout";
 import AuthLayout from "../Layouts/AuthLayout";
 
-// Auth Pages
+/* Public Pages */
+import Landing from "../components/Landing";
+import NotFound from "../pages/NotFound";
+
+/* Auth Pages */
 import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
 import ChangePassword from "../pages/auth/ChangePassword";
 
-// Main Pages
+/* Shared Pages */
 import Dashboard from "../pages/Dashboard";
 import NotificationsPage from "../pages/NotificationsPage";
-import NotFound from "../pages/NotFound";
-import Landing from "../components/Landing";
 
-// Super Admin Components
+/* Super Admin */
 import SuperAdminDashboard from "../dashboards/superAdmin/SuperAdminDashboard";
 import CreateSchool from "../dashboards/superAdmin/CreateSchool";
 import ActivateAccounts from "../dashboards/superAdmin/ActivateAccounts";
 import AuditLogs from "../dashboards/superAdmin/AuditLogs";
+import SuperAdminSettings from "../dashboards/superAdmin/SuperAdminSettings";
 
-// School Admin Components
+/* School Admin */
 import SchoolAdminDashboard from "../dashboards/admin/SchoolAdminDashboard";
 import CreateTeacher from "../dashboards/admin/Teachers";
 import CreateStudent from "../dashboards/admin/Students";
 import CreateParent from "../dashboards/admin/CreateParent";
 import SchoolSettings from "../dashboards/admin/SchoolSetting";
 
-// Admin Pages (Original)
+/* Admin (Legacy) */
 import Students from "../dashboards/admin/Students";
 import Teachers from "../dashboards/admin/Teachers";
 import Fees from "../dashboards/admin/Fees";
 import Reports from "../dashboards/admin/Reports";
 import TimetableAdmin from "../dashboards/admin/TimetableAdmin";
 
-// Teacher Pages
+/* Teacher */
 import TeacherDashboard from "../dashboards/teacher/TeacherDashboard";
-import EnterScores from "../dashboards/teacher/EnterScores";
-import TeacherTimetable from "../dashboards/teacher/TeacherTimetable";
 import Attendance from "../dashboards/teacher/Attendance";
+import EnterScores from "../dashboards/teacher/EnterScores";
 import MyClasses from "../dashboards/teacher/MyClasses";
+import TeacherTimetable from "../dashboards/teacher/TeacherTimetable";
 
-// Student Pages
+/* Student */
 import StudentDashboard from "../dashboards/student/StudentDashboard";
 import MyResults from "../dashboards/student/MyResults";
 import Timetable from "../dashboards/student/Timetable";
 import Profile from "../dashboards/student/Profile";
 import Notifications from "../dashboards/student/Notifications";
-import SuperAdminSettings from "../dashboards/superAdmin/SuperAdminSettings";
-
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: "#1976d2",
-    },
-    secondary: {
-      main: "#dc004e",
-    },
-    background: {
-      default: "#f5f5f5",
-    },
-  },
-  typography: {
-    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-    h4: {
-      fontWeight: 600,
-    },
-    h5: {
-      fontWeight: 600,
-    },
-    h6: {
-      fontWeight: 600,
-    },
-  },
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          textTransform: "none",
-          borderRadius: 8,
-        },
-      },
-    },
-    MuiCard: {
-      styleOverrides: {
-        root: {
-          borderRadius: 12,
-          boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-        },
-      },
-    },
-    MuiPaper: {
-      styleOverrides: {
-        root: {
-          borderRadius: 12,
-        },
-      },
-    },
-  },
-});
 
 const AppRoutes = () => {
   const { isAuthenticated, user } = useAuth();
 
   const getDefaultRoute = () => {
-    if (!isAuthenticated) return "/";
-    if (!user) return "/";
+    if (!isAuthenticated || !user) return "/";
 
-    switch (user.role?.toLowerCase()) {
+    switch (user.role) {
       case "super_admin":
         return "/super-admin";
       case "school_admin":
@@ -133,121 +81,105 @@ const AppRoutes = () => {
 
   return (
     <Routes>
-      {/* Public Routes */}
-      <Route path="/" element={!isAuthenticated ? <Landing /> : <Navigate to={getDefaultRoute()} />} />
+      {/* ================= PUBLIC ================= */}
+      <Route
+        path="/"
+        element={
+          !isAuthenticated ? (
+            <Landing />
+          ) : (
+            <Navigate to={getDefaultRoute()} replace />
+          )
+        }
+      />
 
-      {/* Auth Routes */}
+      {/* ================= AUTH ================= */}
       <Route element={<AuthLayout />}>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
       </Route>
 
-      {/* Protected Routes - Using DashboardLayout */}
-      <Route
-        path="/"
-        element={
-          <RequireAuth>
-            <DashboardLayout />
-          </RequireAuth>
-        }
-      >
-        <Route index element={<Dashboard />} />
-        <Route path="notifications" element={<NotificationsPage />} />
-        <Route path="/change-password" element={<ChangePassword />} />
+      {/* ================= PROTECTED ================= */}
+      <Route element={<RequireAuth />}>
+        <Route element={<DashboardLayout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="notifications" element={<NotificationsPage />} />
+          <Route path="change-password" element={<ChangePassword />} />
 
-        {/* Super Admin Routes */}
-        <Route
-          path="super-admin"
-          element={
-            <RequireRole allowedRoles={["super_admin"]} />
-          }
-        >
-          <Route index element={<SuperAdminDashboard />} />
-          <Route path="create-school" element={<CreateSchool />} />
-          <Route path="activate-accounts" element={<ActivateAccounts />} />
-          <Route path="audit-logs" element={<AuditLogs />} />
-          <Route path="settings" element={<SuperAdminSettings />} />
-        </Route>
+          {/* ===== SUPER ADMIN ===== */}
+          <Route element={<RequireRole allowedRoles={["super_admin"]} />}>
+            <Route path="super-admin">
+              <Route index element={<SuperAdminDashboard />} />
+              <Route path="create-school" element={<CreateSchool />} />
+              <Route path="activate-accounts" element={<ActivateAccounts />} />
+              <Route path="audit-logs" element={<AuditLogs />} />
+              <Route path="settings" element={<SuperAdminSettings />} />
+            </Route>
+          </Route>
 
-        {/* School Admin Routes */}
-        <Route
-          path="school-admin"
-          element={
-            <RequireRole allowedRoles={["school_admin"]} />
-          }
-        >
-          <Route index element={<SchoolAdminDashboard />} />
-          <Route path="create-teacher" element={<CreateTeacher />} />
-          <Route path="create-student" element={<CreateStudent />} />
-          <Route path="create-parent" element={<CreateParent />} />
-          <Route path="settings" element={<SchoolSettings />} />
-        </Route>
+          {/* ===== SCHOOL ADMIN ===== */}
+          <Route element={<RequireRole allowedRoles={["school_admin"]} />}>
+            <Route path="school-admin">
+              <Route index element={<SchoolAdminDashboard />} />
+              <Route path="create-teacher" element={<CreateTeacher />} />
+              <Route path="create-student" element={<CreateStudent />} />
+              <Route path="create-parent" element={<CreateParent />} />
+              <Route path="school-settings" element={<SchoolSettings />} />
+            </Route>
+          </Route>
 
-        {/* Admin Routes (Original) */}
-        <Route
-          path="admin"
-          element={
-            <RequireRole allowedRoles={["super_admin", "school_admin", "admin"]} />
-          }
-        >
-          <Route path="students" element={<Students />} />
-          <Route path="teachers" element={<Teachers />} />
-          <Route path="fees" element={<Fees />} />
-          <Route path="reports" element={<Reports />} />
-          <Route path="timetable" element={<TimetableAdmin />} />
-        </Route>
+          {/* ===== ADMIN (LEGACY) ===== */}
+          <Route
+            element={
+              <RequireRole
+                allowedRoles={["super_admin", "school_admin", "admin"]}
+              />
+            }
+          >
+            <Route path="admin">
+              <Route path="students" element={<Students />} />
+              <Route path="teachers" element={<Teachers />} />
+              <Route path="fees" element={<Fees />} />
+              <Route path="reports" element={<Reports />} />
+              <Route path="timetable" element={<TimetableAdmin />} />
+            </Route>
+          </Route>
 
-        {/* Teacher Routes */}
-        <Route
-          path="teacher"
-          element={<RequireRole allowedRoles={["teacher"]} />}
-        >
-          <Route index element={<TeacherDashboard />} />
-          <Route path="attendance" element={<Attendance />} />
-        
-     
-          <Route path="enter-scores" element={<EnterScores />} />
-          <Route path="classes" element={<MyClasses />} />
-          <Route path="timetable" element={<TeacherTimetable />} />
-        </Route>
+          {/* ===== TEACHER ===== */}
+          <Route element={<RequireRole allowedRoles={["teacher"]} />}>
+            <Route path="teacher">
+              <Route index element={<TeacherDashboard />} />
+              <Route path="attendance" element={<Attendance />} />
+              <Route path="enter-scores" element={<EnterScores />} />
+              <Route path="classes" element={<MyClasses />} />
+              <Route path="timetable" element={<TeacherTimetable />} />
+            </Route>
+          </Route>
 
-        {/* Student Routes */}
-        <Route
-          path="student"
-          element={<RequireRole allowedRoles={["student"]} />}
-        >
-          <Route index element={<StudentDashboard />} />
-          <Route path="results" element={<MyResults />} />
-          <Route path="timetable" element={<Timetable />} />
-          <Route path="profile" element={<Profile />} />
-          <Route path="notifications" element={<Notifications />} />
-        </Route>
+          {/* ===== STUDENT ===== */}
+          <Route element={<RequireRole allowedRoles={["student"]} />}>
+            <Route path="student">
+              <Route index element={<StudentDashboard />} />
+              <Route path="results" element={<MyResults />} />
+              <Route path="timetable" element={<Timetable />} />
+              <Route path="profile" element={<Profile />} />
+              <Route path="notifications" element={<Notifications />} />
+            </Route>
+          </Route>
 
-        {/* Parent Routes */}
-        <Route
-          path="parent"
-          element={<RequireRole allowedRoles={["parent"]} />}
-        >
-          <Route index element={<StudentDashboard />} />
+          {/* ===== PARENT ===== */}
+          <Route element={<RequireRole allowedRoles={["parent"]} />}>
+            <Route path="parent">
+              <Route index element={<StudentDashboard />} />
+            </Route>
+          </Route>
         </Route>
       </Route>
 
-      {/* Catch all route */}
+      {/* ================= FALLBACK ================= */}
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };
 
-const App = () => {
-  return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <AuthProvider>
-        <Toaster position="top-right" />
-        <AppRoutes />
-      </AuthProvider>
-    </ThemeProvider>
-  );
-};
-
-export default App;
+export default AppRoutes;
