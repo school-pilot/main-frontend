@@ -6,7 +6,6 @@ import {
   TextField,
   Button,
   Grid,
-  MenuItem,
   Alert,
 } from '@mui/material';
 import { schoolsAPI } from '../../services/api';
@@ -15,18 +14,18 @@ import toast from 'react-hot-toast';
 const CreateSchool = () => {
   const [formData, setFormData] = useState({
     name: '',
+    logo: '',
     email: '',
     address: '',
     phone: '',
-    website: '',
-    type: 'private',
-    established_year: new Date().getFullYear(),
-    max_students: 1000,
-    subscription_plan: 'basic',
+    registration_number: '',
+    motto: '',
   });
+
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
+  /* ================= Handle Change ================= */
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -34,59 +33,71 @@ const CreateSchool = () => {
     });
   };
 
+  /* ================= Validation ================= */
   const validate = () => {
     const newErrors = {};
-    
+
     if (!formData.name.trim()) newErrors.name = 'School name is required';
+    if (!formData.logo.trim()) newErrors.logo = 'School logo URL is required';
     if (!formData.email.trim()) newErrors.email = 'Email is required';
     if (!formData.address.trim()) newErrors.address = 'Address is required';
     if (!formData.phone.trim()) newErrors.phone = 'Phone number is required';
-    
+    if (!formData.registration_number.trim())
+      newErrors.registration_number = 'Registration number is required';
+    if (!formData.motto.trim()) newErrors.motto = 'School motto is required';
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
+  /* ================= Submit ================= */
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validate()) return;
-    
+
     setLoading(true);
-    
     try {
       await schoolsAPI.create(formData);
-      toast.success('School created successfully!');
+
+      toast.success('School created successfully');
+
       setFormData({
         name: '',
+        logo: '',
         email: '',
         address: '',
         phone: '',
-        website: '',
-        type: 'private',
-        established_year: new Date().getFullYear(),
-        max_students: 1000,
-        subscription_plan: 'basic',
+        registration_number: '',
+        motto: '',
       });
     } catch (error) {
-      console.error("CREATE SCHOOL ERROR:", error.response?.data || error.message);
-  toast.error(
-    error.response?.data?.message || "Failed to create school"
-  ); 
+      console.error(
+        'CREATE SCHOOL ERROR:',
+        error.response?.data || error.message
+      );
+
+      toast.error(
+        error.response?.data?.detail ||
+          error.response?.data?.message ||
+          'Failed to create school'
+      );
     } finally {
       setLoading(false);
     }
   };
 
+  /* ================= UI ================= */
   return (
     <Paper sx={{ p: 3, maxWidth: 800, mx: 'auto' }}>
       <Typography variant="h5" gutterBottom>
         Create New School
       </Typography>
-      
+
       <Alert severity="info" sx={{ mb: 3 }}>
-        This form is for creating new schools in the system. Only super admins can create schools.
+        Only super admins can create schools.
       </Alert>
-      
+
       <Box component="form" onSubmit={handleSubmit}>
         <Grid container spacing={3}>
           <Grid item xs={12} md={6}>
@@ -98,10 +109,21 @@ const CreateSchool = () => {
               onChange={handleChange}
               error={!!errors.name}
               helperText={errors.name}
-              required
             />
           </Grid>
-          
+
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              label="School Logo URL *"
+              name="logo"
+              value={formData.logo}
+              onChange={handleChange}
+              error={!!errors.logo}
+              helperText={errors.logo}
+            />
+          </Grid>
+
           <Grid item xs={12} md={6}>
             <TextField
               fullWidth
@@ -112,10 +134,9 @@ const CreateSchool = () => {
               onChange={handleChange}
               error={!!errors.email}
               helperText={errors.email}
-              required
             />
           </Grid>
-          
+
           <Grid item xs={12} md={6}>
             <TextField
               fullWidth
@@ -125,20 +146,9 @@ const CreateSchool = () => {
               onChange={handleChange}
               error={!!errors.phone}
               helperText={errors.phone}
-              required
             />
           </Grid>
-          
-          <Grid item xs={12} md={6}>
-            <TextField
-              fullWidth
-              label="Website"
-              name="website"
-              value={formData.website}
-              onChange={handleChange}
-            />
-          </Grid>
-          
+
           <Grid item xs={12}>
             <TextField
               fullWidth
@@ -150,79 +160,39 @@ const CreateSchool = () => {
               onChange={handleChange}
               error={!!errors.address}
               helperText={errors.address}
-              required
             />
           </Grid>
-          
-          <Grid item xs={12} md={6}>
-            <TextField
-              select
-              fullWidth
-              label="School Type"
-              name="type"
-              value={formData.type}
-              onChange={handleChange}
-            >
-              <MenuItem value="private">Private</MenuItem>
-              <MenuItem value="public">Public</MenuItem>
-              <MenuItem value="international">International</MenuItem>
-              <MenuItem value="boarding">Boarding</MenuItem>
-              <MenuItem value="day">Day School</MenuItem>
-            </TextField>
-          </Grid>
-          
+
           <Grid item xs={12} md={6}>
             <TextField
               fullWidth
-              label="Established Year"
-              name="established_year"
-              type="number"
-              value={formData.established_year}
+              label="Registration Number *"
+              name="registration_number"
+              value={formData.registration_number}
               onChange={handleChange}
-              InputProps={{ inputProps: { min: 1900, max: new Date().getFullYear() } }}
+              error={!!errors.registration_number}
+              helperText={errors.registration_number}
             />
           </Grid>
-          
+
           <Grid item xs={12} md={6}>
             <TextField
               fullWidth
-              label="Maximum Students"
-              name="max_students"
-              type="number"
-              value={formData.max_students}
+              label="School Motto *"
+              name="motto"
+              value={formData.motto}
               onChange={handleChange}
+              error={!!errors.motto}
+              helperText={errors.motto}
             />
-          </Grid>
-          
-          <Grid item xs={12} md={6}>
-            <TextField
-              select
-              fullWidth
-              label="Subscription Plan"
-              name="subscription_plan"
-              value={formData.subscription_plan}
-              onChange={handleChange}
-            >
-              <MenuItem value="basic">Basic (Free)</MenuItem>
-              <MenuItem value="standard">Standard</MenuItem>
-              <MenuItem value="premium">Premium</MenuItem>
-              <MenuItem value="enterprise">Enterprise</MenuItem>
-            </TextField>
           </Grid>
         </Grid>
-        
+
         <Box sx={{ mt: 3, display: 'flex', gap: 2 }}>
-          <Button
-            type="submit"
-            variant="contained"
-            disabled={loading}
-          >
+          <Button type="submit" variant="contained" disabled={loading}>
             {loading ? 'Creating...' : 'Create School'}
           </Button>
-          <Button
-            variant="outlined"
-            onClick={() => window.history.back()}
-          >
+          <Button variant="outlined" onClick={() => window.history.back()}>
             Cancel
           </Button>
         </Box>
