@@ -56,6 +56,7 @@ import MyResults from "../dashboards/student/MyResults";
 import Timetable from "../dashboards/student/Timetable";
 import Profile from "../dashboards/student/Profile";
 import Notifications from "../dashboards/student/Notifications";
+import Home from "../pages/Home";
 
 const AppRoutes = () => {
   const { isAuthenticated, user } = useAuth();
@@ -83,18 +84,22 @@ const AppRoutes = () => {
     <Routes>
       {/* ================= PUBLIC ================= */}
       <Route
+        index
         path="/"
         element={
           !isAuthenticated ? (
-            <Landing />
+            <Home />
           ) : (
             <Navigate to={getDefaultRoute()} replace />
           )
         }
       />
 
+
+
       {/* ================= AUTH ================= */}
       <Route element={<AuthLayout />}>
+
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
       </Route>
