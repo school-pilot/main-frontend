@@ -95,8 +95,8 @@ export const authAPI = {
     api.post("/api/accounts/users/change-password/", data),
   getUsers: () => api.get("/api/accounts/users/"),
   getUser: (id) => api.get(`/api/accounts/users/${id}/`),
-  updateUser: (id, data) =>
-    api.patch(`/api/accounts/users/${id}/update/`, data),
+  updateUser: (userId, data) =>
+    api.patch(`/api/accounts/users/${userId}/update/`, data),
   getUserProfile: (userId) => API.get(`/api/accounts/users/${userId}/profile/`),
 };
 

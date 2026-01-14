@@ -621,13 +621,13 @@ const UserModal = ({ user, onClose, onSubmit }) => {
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+                className="px-4 py-2 bg-red-500 text-white hover:bg-gray-100 rounded-lg"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+                className="px-4 py-2 bg-primary-600 bg-blue-500 text-white rounded-lg hover:bg-primary-700"
               >
                 {user?.id ? 'Update User' : 'Add User'}
               </button>
