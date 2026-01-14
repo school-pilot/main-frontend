@@ -11,8 +11,8 @@ import {
 } from 'lucide-react';
 import { authAPI } from '../../services/api';
 import toast from 'react-hot-toast';
-import Loader from './Loader';
-import Pagination from './Pagination';
+import Loader from '../../components/Loader';
+import Pagination from '../../components/Pagination';
 
 const ActivateAccounts = () => {
   const [users, setUsers] = useState([]);
