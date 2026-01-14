@@ -2,209 +2,128 @@ import { useState } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { Toaster } from 'react-hot-toast';
-import {
-  Box,
-  Drawer,
-  List,
-  Typography,
-  Divider,
-  IconButton,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  useTheme,
-  useMediaQuery,
-} from '@mui/material';
-import {
-  Menu as MenuIcon,
-  Dashboard as DashboardIcon,
-  School as SchoolIcon,
-  People as PeopleIcon,
-  AccountCircle as AccountCircleIcon,
-  Settings as SettingsIcon,
-  Assessment as AssessmentIcon,
-  History as HistoryIcon,
-  Logout as LogoutIcon,
-  ChevronLeft as ChevronLeftIcon,
-  CalendarToday as CalendarIcon,
-  Notifications as NotificationsIcon,
-  Book as BookIcon,
-  Payment as PaymentIcon,
-} from '@mui/icons-material';
 import { useAuth } from '../context/AuthContext';
-
-const drawerWidth = 240;
+import {
+  LayoutDashboard,
+  School,
+  Users,
+  User,
+  Settings,
+  BarChart3,
+  History,
+  LogOut,
+  ChevronLeft,
+  ChevronRight,
+  Calendar,
+  Bell,
+  BookOpen,
+  CreditCard,
+  Home,
+  Shield,
+  UserPlus,
+  GraduationCap,
+  ClipboardCheck,
+  FileText,
+  Clock,
+  Building,
+  Mail,
+  Phone,
+  MapPin,
+  Award,
+  TrendingUp,
+  Package,
+  Layers,
+  HelpCircle,
+} from 'lucide-react';
 
 const DashboardLayout = () => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
 
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
-
   const getMenuItems = () => {
     if (!user) return [];
-    
+
     const baseItems = [
-      { text: 'Dashboard', icon: <DashboardIcon />, path: '/' },
+      { text: 'Dashboard', icon: LayoutDashboard, path: '/' },
+      { text: 'Notifications', icon: Bell, path: '/notifications' },
     ];
 
     switch (user.role?.toLowerCase()) {
       case 'super_admin':
         return [
           ...baseItems,
-          { text: 'Create School', icon: <SchoolIcon />, path: '/super-admin/create-school' },
-          { text: 'Activate Accounts', icon: <AccountCircleIcon />, path: '/super-admin/activate-accounts' },
-          { text: 'Audit Logs', icon: <HistoryIcon />, path: '/super-admin/audit-logs' },
-          { text: 'Settings', icon: <SettingsIcon />, path: '/super-admin/settings' },
+          { text: 'Create School', icon: Building, path: '/super-admin/create-school' },
+          { text: 'Activate Accounts', icon: Shield, path: '/super-admin/activate-accounts' },
+          { text: 'Audit Logs', icon: History, path: '/super-admin/audit-logs' },
+          { text: 'System Settings', icon: Settings, path: '/super-admin/settings' },
         ];
       case 'school_admin':
         return [
           ...baseItems,
-          { text: 'Create Teacher', icon: <PeopleIcon />, path: '/school-admin/create-teacher' },
-          { text: 'Create Student', icon: <PeopleIcon />, path: '/school-admin/create-student' },
-          { text: 'Create Parent', icon: <PeopleIcon />, path: '/school-admin/create-parent' },
-          { text: 'School Settings', icon: <SchoolIcon />, path: '/school-admin/school-settings' },
-          { text: 'Manage Classes', icon: <SchoolIcon />, path: '/school-admin/classes' },
-          { text: 'Manage Sessions', icon: <CalendarIcon />, path: '/school-admin/sessions' },
-          { text: 'Reports', icon: <AssessmentIcon />, path: '/school-admin/reports' },
+          { text: 'Schools', icon: School, path: '/admin/schools' },
+          { text: 'Students', icon: Users, path: '/admin/students' },
+          { text: 'Teachers', icon: UserPlus, path: '/admin/teachers' },
+          { text: 'Parents', icon: Users, path: '/admin/parents' },
+          { text: 'Classes', icon: GraduationCap, path: '/admin/classes' },
+          { text: 'Subjects', icon: BookOpen, path: '/admin/subjects' },
+          { text: 'Sessions', icon: Calendar, path: '/admin/sessions' },
+          { text: 'Timetable', icon: Clock, path: '/admin/timetable' },
+          { text: 'Attendance', icon: ClipboardCheck, path: '/admin/attendance' },
+          { text: 'Results', icon: FileText, path: '/admin/results' },
+          { text: 'Fees', icon: CreditCard, path: '/admin/fees' },
+          { text: 'Reports', icon: BarChart3, path: '/admin/reports' },
+          { text: 'School Settings', icon: Settings, path: '/school-admin/school-settings' },
         ];
       case 'teacher':
         return [
           ...baseItems,
-          { text: 'Mark Attendance', icon: <AccountCircleIcon />, path: '/teacher/mark-attendance' },
-          { text: 'Enter Scores', icon: <BookIcon />, path: '/teacher/enter-scores' },
-          { text: 'Timetable', icon: <CalendarIcon />, path: '/teacher/timetable' },
-          { text: 'My Classes', icon: <SchoolIcon />, path: '/teacher/classes' },
+          { text: 'Mark Attendance', icon: ClipboardCheck, path: '/teacher/attendance' },
+          { text: 'Enter Scores', icon: FileText, path: '/teacher/scores' },
+          { text: 'Timetable', icon: Clock, path: '/teacher/timetable' },
+          { text: 'My Classes', icon: School, path: '/teacher/classes' },
+          { text: 'Study Materials', icon: BookOpen, path: '/teacher/materials' },
         ];
       case 'student':
         return [
           ...baseItems,
-          { text: 'View Results', icon: <AssessmentIcon />, path: '/student/results' },
-          { text: 'Notifications', icon: <NotificationsIcon />, path: '/student/notifications' },
-          { text: 'My Profile', icon: <AccountCircleIcon />, path: '/student/profile' },
-          { text: 'Timetable', icon: <CalendarIcon />, path: '/student/timetable' },
+          { text: 'My Results', icon: Award, path: '/student/results' },
+          { text: 'My Profile', icon: User, path: '/student/profile' },
+          { text: 'Timetable', icon: Clock, path: '/student/timetable' },
+          { text: 'Attendance', icon: TrendingUp, path: '/student/attendance' },
+          { text: 'Fee Statement', icon: CreditCard, path: '/student/fees' },
+        ];
+      case 'parent':
+        return [
+          ...baseItems,
+          { text: 'My Children', icon: Users, path: '/parent/children' },
+          { text: 'Academic Results', icon: Award, path: '/parent/results' },
+          { text: 'Attendance', icon: TrendingUp, path: '/parent/attendance' },
+          { text: 'Fee Payments', icon: CreditCard, path: '/parent/fees' },
+          { text: 'School Calendar', icon: Calendar, path: '/parent/calendar' },
         ];
       default:
         return baseItems;
     }
   };
 
-  const drawer = (
-    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-      <Box sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Typography variant="h6" noWrap component="div" sx={{ fontWeight: 'bold', color: '#374151' }}>
-          SchoolPilot
-        </Typography>
-        {!isMobile && (
-          <IconButton onClick={handleDrawerToggle} size="small">
-            <ChevronLeftIcon />
-          </IconButton>
-        )}
-      </Box>
-      <Divider />
-      <List sx={{ flexGrow: 1, p: 1 }}>
-        {getMenuItems().map((item) => (
-          <ListItem key={item.text} disablePadding sx={{ mb: 0.5 }}>
-            <ListItemButton
-              selected={location.pathname === item.path}
-              onClick={() => {
-                navigate(item.path);
-                if (isMobile) setMobileOpen(false);
-              }}
-              sx={{
-                borderRadius: 1,
-                '&.Mui-selected': {
-                  backgroundColor: '#3b82f6',
-                  color: 'white',
-                  '&:hover': {
-                    backgroundColor: '#2563eb',
-                  },
-                  '& .MuiListItemIcon-root': {
-                    color: 'white',
-                  },
-                },
-                '&:hover': {
-                  backgroundColor: '#f3f4f6',
-                },
-              }}
-            >
-              <ListItemIcon sx={{ 
-                color: location.pathname === item.path ? 'white' : '#6b7280',
-                minWidth: 40 
-              }}>
-                {item.icon}
-              </ListItemIcon>
-              <ListItemText 
-                primary={item.text} 
-                primaryTypographyProps={{
-                  fontSize: '0.875rem',
-                  fontWeight: location.pathname === item.path ? '600' : '400',
-                }}
-              />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-      <Divider />
-      <List sx={{ p: 1 }}>
-        <ListItem disablePadding sx={{ mb: 0.5 }}>
-          <ListItemButton
-            onClick={() => {
-              navigate('/change-password');
-              if (isMobile) setMobileOpen(false);
-            }}
-            sx={{
-              borderRadius: 1,
-              '&:hover': {
-                backgroundColor: '#f3f4f6',
-              },
-            }}
-          >
-            <ListItemIcon sx={{ color: '#6b7280', minWidth: 40 }}>
-              <SettingsIcon />
-            </ListItemIcon>
-            <ListItemText 
-              primary="Change Password" 
-              primaryTypographyProps={{ fontSize: '0.875rem' }}
-            />
-          </ListItemButton>
-        </ListItem>
-        <ListItem disablePadding>
-          <ListItemButton
-            onClick={logout}
-            sx={{
-              borderRadius: 1,
-              '&:hover': {
-                backgroundColor: '#fee2e2',
-              },
-            }}
-          >
-            <ListItemIcon sx={{ color: '#ef4444', minWidth: 40 }}>
-              <LogoutIcon />
-            </ListItemIcon>
-            <ListItemText 
-              primary="Logout" 
-              primaryTypographyProps={{ 
-                fontSize: '0.875rem',
-                color: '#ef4444',
-                fontWeight: '500'
-              }}
-            />
-          </ListItemButton>
-        </ListItem>
-      </List>
-    </Box>
-  );
+  const menuItems = getMenuItems();
+
+  const getRoleDisplayName = (role) => {
+    const roleNames = {
+      super_admin: 'Super Admin',
+      school_admin: 'School Admin',
+      teacher: 'Teacher',
+      student: 'Student',
+      parent: 'Parent',
+    };
+    return roleNames[role] || role;
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-primary-50/20">
       <Toaster 
         position="top-right"
         toastOptions={{
@@ -228,42 +147,261 @@ const DashboardLayout = () => {
         }}
       />
       
+      {/* Mobile Overlay */}
+      {sidebarOpen && (
+        <div
+         className="
+  fixed inset-0 
+  bg-white/10 
+  backdrop-blur-lg backdrop-saturate-200 backdrop-filter
+  z-30 lg:hidden 
+  transition-all duration-300
+"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       <div className="flex h-screen">
-        {/* MUI Sidebar Drawer */}
-        <Box
-          component="nav"
-          sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
-          className="bg-white border-r border-gray-200"
+        {/* Sidebar */}
+        <div
+          className={`
+            fixed lg:static inset-y-0 left-0 z-40
+            transform transition-all duration-300 ease-in-out
+            ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+            ${collapsed ? 'w-20' : 'w-58'} lg:translate-x-0
+            flex flex-col
+            bg-gradient-to-b from-white via-white to-primary-50/30
+            border-r border-gray-300
+            shadow-lg shadow-primary-100/20
+            backdrop-blur-sm backdrop-filter
+          `}
         >
-          <Drawer
-            variant={isMobile ? 'temporary' : 'permanent'}
-            open={mobileOpen}
-            onClose={handleDrawerToggle}
-            ModalProps={{
-              keepMounted: true,
-            }}
-            sx={{
-              display: { xs: 'block', md: 'block' },
-              '& .MuiDrawer-paper': {
-                boxSizing: 'border-box',
-                width: drawerWidth,
-                borderRight: '1px solid #e5e7eb',
-                backgroundColor: 'white',
-              },
-            }}
-          >
-            {drawer}
-          </Drawer>
-        </Box>
-        
+          {/* Logo Section */}
+          <div className={`
+            p-4 border-b border-gray-300
+            bg-gradient-to-r from-primary-600/5 to-primary-500/5
+            transition-all duration-300
+            ${collapsed ? 'px-2' : 'px-4'}
+          `}>
+            <div className={`
+              flex items-center justify-between
+              ${collapsed ? 'justify-center' : ''}
+            `}>
+              {!collapsed ? (
+                <div className="flex items-center space-x-3">
+                  <div className="relative">
+                    <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/20">
+                      <img src='/logo.jpg' className="w-8 h-8" />
+                    </div>
+                    <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-green-400 to-green-500 rounded-full border-2 border-white" />
+                  </div>
+                  <div className="flex-1 overflow-hidden">
+                    <h1 className="text-lg font-bold text-gray-900 truncate">SchoolPilot</h1>
+                    <p className="text-xs text-primary-600 font-medium truncate">
+                      {user?.school_name || 'Education Management'}
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/20">
+                  <img src='/logo.jpg' className="w-8 h-8" />
+                </div>
+              )}
+              
+              <button
+                onClick={() => setCollapsed(!collapsed)}
+                className={`
+                  lg:flex items-center justify-center w-8 h-8 rounded-lg
+                  bg-primary-50 text-primary-600 hover:bg-primary-100
+                  hidden transition-all duration-300
+                  ${collapsed ? 'rotate-180' : ''}
+                `}
+              >
+                {collapsed ? (
+                  <ChevronRight className="w-4 h-4" />
+                ) : (
+                  <ChevronLeft className="w-4 h-4" />
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* User Info Section */}
+          <div className={`
+            p-4 border-b border-gray-200
+            bg-gradient-to-r from-primary-50/30 to-transparent
+            transition-all duration-300
+            ${collapsed ? 'px-2' : 'px-4'}
+          `}>
+            <div className={`flex items-center ${collapsed ? 'justify-center' : 'space-x-3'}`}>
+              <div className="relative">
+                <div className={`
+                  rounded-full bg-gradient-to-br from-primary-100 to-primary-200
+                  border-2 border-white shadow-sm
+                  ${collapsed ? 'w-10 h-10' : 'w-12 h-12'}
+                  flex items-center justify-center
+                `}>
+                  <User className={`
+                    text-indigo-500
+                    ${collapsed ? 'w-5 h-5' : 'w-6 h-6'}
+                  `} />
+                </div>
+                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-gradient-to-br from-green-400 to-green-500 rounded-full border-2 border-white" />
+              </div>
+              
+              {!collapsed && (
+                <div className="flex-1 overflow-hidden">
+                  <p className="text-sm font-semibold text-gray-900 truncate">
+                    {user?.first_name} {user?.last_name}
+                  </p>
+                  <p className="text-xs text-primary-600 font-medium truncate">
+                    {getRoleDisplayName(user?.role)}
+                  </p>
+                  {user?.school_name && (
+                    <p className="text-xs text-gray-500 truncate mt-1">
+                      {user.school_name}
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Navigation */}
+          <nav className="flex-1 overflow-y-auto py-4 px-2">
+            <div className="space-y-1">
+              {menuItems.map((item) => {
+                const isActive = location.pathname === item.path;
+                return (
+                  <button
+                    key={item.text}
+                    onClick={() => {
+                      navigate(item.path);
+                      if (sidebarOpen) setSidebarOpen(false);
+                    }}
+                    className={`
+                      w-full flex items-center rounded-xl
+                      transition-all duration-200
+                      group relative overflow-hidden cursor-pointer
+                      ${isActive 
+                        ? 'bg-gradient-to-r from-indigo-500/100 to-indigo-600/80 text-white' 
+                        : 'text-gray-700 hover:bg-primary-50/50 hover:text-primary-600'
+                      }
+                      ${collapsed ? 'justify-center px-2 py-3' : 'px-4 py-3 space-x-3'}
+                    `}
+                  >
+                    {/* Active Indicator */}
+                    {isActive && (
+                      <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-indigo-600 to-indigo-500 rounded-r-full" />
+                    )}
+                    
+                    <div className={`
+                      flex items-center justify-center
+                      ${isActive 
+                        ? 'text-white' 
+                        : 'text-gray-500 group-hover:text-primary-600'
+                      }
+                      transition-colors duration-200
+                    `}>
+                      <item.icon className={collapsed ? 'w-5 h-5' : 'w-5 h-5'} />
+                    </div>
+                    
+                    {!collapsed && (
+                      <span className="flex-1 text-sm font-medium text-left transition-all duration-200">
+                        {item.text}
+                      </span>
+                    )}
+                    
+                    {/* Tooltip for collapsed state */}
+                    {collapsed && (
+                      <div className="
+                        absolute left-full ml-2 px-3 py-2
+                        bg-gradient-to-r from-gray-900 to-gray-800
+                        text-white text-xs rounded-lg
+                        opacity-0 group-hover:opacity-100
+                        transition-opacity duration-200
+                        whitespace-nowrap
+                        shadow-lg
+                        z-50
+                      ">
+                        {item.text}
+                        <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45" />
+                      </div>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </nav>
+
+          {/* Bottom Section */}
+          <div className={`
+            p-4 border-t border-gray-300
+            bg-gradient-to-r from-primary-50/20 to-transparent
+            space-y-2
+            transition-all duration-300
+            ${collapsed ? 'px-2' : 'px-4'}
+          `}>
+            {/* Quick Actions */}
+          
+
+            {/* Settings & Logout */}
+            <div className="space-y-1">
+              <button
+                onClick={() => navigate('/change-password')}
+                className={`
+                  w-full flex items-center rounded-xl
+                  text-gray-700 hover:bg-primary-50/50 hover:text-primary-600
+                  transition-all duration-200
+                  ${collapsed ? 'justify-center px-2 py-3' : 'px-4 py-3 space-x-3'}
+                `}
+              >
+                <Settings className={collapsed ? 'w-5 h-5' : 'w-5 h-5'} />
+                {!collapsed && (
+                  <span className="flex-1 text-sm font-medium text-left">
+                    Change Password
+                  </span>
+                )}
+              </button>
+              
+              <button
+                onClick={logout}
+                className={`
+                  w-full flex items-center rounded-xl
+                  text-red-600 hover:bg-red-50/50
+                  transition-all duration-200
+                  ${collapsed ? 'justify-center px-2 py-3' : 'px-4 py-3 space-x-3'}
+                `}
+              >
+                <LogOut className={collapsed ? 'w-5 h-5' : 'w-5 h-5'} />
+                {!collapsed && (
+                  <span className="flex-1 text-sm font-medium text-left">
+                    Logout
+                  </span>
+                )}
+              </button>
+            </div>
+
+            {/* Version Info */}
+            {!collapsed && (
+              <div className="pt-4 border-t border-gray-300">
+                <p className="text-xs text-gray-400 text-center">
+                  v1.0.0 • SchoolPilot
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Main Content */}
         <div className="flex-1 flex flex-col overflow-hidden">
-          {/* Custom Navbar */}
           <Navbar 
-            toggleSidebar={() => setMobileOpen(!mobileOpen)}
-            title={`${user?.school_name || 'SchoolPilot'} - ${user?.role}`}
+            toggleSidebar={() => setSidebarOpen(!sidebarOpen)}
+            title={`Welcome back, ${user?.first_name || 'User'}!`}
+            subtitle={getRoleDisplayName(user?.role)}
           />
           
-          <main className="flex-1 overflow-y-auto p-4 md:p-6 bg-gray-50">
+          <main className="flex-1 overflow-y-auto p-4 md:p-6">
             <Outlet />
           </main>
         </div>
