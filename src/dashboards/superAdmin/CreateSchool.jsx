@@ -54,7 +54,7 @@ const CreateSchool = () => {
     setLoading(true);
     
     try {
-      await schoolsAPI.createSchool(formData);
+      await schoolsAPI.create(formData);
       toast.success('School created successfully!');
       setFormData({
         name: '',
@@ -68,7 +68,10 @@ const CreateSchool = () => {
         subscription_plan: 'basic',
       });
     } catch (error) {
-      toast.error('Failed to create school');
+      console.error("CREATE SCHOOL ERROR:", error.response?.data || error.message);
+  toast.error(
+    error.response?.data?.message || "Failed to create school"
+  ); 
     } finally {
       setLoading(false);
     }
