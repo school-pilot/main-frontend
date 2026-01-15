@@ -1,9 +1,9 @@
-import { motion } from 'framer-motion';
-import { Link, useNavigate } from 'react-router-dom';
-import { 
-  Bell, 
-  Search, 
-  User, 
+import { motion } from "framer-motion";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  Bell,
+  Search,
+  User,
   Menu,
   X,
   ChevronDown,
@@ -12,26 +12,26 @@ import {
   Moon,
   Calendar,
   MessageSquare,
-} from 'lucide-react';
-import { useState } from 'react';
-import { useAuth } from '../context/AuthContext';
-import NotificationBell from './NotificationBell';
-import { AdminPanelSettings } from '@mui/icons-material';
+} from "lucide-react";
+import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
+import NotificationBell from "./NotificationBell";
+import { AdminPanelSettings } from "@mui/icons-material";
 
 const Navbar = ({ toggleSidebar, title, subtitle }) => {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const [theme, setTheme] = useState('light');
+  const [theme, setTheme] = useState("light");
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate("/login");
   };
 
   const toggleTheme = () => {
-    setTheme(theme === 'light' ? 'dark' : 'light');
+    setTheme(theme === "light" ? "dark" : "light");
   };
 
   return (
@@ -59,7 +59,7 @@ const Navbar = ({ toggleSidebar, title, subtitle }) => {
           >
             <Menu className="w-5 h-5" />
           </button>
-          
+
           {/* Title Section */}
           <div className="hidden md:block">
             <div className="flex items-center space-x-3">
@@ -67,23 +67,23 @@ const Navbar = ({ toggleSidebar, title, subtitle }) => {
                 <AdminPanelSettings className="w-5 h-5 text-indigo-500" />
               </div>
               <div>
-                <h1 className="text-lg font-bold text-gray-900">
-                  {title}
-                </h1>
+                <h1 className="text-lg font-bold text-gray-900">{title}</h1>
                 <p className="text-sm text-primary-600 font-medium">
                   {subtitle}
                 </p>
               </div>
             </div>
           </div>
-          
+
           {/* Search Bar */}
           <div className="relative hidden md:block">
-            <div className="
+            <div
+              className="
               relative overflow-hidden rounded-xl
               bg-gradient-to-r from-primary-50/50 to-primary-100/20
               border border-gray-400
-            ">
+            "
+            >
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary-400 w-5 h-5" />
               <input
                 type="text"
@@ -104,7 +104,6 @@ const Navbar = ({ toggleSidebar, title, subtitle }) => {
         {/* Right Section */}
         <div className="flex items-center space-x-3">
           {/* Quick Actions */}
-        
 
           {/* Notification Bell */}
           <NotificationBell />
@@ -123,31 +122,37 @@ const Navbar = ({ toggleSidebar, title, subtitle }) => {
               "
             >
               <div className="relative">
-                <div className="
+                <div
+                  className="
                   w-9 h-9 rounded-full
                   bg-gradient-to-br from-primary-200 to-primary-300
                   flex items-center justify-center
                   shadow-sm
-                ">
+                "
+                >
                   <User className="w-5 h-5 text-primary-700" />
                 </div>
-                <div className="
+                <div
+                  className="
                   absolute -bottom-1 -right-1 w-3 h-3
                   bg-gradient-to-br from-green-400 to-green-500
                   rounded-full border-2 border-white
-                "/>
+                "
+                />
               </div>
-              
+
               <div className="hidden md:block text-left">
                 <div className="flex items-center space-x-2">
                   <p className="text-sm font-semibold text-gray-900 max-w-[120px] truncate">
                     {user?.first_name} {user?.last_name}
                   </p>
-                  <ChevronDown className={`
+                  <ChevronDown
+                    className={`
                     w-4 h-4 text-primary-500
                     transition-transform duration-200
-                    ${userMenuOpen ? 'rotate-180' : ''}
-                  `} />
+                    ${userMenuOpen ? "rotate-180" : ""}
+                  `}
+                  />
                 </div>
                 <p className="text-xs text-primary-600 font-medium capitalize">
                   {user?.role}
@@ -170,24 +175,30 @@ const Navbar = ({ toggleSidebar, title, subtitle }) => {
                 "
               >
                 {/* User Info */}
-                <div className="
+                <div
+                  className="
                   p-4 border-b border-primary-100/50
                   bg-gradient-to-r from-primary-500/5 to-transparent
-                ">
+                "
+                >
                   <div className="flex items-center space-x-3">
                     <div className="relative">
-                      <div className="
+                      <div
+                        className="
                         w-12 h-12 rounded-full
                         bg-gradient-to-br from-primary-200 to-primary-300
                         flex items-center justify-center
-                      ">
+                      "
+                      >
                         <User className="w-6 h-6 text-primary-700" />
                       </div>
-                      <div className="
+                      <div
+                        className="
                         absolute -bottom-1 -right-1 w-4 h-4
                         bg-gradient-to-br from-green-400 to-green-500
                         rounded-full border-2 border-white
-                      "/>
+                      "
+                      />
                     </div>
                     <div>
                       <p className="font-semibold text-gray-900">
@@ -220,7 +231,7 @@ const Navbar = ({ toggleSidebar, title, subtitle }) => {
                     <User className="w-4 h-4 mr-3 text-primary-500" />
                     <span className="text-sm font-medium">My Profile</span>
                   </Link>
-                  
+
                   <Link
                     to="/settings"
                     onClick={() => setUserMenuOpen(false)}
@@ -232,9 +243,11 @@ const Navbar = ({ toggleSidebar, title, subtitle }) => {
                     "
                   >
                     <Settings className="w-4 h-4 mr-3 text-primary-500" />
-                    <span className="text-sm font-medium">Account Settings</span>
+                    <span className="text-sm font-medium">
+                      Account Settings
+                    </span>
                   </Link>
-                  
+
                   <Link
                     to="/help"
                     onClick={() => setUserMenuOpen(false)}
@@ -250,10 +263,12 @@ const Navbar = ({ toggleSidebar, title, subtitle }) => {
                   </Link>
                 </div>
 
-                <div className="
+                <div
+                  className="
                   border-t border-primary-100/50
                   bg-gradient-to-r from-red-50/30 to-transparent
-                ">
+                "
+                >
                   <button
                     onClick={handleLogout}
                     className="

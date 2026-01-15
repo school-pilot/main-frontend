@@ -1,9 +1,9 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 import toast from "react-hot-toast";
 
-import { authAPI } from "../services/api.js"; // Make sure authAPI is imported
+import { authAPI } from "../services/api.js";
 import {
   getAccessToken,
   getRefreshToken,
@@ -12,221 +12,145 @@ import {
 } from "../utils/token";
 
 const AuthContext = createContext(null);
-
 export const useAuth = () => useContext(AuthContext);
 
-/* =====================================================
-   AUTH PROVIDER
-===================================================== */
-
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
   const navigate = useNavigate();
 
-  // Helper function to infer role from email
+  // === STATES ===
+  const [user, setUser] = useState(() => {
+    // Restore user from localStorage on page load
+    const storedUser = localStorage.getItem("user_data");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
+  const [loadingAuth, setLoadingAuth] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(() => !!localStorage.getItem("access_token"));
+
+  // === HELPERS ===
   const inferRoleFromEmail = (email) => {
-    const emailLower = email.toLowerCase();
-
-    if (emailLower.includes("super") || emailLower.includes("superadmin")) {
-      return "super_admin";
-    }
-    if (emailLower.includes("admin") || emailLower.includes("school")) {
-      return "school_admin";
-    }
-    if (emailLower.includes("teacher")) {
-      return "teacher";
-    }
-    if (emailLower.includes("student")) {
-      return "student";
-    }
-    if (emailLower.includes("parent")) {
-      return "parent";
-    }
-
-    // Default for registration is school_admin
+    const emailLower = email?.toLowerCase() || "";
+    if (emailLower.includes("super") || emailLower.includes("superadmin")) return "super_admin";
+    if (emailLower.includes("admin") || emailLower.includes("school")) return "school_admin";
+    if (emailLower.includes("teacher")) return "teacher";
+    if (emailLower.includes("student")) return "student";
+    if (emailLower.includes("parent")) return "parent";
     return "school_admin";
   };
 
-  /* =====================================================
-     LOAD USER FROM STORAGE
-  ===================================================== */
-
-  const loadUserFromStorage = async () => {
-    const token = getAccessToken();
-    const storedUser = localStorage.getItem('user_data');
-    
-    if (token && storedUser) {
-      try {
-        const userData = JSON.parse(storedUser);
-        setUser(userData);
-        setIsAuthenticated(true);
-      } catch (error) {
-        console.error('Failed to parse stored user:', error);
-        localStorage.removeItem('user_data');
-      }
-    }
-  };
-
-  /* =====================================================
-     INIT AUTH STATE
-  ===================================================== */
-
+  // === INITIAL AUTH STATE ===
   useEffect(() => {
-    const token = getAccessToken();
+    const initAuth = async () => {
+      const token = getAccessToken();
+      if (!token) {
+        setUser(null);
+        setIsAuthenticated(false);
+        setLoadingAuth(false);
+        return;
+      }
 
-    if (!token) {
-      setLoading(false);
-      return;
-    }
+      try {
+        const decoded = jwtDecode(token);
 
-    try {
-      const decoded = jwtDecode(token);
+        // Token expired
+        if (decoded.exp * 1000 < Date.now()) {
+          clearTokens();
+          setUser(null);
+          setIsAuthenticated(false);
+        } else {
+          // Ensure user is loaded from localStorage
+          const storedUser = localStorage.getItem("user_data");
+          if (storedUser) {
+            setUser(JSON.parse(storedUser));
+            setIsAuthenticated(true);
+          } else {
+            // If no stored user, fetch from API
+            try {
+              const userRes = await authAPI.getUser(decoded.user_id);
+              const userData = userRes.data;
 
-      // Token expired
-      if (decoded.exp * 1000 < Date.now()) {
+              if (!userData.role && userData.email) {
+                userData.role = inferRoleFromEmail(userData.email);
+              }
+
+              setUser(userData);
+              setIsAuthenticated(true);
+              localStorage.setItem("user_data", JSON.stringify(userData));
+            } catch {
+              clearTokens();
+              setUser(null);
+              setIsAuthenticated(false);
+            }
+          }
+        }
+      } catch {
         clearTokens();
         setUser(null);
         setIsAuthenticated(false);
-      } else {
-        // Try to load user from localStorage first
-        const storedUser = localStorage.getItem('user_data');
-        if (storedUser) {
-          try {
-            const userData = JSON.parse(storedUser);
-            setUser(userData);
-            setIsAuthenticated(true);
-          } catch (e) {
-            console.error('Failed to parse stored user:', e);
-          }
-        } else {
-          // If no stored user, just use decoded token
-          setUser(decoded);
-          setIsAuthenticated(true);
-        }
       }
-    } catch {
-      clearTokens();
-      setUser(null);
-      setIsAuthenticated(false);
-    }
 
-    setLoading(false);
+      setLoadingAuth(false);
+    };
+
+    initAuth();
   }, []);
 
-  /* =====================================================
-     LOGIN
-  ===================================================== */
-
+  // === LOGIN ===
   const login = async (credentials) => {
     try {
       const res = await authAPI.login(credentials);
       const { access, refresh } = res.data;
 
-      // Store tokens
       setTokens({ access, refresh });
 
-      // Decode token to get user_id
       const decoded = jwtDecode(access);
+      const userRes = await authAPI.getUser(decoded.user_id);
+      const userData = userRes.data;
 
-      let userData = null;
-
-      try {
-        // Try to fetch user profile from API
-        // Check if authAPI has a getUser method or similar
-        if (authAPI && authAPI.getUser) {
-          const userRes = await authAPI.getUser(decoded.user_id);
-          userData = userRes.data;
-        } else {
-          // If no getUser method, try getUsers and find by email
-          const usersRes = await authAPI.getUsers();
-          const allUsers = usersRes.data || [];
-          userData = allUsers.find(u => u.email === credentials.email);
-        }
-      } catch (profileError) {
-        console.warn("Could not fetch user profile:", profileError);
+      if (!userData.role && userData.email) {
+        userData.role = inferRoleFromEmail(userData.email);
       }
 
-      // If still no user data, create basic user object
-      if (!userData) {
-        userData = {
-          user_id: decoded.user_id,
-          email: credentials.email,
-          role: inferRoleFromEmail(credentials.email),
-          is_active: true,
-        };
-      }
-
-      // Ensure role is set
-      if (!userData.role) {
-        userData.role = inferRoleFromEmail(credentials.email);
-      }
-
-      // Store user in state and localStorage
       setUser(userData);
       setIsAuthenticated(true);
-      localStorage.setItem('user_data', JSON.stringify(userData));
+      localStorage.setItem("user_data", JSON.stringify(userData));
 
       toast.success("Login successful");
       navigate("/dashboard");
       return true;
     } catch (err) {
-      toast.error(err.response?.data?.detail || "Invalid login credentials");
+      toast.error(err.response?.data?.detail || err.message || "Login failed");
       return false;
     }
   };
 
-  /* =====================================================
-     REGISTER
-  ===================================================== */
-
+  // === REGISTER ===
   const register = async (userData) => {
     try {
-      // Ensure role is set for registration (school_admin by default)
-      const registrationData = {
-        ...userData,
-        role: 'school_admin', // Auto-assign school_admin role for registrations
-      };
-
+      const registrationData = { ...userData, role: "school_admin" };
       await authAPI.register(registrationData);
 
       toast.success("Registration successful. Please login.");
       navigate("/login");
-
       return true;
     } catch (err) {
       const data = err.response?.data;
-
-      if (data) {
-        const firstError = Object.values(data)[0]?.[0];
-        toast.error(firstError || "Registration failed");
-      } else {
-        toast.error("Network error");
-      }
-
+      const firstError = data ? Object.values(data)[0]?.[0] : null;
+      toast.error(firstError || "Registration failed");
       return false;
     }
   };
 
-  /* =====================================================
-     LOGOUT
-  ===================================================== */
-
+  // === LOGOUT ===
   const logout = () => {
     clearTokens();
+    localStorage.removeItem("user_data");
     setUser(null);
     setIsAuthenticated(false);
-    localStorage.removeItem('user_data');
-    navigate("/login");
     toast.success("Logged out");
+    navigate("/login");
   };
 
-  /* =====================================================
-     CHANGE PASSWORD
-  ===================================================== */
-
+  // === CHANGE PASSWORD ===
   const changePassword = async (data) => {
     try {
       await authAPI.changePassword(data);
@@ -234,34 +158,22 @@ export const AuthProvider = ({ children }) => {
       return true;
     } catch (err) {
       const data = err.response?.data;
-
-      if (data) {
-        const firstError = Object.values(data)[0]?.[0];
-        toast.error(firstError || "Password change failed");
-      } else {
-        toast.error("Network error");
-      }
-
+      const firstError = data ? Object.values(data)[0]?.[0] : null;
+      toast.error(firstError || "Password change failed");
       return false;
     }
   };
 
-  /* =====================================================
-     UPDATE PROFILE
-  ===================================================== */
-
+  // === UPDATE PROFILE ===
   const updateProfile = async (data) => {
     try {
       if (!user?.user_id) throw new Error("User not loaded");
 
       const res = await authAPI.updateUser(user.user_id, data);
-
       const updatedUser = { ...user, ...res.data };
+
       setUser(updatedUser);
-      
-      // Update localStorage
-      localStorage.setItem('user_data', JSON.stringify(updatedUser));
-      
+      localStorage.setItem("user_data", JSON.stringify(updatedUser));
       toast.success("Profile updated");
       return true;
     } catch (err) {
@@ -270,34 +182,27 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  /* =====================================================
-     REFRESH USER DATA
-  ===================================================== */
-
+  // === REFRESH USER DATA ===
   const refreshUserData = async () => {
     if (!user?.email) return;
-    
     try {
       const usersRes = await authAPI.getUsers();
       const allUsers = usersRes.data || [];
-      const updatedUser = allUsers.find(u => u.email === user.email);
-      
+      const updatedUser = allUsers.find((u) => u.email === user.email);
+
       if (updatedUser) {
         setUser(updatedUser);
-        localStorage.setItem('user_data', JSON.stringify(updatedUser));
+        localStorage.setItem("user_data", JSON.stringify(updatedUser));
       }
     } catch (error) {
-      console.error('Failed to refresh user data:', error);
+      console.error("Failed to refresh user data:", error);
     }
   };
 
-  /* =====================================================
-     CONTEXT VALUE
-  ===================================================== */
-
+  // === CONTEXT VALUE ===
   const value = {
     user,
-    loading,
+    loadingAuth,
     isAuthenticated,
     login,
     register,
@@ -305,12 +210,11 @@ export const AuthProvider = ({ children }) => {
     changePassword,
     updateProfile,
     refreshUserData,
-    loadUserFromStorage, // Export if needed
   };
 
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {!loadingAuth && children}
     </AuthContext.Provider>
   );
 };

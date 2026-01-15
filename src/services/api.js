@@ -105,21 +105,35 @@ export const authAPI = {
 ===================================================== */
 
 export const schoolsAPI = {
-  create: (data) => api.post("/api/schools/add/", data),
+  // ✅ Create school with FormData (file upload)
+  create: (formData) => {
+    return api.post("/api/schools/add/", formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data', // important for file uploads
+      },
+    });
+  },
+
+  // Get a single school
   get: (id) => api.get(`/api/schools/view/${id}/`),
-  update: (id, data) => api.patch(`/api/schools/update/${id}/`, data),
 
-  createSession: (data) => api.post("/api/schools/session/create/", data),
+  // Update a school (can also send FormData if updating logo)
+  update: (id, formData) => api.patch(`/api/schools/update/${id}/`, formData),
+
+  // Sessions
+  createSession: (formData) => api.post("/api/schools/session/create/", formData),
   getSessions: (schoolId) => api.get(`/api/schools/session/view/${schoolId}/`),
-  updateSession: (id, data) =>
-    api.patch(`/api/schools/session/update/${id}/`, data),
+  updateSession: (id, formData) =>
+    api.patch(`/api/schools/session/update/${id}/`, formData),
 
-  createTerm: (data) => api.post("/api/schools/term/create/", data),
+  // Terms
+  createTerm: (formData) => api.post("/api/schools/term/create/", formData),
   getTerms: (schoolId) => api.get(`/api/schools/term/view/${schoolId}/`),
   getCurrentTerm: (schoolId) =>
     api.get(`/api/schools/term/current/${schoolId}/`),
-  updateTerm: (id, data) => api.patch(`/api/schools/term/update/${id}/`, data),
+  updateTerm: (id, formData) => api.patch(`/api/schools/term/update/${id}/`, formData),
 };
+
 
 /* =====================================================
    STUDENTS
