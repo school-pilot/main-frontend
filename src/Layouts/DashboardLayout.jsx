@@ -472,15 +472,11 @@ const DashboardLayout = () => {
 
           <main className="flex-1 overflow-y-auto p-4 md:p-6">
             <Outlet />
-          </Box>
-        </Box>
-      </Box>
-    </Box>
+          </main>
+        </div>
+      </div>
+    </div>
   );
 };
 
-<<<<<<< HEAD
 export default DashboardLayout;
-=======
-export default DashboardLayout; 
->>>>>>> 9ddf3d724660d4f39e71860a107720190fada143
