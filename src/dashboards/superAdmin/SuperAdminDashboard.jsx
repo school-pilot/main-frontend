@@ -27,7 +27,7 @@ const SuperAdminDashboard = () => {
   const [schools, setSchools] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showActions, setShowActions] = useState(null);
- 
+  const navigate = useNavigate(); // Added useNavigate hook
 
   useEffect(() => {
     fetchData();
@@ -36,11 +36,8 @@ const SuperAdminDashboard = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      // Fetch all schools by making multiple requests (since we don't have getAllSchools endpoint)
-      // We'll create a helper to fetch schools based on known IDs or implement a different approach
       const schoolsData = await fetchAllSchools();
       
-      // Get all users
       const usersResponse = await authAPI.getUsers();
       const usersData = usersResponse.data || [];
       
@@ -60,12 +57,8 @@ const SuperAdminDashboard = () => {
     }
   };
 
-  // Helper function to fetch all schools (since we don't have a getAll endpoint)
   const fetchAllSchools = async () => {
     try {
-      // In a real application, you might have a list of school IDs stored somewhere
-      // For now, we'll create a mock array of schools to demonstrate
-      // You should replace this with actual API calls when available
       const mockSchools = [
         {
           id: 1,
@@ -93,17 +86,16 @@ const SuperAdminDashboard = () => {
         },
       ];
       
-      // If you have actual school IDs, you can fetch them like this:
-      // const schoolIds = [1, 2, 3]; // This should come from your application state
-      // const schoolsPromises = schoolIds.map(id => schoolsAPI.get(id));
-      // const schoolsResponses = await Promise.all(schoolsPromises);
-      // return schoolsResponses.map(res => res.data);
-      
       return mockSchools;
     } catch (error) {
       console.error('Error fetching schools:', error);
       return [];
     }
+  };
+
+  // Function to handle navigation to create school page
+  const handleCreateSchool = () => {
+    navigate('/super-admin/create-school'); // Adjust the route as per your application routes
   };
 
   const handleActivateSchool = async (schoolId) => {
@@ -181,8 +173,8 @@ const SuperAdminDashboard = () => {
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
-         
+          className="flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors duration-200"
+          onClick={handleCreateSchool} // Added onClick handler
         >
           <Plus className="w-4 h-4" />
           <span>Create School</span>
@@ -220,7 +212,7 @@ const SuperAdminDashboard = () => {
         ))}
       </div>
 
-      {/* Schools Management */}
+      {/* Schools Management - Rest of the component remains the same */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
