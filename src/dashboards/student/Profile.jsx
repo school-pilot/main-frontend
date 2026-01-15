@@ -29,7 +29,7 @@ const Profile = () => {
   const fetchStudentProfile = async () => {
     try {
       // Assuming student ID is 1 for demo
-      const response = await studentsAPI.getProfile(1);
+      const response = await studentsAPI.profile(1);
       setStudentData(response.data);
       setFormData(response.data);
     } catch (error) {

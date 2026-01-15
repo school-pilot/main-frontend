@@ -32,6 +32,18 @@ api.interceptors.request.use((config) => {
   const token = getAccessToken();
   const isPublic = PUBLIC_ENDPOINTS.some((url) => config.url?.includes(url));
 
+  // If sending FormData, remove Content-Type so browser sets the multipart boundary
+  if (config.data instanceof FormData) {
+    if (config.headers) {
+      delete config.headers['Content-Type'];
+      delete config.headers['content-type'];
+    }
+  } else {
+    if (config.headers && !config.headers['Content-Type'] && !config.headers['content-type']) {
+      config.headers['Content-Type'] = 'application/json';
+    }
+  }
+
   if (token && !isPublic) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -106,13 +118,7 @@ export const authAPI = {
 
 export const schoolsAPI = {
   // ✅ Create school with FormData (file upload)
-  create: (formData) => {
-    return api.post("/api/schools/add/", formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data', // important for file uploads
-      },
-    });
-  },
+ create: (formData) => api.post("/api/schools/add/", formData),
 
   // Get a single school
   get: (id) => api.get(`/api/schools/view/${id}/`),
@@ -121,7 +127,8 @@ export const schoolsAPI = {
   update: (id, formData) => api.patch(`/api/schools/update/${id}/`, formData),
 
   // Sessions
-  createSession: (formData) => api.post("/api/schools/session/create/", formData),
+  createSession: (formData) =>
+    api.post("/api/schools/session/create/", formData),
   getSessions: (schoolId) => api.get(`/api/schools/session/view/${schoolId}/`),
   updateSession: (id, formData) =>
     api.patch(`/api/schools/session/update/${id}/`, formData),
@@ -131,9 +138,9 @@ export const schoolsAPI = {
   getTerms: (schoolId) => api.get(`/api/schools/term/view/${schoolId}/`),
   getCurrentTerm: (schoolId) =>
     api.get(`/api/schools/term/current/${schoolId}/`),
-  updateTerm: (id, formData) => api.patch(`/api/schools/term/update/${id}/`, formData),
+  updateTerm: (id, formData) =>
+    api.patch(`/api/schools/term/update/${id}/`, formData),
 };
-
 
 /* =====================================================
    STUDENTS

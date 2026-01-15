@@ -165,7 +165,7 @@ const Timetable = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-gradient-to-r from-primary-500 to-primary-600 rounded-2xl p-6 text-white"
+          className="bg-gradient-to-r from-indigo-600 to-indigo-500 rounded-2xl p-6 text-white"
         >
           <div className="flex items-center justify-between mb-4">
             <div>
@@ -178,7 +178,7 @@ const Timetable = () => {
                 })}
               </p>
             </div>
-            <Bell className="w-6 h-6" />
+            <Bell className="w-6 h-6 text-white" />
           </div>
 
           <div className="space-y-3">
@@ -192,14 +192,14 @@ const Timetable = () => {
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="font-bold">{period.subject}</h3>
-                    <p className="text-primary-100 text-sm">
+                    <h3 className="font-bold text-black">{period.subject}</h3>
+                    <p className="text-gray-600 text-sm">
                       {period.teacher} • {period.room}
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="font-bold">{period.time_slot}</p>
-                    <p className="text-primary-100 text-sm">Duration: 1 hour</p>
+                    <p className="font-bold text-black">{period.time_slot}</p>
+                    <p className="text-gray-600 text-sm">Duration: 1 hour</p>
                   </div>
                 </div>
               </motion.div>

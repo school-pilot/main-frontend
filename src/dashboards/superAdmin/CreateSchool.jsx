@@ -108,6 +108,16 @@ const CreateSchool = ({ onSuccess }) => {
 
       if (formData.logo instanceof File) formDataToSend.append('logo', formData.logo);
 
+      // Debug: log FormData entries (file: name/size/type)
+      for (const entry of formDataToSend.entries()) {
+        const [key, value] = entry;
+        if (value instanceof File) {
+          console.log('FormData entry:', key, value.name, value.size, value.type);
+        } else {
+          console.log('FormData entry:', key, value);
+        }
+      }
+
       // ✅ Use axios from api.js
       const { data } = await schoolsAPI.create(formDataToSend);
 
@@ -444,14 +454,14 @@ const CreateSchool = ({ onSuccess }) => {
                   <button
                     type="button"
                     onClick={handleBack}
-                    className="px-6 py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors duration-200"
+                    className="px-6 py-3 text-white bg-red-600 hover:bg-gray-100 rounded-lg transition-colors duration-200"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={loading}
-                    className="px-8 py-3 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-lg hover:from-primary-600 hover:to-primary-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                    className="px-8 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg hover:from-primary-600 hover:to-primary-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
                   >
                     {loading ? (
                       <>
