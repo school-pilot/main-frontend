@@ -9,7 +9,6 @@ import {
   Award,
   Users,
   FileText,
-  Person,
   Mail,
   Phone,
   User,
@@ -250,7 +249,7 @@ const StudentDashboard = () => {
             <span className="text-sm">{studentData?.phone_number || studentData?.guardian_phone || 'No phone'}</span>
           </div>
           <div className="flex items-center space-x-3">
-            <Person className="w-5 h-5 text-primary-200" />
+            <User className="w-5 h-5 text-primary-200" />
             <span className="text-sm">Guardian: {studentData?.guardian_name || 'N/A'}</span>
           </div>
         </div>
@@ -542,7 +541,7 @@ const StudentDashboard = () => {
                 className="flex items-center justify-between p-3 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 group"
               >
                 <div className="flex items-center">
-                  <Person className="w-5 h-5 mr-3" />
+                  <User className="w-5 h-5 mr-3" />
                   <span>My Profile</span>
                 </div>
                 <Eye className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />

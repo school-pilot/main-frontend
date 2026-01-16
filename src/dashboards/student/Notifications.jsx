@@ -329,7 +329,7 @@ const Notifications = ({ limit = null, showActions = true, compact = false }) =>
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-red-500">Notifications</h2>
+          <h2 className="text-2xl font-bold text-gray-900">Notifications</h2>
           <p className="text-gray-600">
             {unreadCount} unread notification{unreadCount !== 1 ? 's' : ''}
           </p>
