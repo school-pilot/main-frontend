@@ -215,7 +215,7 @@ const StudentDashboard = () => {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center space-x-4">
             <div className="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-              <User className="w-8 h-8" />
+              <User className="w-8 h-8 text-indigo-500" />
             </div>
             <div>
               <h1 className="text-2xl font-bold">
