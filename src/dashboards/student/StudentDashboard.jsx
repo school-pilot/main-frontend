@@ -210,7 +210,7 @@ const StudentDashboard = () => {
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-r from-primary-500 to-primary-600 rounded-2xl p-6 text-white"
+        className="bg-gradient-to-r from-indigo-700 to-indigo-600 rounded-2xl p-6 text-white"
       >
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center space-x-4">
@@ -219,9 +219,9 @@ const StudentDashboard = () => {
             </div>
             <div>
               <h1 className="text-2xl font-bold">
-                Welcome back, {studentData?.first_name || user?.first_name}!
+                Welcome back, {studentData?.first_name || user?.first_name}  {studentData?.last_name || user?.last_name} !
               </h1>
-              <p className="text-primary-100 mt-1">
+              <p className="text-white mt-1">
                 {studentData?.class_name || studentData?.class || 'Student'} • 
                 Roll No: {studentData?.roll_number || studentData?.admission_number || 'N/A'}
               </p>

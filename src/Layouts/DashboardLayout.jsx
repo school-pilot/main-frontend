@@ -125,7 +125,7 @@ const DashboardLayout = () => {
           { text: "My Profile", icon: User, path: "/student/profile" },
           { text: "Timetable", icon: Clock, path: "/student/timetable" },
           { text: "Attendance", icon: TrendingUp, path: "/student/attendance" },
-          { text: "Fee Statement", icon: CreditCard, path: "/student/fees" },
+          { text: "Fee Statement", icon: CreditCard, path: "/student/studentFees" },
         ];
       case "parent":
         return [

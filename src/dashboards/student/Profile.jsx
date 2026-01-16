@@ -12,15 +12,18 @@ import {
   Save,
   Camera,
 } from 'lucide-react';
-import { studentsAPI } from '../../services/api';
+import { studentsAPI, authAPI } from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 import Loader from '../../components/Loader';
 
 const Profile = () => {
+  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [studentData, setStudentData] = useState({});
   const [formData, setFormData] = useState({});
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchStudentProfile();
@@ -28,35 +31,53 @@ const Profile = () => {
 
   const fetchStudentProfile = async () => {
     try {
-      // Assuming student ID is 1 for demo
-      const response = await studentsAPI.profile(1);
-      setStudentData(response.data);
-      setFormData(response.data);
+      setLoading(true);
+      setError(null);
+      const userId = user?.id;
+      
+      if (!userId) {
+        throw new Error('User not authenticated');
+      }
+
+      // Try to fetch student data first, fallback to user account data
+      try {
+        const response = await studentsAPI.get(userId);
+        setStudentData(response.data);
+        setFormData(response.data);
+      } catch (studentError) {
+        // If student not found, fetch user account data
+        const userResponse = await authAPI.getUser(userId);
+        const accountData = userResponse.data;
+        
+        // Map user account data to student-like format
+        const mappedData = {
+          id: accountData.id,
+          first_name: accountData.first_name || '',
+          last_name: accountData.last_name || '',
+          email: accountData.email || '',
+          phone_number: accountData.phone_number || '',
+          date_of_birth: accountData.date_of_birth || '',
+          gender: accountData.gender || '',
+          address: accountData.address || '',
+          class: accountData.class_name || 'N/A',
+          admission_number: accountData.admission_number || 'N/A',
+          enrollment_date: accountData.created_at || '',
+          status: accountData.is_active ? 'active' : 'inactive',
+          guardian_name: accountData.guardian_name || '',
+          guardian_phone: accountData.guardian_phone || '',
+          guardian_email: accountData.guardian_email || '',
+          guardian_relationship: accountData.guardian_relationship || '',
+          emergency_contact: accountData.emergency_contact || '',
+          medical_info: accountData.medical_info || '',
+        };
+        
+        setStudentData(mappedData);
+        setFormData(mappedData);
+      }
     } catch (error) {
       console.error('Failed to fetch profile:', error);
-      // Mock data for demo
-      const mockData = {
-        id: 1,
-        first_name: 'Alex',
-        last_name: 'Johnson',
-        admission_number: 'S001',
-        email: 'alex.johnson@school.edu',
-        phone_number: '+1234567890',
-        date_of_birth: '2008-05-15',
-        gender: 'Male',
-        class: 'Grade 10A',
-        address: '123 Main Street, City, Country',
-        guardian_name: 'Mary Johnson',
-        guardian_phone: '+1234567891',
-        guardian_email: 'mary.johnson@email.com',
-        guardian_relationship: 'Mother',
-        emergency_contact: '+1234567892',
-        medical_info: 'No known allergies',
-        enrollment_date: '2020-09-01',
-        status: 'active',
-      };
-      setStudentData(mockData);
-      setFormData(mockData);
+      setError('Failed to load profile. Please try again later.');
+      toast.error('Failed to load profile');
     } finally {
       setLoading(false);
     }
@@ -68,12 +89,27 @@ const Profile = () => {
 
   const handleSave = async () => {
     try {
-      // In a real app, update via API
-      // await studentsAPI.update(1, formData);
+      const userId = user?.id;
+      
+      if (!userId) {
+        throw new Error('User not authenticated');
+      }
+
+      // Try to update as student first, fallback to user account
+      try {
+        await studentsAPI.update(userId, formData);
+      } catch (studentError) {
+        // If student update fails, update user account instead
+        await authAPI.updateUser(userId, formData);
+      }
+
       setStudentData(formData);
       setEditing(false);
       toast.success('Profile updated successfully');
+      // Refresh data to ensure we have the latest from server
+      fetchStudentProfile();
     } catch (error) {
+      console.error('Failed to update profile:', error);
       toast.error('Failed to update profile');
     }
   };
@@ -92,6 +128,23 @@ const Profile = () => {
 
   if (loading) {
     return <Loader fullScreen />;
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Unable to Load Profile</h2>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <button
+            onClick={fetchStudentProfile}
+            className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (

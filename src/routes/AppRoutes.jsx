@@ -10,7 +10,6 @@ import DashboardLayout from "../Layouts/DashboardLayout";
 import AuthLayout from "../Layouts/AuthLayout";
 
 /* Public Pages */
-import Landing from "../components/Landing";
 import NotFound from "../pages/NotFound";
 
 /* Auth Pages */
@@ -56,7 +55,11 @@ import MyResults from "../dashboards/student/MyResults";
 import Timetable from "../dashboards/student/Timetable";
 import Profile from "../dashboards/student/Profile";
 import Notifications from "../dashboards/student/Notifications";
+import StudentFees from "../dashboards/student/StudentFees";
+
 import Home from "../pages/Home";
+import AttendanceChart from "../dashboards/admin/analytics/AttendanceChart";
+
 
 const AppRoutes = () => {
   const { isAuthenticated, user } = useAuth();
@@ -169,6 +172,8 @@ const AppRoutes = () => {
               <Route path="timetable" element={<Timetable />} />
               <Route path="profile" element={<Profile />} />
               <Route path="notifications" element={<Notifications />} />
+              <Route path="StudentFees" element={<StudentFees />} />
+              <Route path="attendance" element={<AttendanceChart />} />
             </Route>
           </Route>
 
