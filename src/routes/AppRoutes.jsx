@@ -56,9 +56,10 @@ import Timetable from "../dashboards/student/Timetable";
 import Profile from "../dashboards/student/Profile";
 import Notifications from "../dashboards/student/Notifications";
 import StudentFees from "../dashboards/student/StudentFees";
+import StudentAttendance from "../dashboards/student/Attendance"
 
 import Home from "../pages/Home";
-import AttendanceChart from "../dashboards/admin/analytics/AttendanceChart";
+
 
 
 const AppRoutes = () => {
@@ -173,7 +174,7 @@ const AppRoutes = () => {
               <Route path="profile" element={<Profile />} />
               <Route path="notifications" element={<Notifications />} />
               <Route path="StudentFees" element={<StudentFees />} />
-              <Route path="attendance" element={<AttendanceChart />} />
+              <Route path="attendance" element={<StudentAttendance />} />
             </Route>
           </Route>
 
