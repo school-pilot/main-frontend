@@ -321,22 +321,24 @@ const StudentAttendance = () => {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="bg-white rounded-xl shadow-sm p-4"
+        className="bg-white rounded-xl shadow-sm p-3 sm:p-4"
       >
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex items-center space-x-4">
+        <div className="flex flex-col gap-3 sm:gap-4">
+          {/* Month/Year Navigation - Row 1 */}
+          <div className="flex items-center justify-between gap-2 sm:gap-3">
             <button
               onClick={handlePrevMonth}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors flex-shrink-0"
+              title="Previous month"
             >
               <ChevronLeft className="w-5 h-5 text-gray-600" />
             </button>
             
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center gap-2 sm:gap-3 flex-grow min-w-0">
               <select
                 value={selectedMonth}
                 onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
+                className="flex-1 px-2 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all text-sm sm:text-base"
               >
                 {months.map((month, index) => (
                   <option key={month} value={index}>
@@ -348,7 +350,7 @@ const StudentAttendance = () => {
               <select
                 value={selectedYear}
                 onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
+                className="flex-1 px-2 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all text-sm sm:text-base"
               >
                 {years.map(year => (
                   <option key={year} value={year}>
@@ -360,33 +362,35 @@ const StudentAttendance = () => {
             
             <button
               onClick={handleNextMonth}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors flex-shrink-0"
+              title="Next month"
             >
               <ChevronRight className="w-5 h-5 text-gray-600" />
             </button>
           </div>
 
-          <div className="flex items-center space-x-3">
-            <div className="relative">
+          {/* Search and View Options - Row 2 */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
+            <div className="relative flex-1 sm:flex-none sm:min-w-xs">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
                 type="text"
                 placeholder="Search attendance..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all text-sm sm:text-base"
               />
             </div>
             
-            <div className="flex space-x-2">
+            <div className="flex gap-1 sm:gap-2 flex-wrap sm:flex-nowrap">
               {['monthly', 'weekly', 'daily'].map((view) => (
                 <button
                   key={view}
                   onClick={() => setSelectedView(view)}
-                  className={`px-4 py-2 rounded-lg text-sm capitalize transition-colors ${
+                  className={`flex-1 sm:flex-none px-2 sm:px-4 py-2 rounded-lg text-xs sm:text-sm capitalize transition-colors font-medium ${
                     selectedView === view
-                      ? 'bg-primary-600 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      ? 'bg-indigo-400 text-white hover:bg-indigo-200'
+                      : 'bg-indigo-500 text-white hover:bg-indigo-600'
                   }`}
                 >
                   {view}
