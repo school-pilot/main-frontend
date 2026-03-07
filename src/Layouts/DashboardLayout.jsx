@@ -69,20 +69,13 @@ const DashboardLayout = () => {
             text: "Audit Logs",
             icon: History,
             path: "/super-admin/audit-logs",
-          },
-          {
-            text: "System Settings",
-            icon: Settings,
-            path: "/super-admin/settings",
-          },
+          }
         ];
       case "school_admin":
         return [
           ...baseItems,
-          { text: "Schools", icon: School, path: "/admin/schools" },
           { text: "Students", icon: Users, path: "/admin/students" },
           { text: "Teachers", icon: UserPlus, path: "/admin/teachers" },
-          { text: "Parents", icon: Users, path: "/admin/parents" },
           { text: "Classes", icon: GraduationCap, path: "/admin/classes" },
           { text: "Subjects", icon: BookOpen, path: "/admin/subjects" },
           { text: "Sessions", icon: Calendar, path: "/admin/sessions" },
@@ -92,14 +85,14 @@ const DashboardLayout = () => {
             icon: ClipboardCheck,
             path: "/admin/attendance",
           },
+          {
+            text: "Create Notifications",
+            icon: Mail,
+            path: "/admin/create-notification",
+          },
           { text: "Results", icon: FileText, path: "/admin/results" },
           { text: "Fees", icon: CreditCard, path: "/admin/fees" },
           { text: "Reports", icon: BarChart3, path: "/admin/reports" },
-          {
-            text: "School Settings",
-            icon: Settings,
-            path: "/school-admin/school-settings",
-          },
         ];
       case "teacher":
         return [
@@ -109,14 +102,9 @@ const DashboardLayout = () => {
             icon: ClipboardCheck,
             path: "/teacher/attendance",
           },
-          { text: "Enter Scores", icon: FileText, path: "/teacher/scores" },
+          { text: "Enter Scores", icon: FileText, path: "/teacher/enter-scores" },
           { text: "Timetable", icon: Clock, path: "/teacher/timetable" },
-          { text: "My Classes", icon: School, path: "/teacher/classes" },
-          {
-            text: "Study Materials",
-            icon: BookOpen,
-            path: "/teacher/materials",
-          },
+          { text: "My Classes", icon: School, path: "/teacher/classes" }
         ];
       case "student":
         return [
@@ -126,15 +114,6 @@ const DashboardLayout = () => {
           { text: "Timetable", icon: Clock, path: "/student/timetable" },
           { text: "Attendance", icon: TrendingUp, path: "/student/attendance" },
           { text: "Fee Statement", icon: CreditCard, path: "/student/studentFees" },
-        ];
-      case "parent":
-        return [
-          ...baseItems,
-          { text: "My Children", icon: Users, path: "/parent/children" },
-          { text: "Academic Results", icon: Award, path: "/parent/results" },
-          { text: "Attendance", icon: TrendingUp, path: "/parent/attendance" },
-          { text: "Fee Payments", icon: CreditCard, path: "/parent/fees" },
-          { text: "School Calendar", icon: Calendar, path: "/parent/calendar" },
         ];
       default:
         return baseItems;

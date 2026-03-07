@@ -48,7 +48,7 @@ const MyResults = () => {
   const fetchResults = async () => {
     setLoading(true);
     try {
-      const response = await resultsAPI.getStudentResults(user.id);
+      const response = await resultsAPI.studentResults(user.id);
       const allResults = response.data || [];
       
       // Filter results based on selections

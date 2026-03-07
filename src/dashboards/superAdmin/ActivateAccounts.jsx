@@ -45,6 +45,7 @@ const ActivateAccounts = () => {
   const handleActivate = async (userId) => {
     try {
       await authAPI.updateUser(userId, { is_active: true });
+      setLoading(true)
       toast.success('User activated successfully');
       fetchUsers();
     } catch (error) {
@@ -55,6 +56,7 @@ const ActivateAccounts = () => {
   const handleDeactivate = async (userId) => {
     try {
       await authAPI.updateUser(userId, { is_active: false });
+       setLoading(true)
       toast.success('User deactivated successfully');
       fetchUsers();
     } catch (error) {
@@ -66,6 +68,7 @@ const ActivateAccounts = () => {
     try {
       if (selectedUser?.id) {
         await authAPI.updateUser(selectedUser.id, userData);
+         setLoading(true)
         toast.success('User updated successfully');
       } else {
         // Handle add user
@@ -84,7 +87,7 @@ const ActivateAccounts = () => {
       case 'super_admin':
         return 'bg-red-100 text-red-800';
       case 'school_admin':
-        return 'bg-primary-100 text-primary-800';
+        return 'bg-indigo-100 text-indigo-800';
       case 'teacher':
         return 'bg-blue-100 text-blue-800';
       case 'student':
@@ -146,7 +149,7 @@ const ActivateAccounts = () => {
             });
             setShowAddModal(true);
           }}
-          className="flex items-center space-x-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+          className="flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
         >
           <UserPlus className="w-4 h-4" />
           <span>Add User</span>

@@ -11,6 +11,7 @@ import {
   Eye,
   XCircle,
   TrendingUp,
+  Clock1,
 } from 'lucide-react';
 import { schoolsAPI, authAPI } from '../../services/api.js';
 import toast from 'react-hot-toast';
@@ -23,6 +24,8 @@ const SuperAdminDashboard = () => {
     activeSchools: 0,
     pendingSchools: 0,
     totalUsers: 0,
+    activeUsers: 0,
+    pendingUsers: 0
   });
   const [schools, setSchools] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -44,8 +47,10 @@ const SuperAdminDashboard = () => {
       setStats({
         totalSchools: schoolsData.length,
         activeSchools: schoolsData.filter(s => s.is_active).length,
-        pendingSchools: schoolsData.filter(s => !s.is_active).length,
+        pendingSchools: schoolsData.filter(s =>!s.is_active).length,
         totalUsers: usersData.length,
+        activeUsers: usersData.filter(u => u.is_active).length,
+        pendingUsers: usersData.filter(u => !u.is_active).length
       });
       
       setSchools(schoolsData);
@@ -147,6 +152,22 @@ const SuperAdminDashboard = () => {
       title: 'Total Users',
       value: stats.totalUsers,
       icon: Users,
+      color: 'bg-gradient-to-r from-purple-500 to-purple-600',
+      change: '+15',
+       icon_c: "text-purple-600"
+    },
+     {
+      title: 'Active Users',
+      value: stats.activeUsers,
+      icon: CheckCircle,
+      color: 'bg-gradient-to-r from-purple-500 to-purple-600',
+      change: '+3',
+       icon_c: "text-purple-600"
+    },
+     {
+      title: 'Pending Users',
+      value: stats.pendingUsers,
+      icon: Clock1,
       color: 'bg-gradient-to-r from-purple-500 to-purple-600',
       change: '+15',
        icon_c: "text-purple-600"

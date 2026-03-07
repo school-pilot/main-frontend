@@ -138,7 +138,7 @@ const Profile = () => {
           <p className="text-gray-600 mb-4">{error}</p>
           <button
             onClick={fetchStudentProfile}
-            className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
           >
             Retry
           </button>
@@ -171,7 +171,7 @@ const Profile = () => {
               </button>
               <button
                 onClick={handleSave}
-                className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
               >
                 <Save className="w-4 h-4 inline mr-2" />
                 Save Changes
@@ -180,7 +180,7 @@ const Profile = () => {
           ) : (
             <button
               onClick={handleEdit}
-              className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+              className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
             >
               <Edit className="w-4 h-4 inline mr-2" />
               Edit Profile
@@ -198,11 +198,11 @@ const Profile = () => {
         <div className="flex flex-col md:flex-row items-start md:items-center space-y-6 md:space-y-0 md:space-x-6">
           <div className="relative">
             <div className="w-32 h-32 bg-primary-100 rounded-full flex items-center justify-center">
-              <User className="w-16 h-16 text-primary-600" />
+              <User className="w-16 h-16 text-indigo-600" />
             </div>
             {editing && (
-              <button className="absolute bottom-0 right-0 p-2 bg-primary-600 text-white rounded-full hover:bg-primary-700">
-                <Camera className="w-4 h-4" />
+              <button className="absolute bottom-0 right-0 p-2 bg-primary-600 border border-gray-500 text-white rounded-full hover:bg-primary-700">
+                <Camera className="w-4 h-4 text-indigo-600" />
               </button>
             )}
           </div>

@@ -37,7 +37,7 @@ const Notifications = ({ limit = null, showActions = true, compact = false }) =>
   const fetchNotifications = async () => {
     try {
       setLoading(true);
-      const response = await communicationsAPI.getNotifications();
+      const response = await communicationsAPI.notifications();
       setNotifications(response.data || []);
     } catch (error) {
       console.error('Failed to fetch notifications:', error);

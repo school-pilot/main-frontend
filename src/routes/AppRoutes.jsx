@@ -32,7 +32,6 @@ import SuperAdminSettings from "../dashboards/superAdmin/SuperAdminSettings";
 import SchoolAdminDashboard from "../dashboards/admin/SchoolAdminDashboard";
 import CreateTeacher from "../dashboards/admin/Teachers";
 import CreateStudent from "../dashboards/admin/Students";
-import CreateParent from "../dashboards/admin/CreateParent";
 import SchoolSettings from "../dashboards/admin/SchoolSetting";
 
 /* Admin (Legacy) */
@@ -59,6 +58,7 @@ import StudentFees from "../dashboards/student/StudentFees";
 import StudentAttendance from "../dashboards/student/Attendance"
 
 import Home from "../pages/Home";
+import CreateNotification from "../pages/CreateNotification";
 
 
 
@@ -131,8 +131,8 @@ const AppRoutes = () => {
             <Route path="school-admin">
               <Route index element={<SchoolAdminDashboard />} />
               <Route path="create-teacher" element={<CreateTeacher />} />
+              <Route path="create-notification" element={<CreateNotification />} />
               <Route path="create-student" element={<CreateStudent />} />
-              <Route path="create-parent" element={<CreateParent />} />
               <Route path="school-settings" element={<SchoolSettings />} />
             </Route>
           </Route>

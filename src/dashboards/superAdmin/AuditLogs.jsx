@@ -33,10 +33,12 @@ const AuditLogs = () => {
   const fetchLogs = async () => {
     try {
       setLoading(true);
-      const response = await auditAPI.getLogs();
-      setLogs(response.data || []);
+      const response = await auditAPI.logs();
+      // Ensure response.data is an array
+      setLogs(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       toast.error('Failed to fetch audit logs');
+      setLogs([]); // Set to empty array on error
     } finally {
       setLoading(false);
     }
@@ -76,7 +78,8 @@ const AuditLogs = () => {
     }
   };
 
-  const filteredLogs = logs.filter((log) => {
+  // Fixed: Added defensive check to ensure logs is an array before filtering
+  const filteredLogs = Array.isArray(logs) ? logs.filter((log) => {
     const matchesSearch =
       log.user?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       log.action?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -88,7 +91,7 @@ const AuditLogs = () => {
       log.action?.toLowerCase() === filterAction.toLowerCase();
 
     return matchesSearch && matchesFilter;
-  });
+  }) : [];
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;

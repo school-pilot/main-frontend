@@ -118,7 +118,7 @@ const CreateSchool = ({ onSuccess }) => {
         }
       }
 
-      // ✅ Use axios from api.js
+      // Use axios from api.js
       const { data } = await schoolsAPI.create(formDataToSend);
 
       toast.success('School created successfully!');

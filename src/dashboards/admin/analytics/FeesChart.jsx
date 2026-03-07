@@ -52,7 +52,7 @@ const FeesChart = () => {
   const total = data.reduce((sum, item) => sum + item.value, 0);
 
   return (
-    <div className="h-64">
+    <div className="h-69">
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie
@@ -74,7 +74,7 @@ const FeesChart = () => {
         </PieChart>
       </ResponsiveContainer>
       
-      <div className="mt-4 grid grid-cols-2 gap-2">
+      <div className="mt-4 grid grid-cols-2 card p-3 gap-2">
         {data.map((item, index) => (
           <div key={item.name} className="flex items-center justify-between p-2 bg-gray-50 rounded">
             <div className="flex items-center">

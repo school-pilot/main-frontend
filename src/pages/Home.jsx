@@ -37,7 +37,7 @@ const Home = () => {
         </div>
       </header>
       {/* hero section */}
-      <div className="w-full h-[70vh] relative overflow-hidden">
+      <div className=" w-full h-[100vh] relative overflow-hidden">
         <div className='w-full absolute p-4 left-0 bottom-0 z-30 bg-blue-200/70 backdrop-blur  h-full flex justify-center gap-1 text-center flex-col items-center'>
           <h1 className='text-2xl md:text-4xl font-semibold'>Welcome To School Pilot</h1>
           <p className='text-base md:text-lg text-gray-400'>a place where excellent mett's properity and greatness</p>
@@ -56,7 +56,7 @@ const Home = () => {
       </div>
 
       {/* stats */}
-      <div className='md:w-[95%] p-6 md:p-0 max-w-6xl mx-auto mt-20 gap-6 grid md:grid-cols-3 '>
+      <div className='box md:w-[95%] p-6 md:p-0 max-w-6xl mx-auto mt-20 gap-6 grid md:grid-cols-3 '>
         {
           statsArray.map((stat, index) => (
             <div key={index} className='border border-gray-100 rounded-md shadow-xs p-6 hover:-translate-y-2 transition duration-500'>
@@ -82,7 +82,7 @@ const Home = () => {
       </div>
 
       {/* about us */}
-      <div className='w-[95%] h-auto max-w-6xl mt-20 mx-auto'>
+      <div className=' box w-[95%] h-auto max-w-6xl mt-20 mx-auto'>
         {/* <h1 className='text-center text-2xl md:text-3xl font-bold'>About Us</h1> */}
         <div className='grid gap-6 md:grid-cols-2'>
           <div className='flex flex-col gap-8 md:gap-10'>
@@ -128,7 +128,7 @@ const Home = () => {
       </div>
 
       {/* testimonials */}
-      <div className='w-[95%] h-auto max-w-6xl mt-20 mx-auto'>
+      <div className='box w-[95%] h-auto max-w-6xl mt-20 mx-auto'>
         <h1 className='text-center text-2xl md:text-3xl font-bold'>What Our client Says</h1>
         <div className={'w-full overflow-x-auto scrollbar-hide '}>
           <div className={`flex justify-start gap-6 pl-4 md:px-0 md:gap-4 py-6 transition-all ease-linear`}

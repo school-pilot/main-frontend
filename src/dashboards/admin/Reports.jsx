@@ -40,14 +40,14 @@ const Reports = () => {
       setLoading(true);
       const [attendanceRes, feesRes, academicsRes, studentsRes, teachersRes] =
         await Promise.all([
-          reportsAPI.getAttendanceReports(),
-          reportsAPI.getFeesReports(),
-          reportsAPI.getAcademicsReports(),
+          reportsAPI.attendance(),
+          reportsAPI.fees(),
+          reportsAPI.academics(),
           studentsAPI.getAll(),
           teachersAPI.getAll(),
         ]);
 
-      const feesInvoices = await feesAPI.getInvoices();
+      const feesInvoices = await feesAPI.invoices();
       const paidFees = feesInvoices.data.filter(inv => inv.status === 'paid');
 
       setReportData({
