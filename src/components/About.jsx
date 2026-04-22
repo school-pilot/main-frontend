@@ -210,7 +210,7 @@ const About = () => {
             className="space-y-6"
           >
             <motion.p variants={fadeUp} className="text-gray-700 leading-relaxed">
-              Back in 2016, our founder Maria was a school principal drowning in paperwork. 
+              Back in 2016, our founder marvelous was a school principal drowning in paperwork. 
               Attendance sheets, report cards, parent emails — it was taking up 20 hours of her week.
             </motion.p>
             <motion.p variants={fadeUp} className="text-gray-700 leading-relaxed">
