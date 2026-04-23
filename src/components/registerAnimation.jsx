@@ -221,7 +221,7 @@ const RegisterAnimation = () => {
           {" "}
           <motion.button
             onClick={() => navigate(-1)}
-            className="sm:hidden flex border boreder-[#214f77] items-center gap-2 text-gray-600 mt-6 mb-0.5 px-4 py-1 rounded-lg hover:bg-gray-50 transition-colors"
+            className="sm:hidden flex items-center gap-2 text-gray-600 mt-6 mb-0.5 px-4 py-1 rounded-lg hover:bg-gray-50 transition-colors"
             whileHover={{ x: -5 }}
             whileTap={{ scale: 0.95 }}
           >
