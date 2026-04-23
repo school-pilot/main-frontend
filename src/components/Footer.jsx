@@ -145,7 +145,7 @@ const Footer = () => {
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 px-6 py-3 rounded-r-lg text-white font-medium flex items-center gap-2 transition"
+                className="bg-gradient-to-r from-indigo-500 to-[#214f77] hover:from-blue-700 hover:to-indigo-700 px-6 py-3 rounded-r-lg text-white font-medium flex items-center gap-2 transition"
               >
                 Subscribe
                 <Send className="w-4 h-4" />
@@ -157,7 +157,7 @@ const Footer = () => {
         {/* Bottom bar */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 pt-8">
           <p className="text-gray-500 text-sm text-center">
-            © 2025 SchoolPilot. All rights reserved. Made with ❤️ for educators.
+            © 2025 SchoolPilot. All rights reserved. Made by School Pilot dev for educators.
           </p>
           <div className="flex gap-6 text-sm">
             <a href="#" className="text-gray-500 hover:text-gray-400 transition">Privacy Policy</a>

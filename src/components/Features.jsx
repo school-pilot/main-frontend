@@ -14,6 +14,7 @@ import {
   Clock,
   Award
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Features = () => {
   const ref = React.useRef(null);
@@ -305,16 +306,18 @@ const Features = () => {
         No pressure. No hidden fees. Just register your school and we'll get in touch.
       </p>
     </div>
-    <motion.button
+    <Link to='/register'> <motion.button
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       className="bg-gray-900 text-white px-8 py-3 rounded-full font-medium shadow-md hover:shadow-lg hover:bg-gray-800 transition-all duration-300 flex items-center gap-2 group"
     >
+      Click to Start
        
       <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
       </svg>
-    </motion.button>
+    </motion.button></Link>
+   
   </div>
 </div>
         </motion.div>

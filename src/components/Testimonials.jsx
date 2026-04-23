@@ -64,7 +64,7 @@ const Testimonials = () => {
                     }
                 `}
             </style>
-            <section className="bg-[#FAFAFA] py-16 px-4">
+            <section className="bg-[#fff8ec] py-16 px-4">
                 <div className="max-w-6xl mx-auto">
 
                     <div className="text-center mb-8">
@@ -82,8 +82,8 @@ const Testimonials = () => {
                     <div className="space-y-6">
                         {rows.map((row, rowIndex) => (
                             <div key={rowIndex} className="relative overflow-hidden">
-                                <div className="absolute left-0 top-0 bottom-0 w-28 bg-linear-to-r from-[#FAFAFA] to-transparent z-10 pointer-events-none"></div>
-                                <div className="absolute right-0 top-0 bottom-0 w-28 bg-linear-to-l from-[#FAFAFA] to-transparent z-10 pointer-events-none"></div>
+                                <div className="absolute left-0 top-0 bottom-0 w-2 sm:w-10 bg-linear-to-r from-[#fff8ec] to-transparent z-10 pointer-events-none"></div>
+                                <div className="absolute right-0 top-0 bottom-0 w-2 sm:w-10 bg-linear-to-l from-[#fff8ec] to-transparent z-10 pointer-events-none"></div>
 
                                 <div className={`flex gap-6 ${row.className}`}>
                                     {[...testimonials.slice(row.start, row.end), ...testimonials.slice(row.start, row.end)].map((testimonial, index) =>

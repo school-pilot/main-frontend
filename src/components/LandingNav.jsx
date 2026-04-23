@@ -29,14 +29,13 @@ const LandingNav = () => {
       },
     },
     scrolled: {
-      background: "rgba(255, 255, 255, 0.1)", // transparent glass color
+      background: "rgba(255, 255, 255)", // transparent glass color
       backdropFilter: "blur(12px)",
       WebkitBackdropFilter: "blur(12px)", // for Safari
-      border: "1px solid rgba(255, 255, 255, 0.2)", // subtle glass edge
+      border: "1px solid rgba(255, 255, 255)", // subtle glass edge
       boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
       borderRadius: "12px", // smooth edges (optional)
       transition: "all 0.3s ease",
-      textShadow: "0 1px 3px rgba(33, 4, 255, 0.5)", // subtle text glow
       color: "rgba(255, 255, 255, 0.95)", // vibrant text color
     },
     default: {
@@ -199,7 +198,7 @@ const LandingNav = () => {
                       e.preventDefault();
                       scrollToSection(item);
                     }}
-                    className="text-gray-700 hover:text-[#2104FF] transition-colors duration-200 font-medium cursor-pointer"
+                    className="text-gray-700 hover:text-[#214f77] transition-colors duration-200 Text font-medium cursor-pointer"
                   >
                     {item === "why-us"
                       ? "Why Us"
@@ -221,7 +220,7 @@ const LandingNav = () => {
                 animate="visible"
                 whileHover="hover"
                 whileTap="tap"
-                className="bg-[#2104FF] text-white px-6 py-2.5 rounded-full hover:bg-blue-600 transition-all duration-300 font-semibold shadow-lg"
+                className="Base text-white px-6 py-2.5 rounded-full hover:bg-blue-600 transition-all duration-300 Text shadow-lg"
               >
                 Login
               </motion.button>
@@ -235,7 +234,7 @@ const LandingNav = () => {
                 animate="visible"
                 whileHover="hover"
                 whileTap="tap"
-                className="border-2 border-[#2104FF] text-[#2104FF] px-6 py-2.5 rounded-full hover:bg-[#2104FF] hover:text-white transition-all duration-300 font-semibold"
+                className="border-2 border-[#214f77] text-[#214f77] px-6 py-2.5 rounded-full hover:bg-[#214f77] hover:text-white transition-all duration-300 Teat"
               >
                 Register
               </motion.button>
@@ -254,19 +253,19 @@ const LandingNav = () => {
               <motion.span
                 variants={lineVariants.top}
                 animate={mobileMenuOpen ? "open" : "closed"}
-                className="w-full h-1 bg-[#2104FF] rounded-full"
+                className="w-full h-1 bg-[#214f77] rounded-full"
                 transition={{ duration: 0.3 }}
               />
               <motion.span
                 variants={lineVariants.middle}
                 animate={mobileMenuOpen ? "open" : "closed"}
-                className="w-full h-1 bg-[#2104FF] rounded-full"
+                className="w-full h-1 bg-[#214f77] rounded-full"
                 transition={{ duration: 0.3 }}
               />
               <motion.span
                 variants={lineVariants.bottom}
                 animate={mobileMenuOpen ? "open" : "closed"}
-                className="w-full h-1 bg-[#2104FF] rounded-full"
+                className="w-full h-1 bg-[#214f77] rounded-full"
                 transition={{ duration: 0.3 }}
               />
             </motion.div>
@@ -305,7 +304,7 @@ const LandingNav = () => {
                         e.preventDefault();
                         scrollToSection(item);
                       }}
-                      className="text-gray-700 hover:text-[#2104FF] text-lg font-medium py-2 border-b border-gray-100 transition-colors"
+                      className="text-gray-700 hover:text-[##214f77] text-lg font-medium py-2 border-b border-gray-100 transition-colors"
                     >
                       {item === "why-us"
                         ? "Why Us"
@@ -322,7 +321,7 @@ const LandingNav = () => {
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className="bg-[#2104FF] text-white px-6 py-3 rounded-full font-semibold w-full"
+                      className="bg-[#214f77] text-white px-6 py-3 rounded-full font-semibold w-full"
                     >
                       Login
                     </motion.button>
@@ -333,7 +332,7 @@ const LandingNav = () => {
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className="border-2 border-[#2104FF] text-[#2104FF] px-6 py-3 rounded-full font-semibold w-full"
+                      className="border-2 border-[#214f77] text-[#214f77] px-6 py-3 rounded-full font-semibold w-full"
                     >
                       Register
                     </motion.button>

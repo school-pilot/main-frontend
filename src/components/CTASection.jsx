@@ -10,7 +10,7 @@ const CTASection = () => {
   ];
 
   return (
-    <section id='CTASection' className="relative bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900 py-20 md:py-28 overflow-hidden">
+    <section id='CTASection' className="relative bg-gradient-to-br from-[#214f77] via-[#214f77] to-indigo-900 py-20 md:py-28 overflow-hidden">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/20 rounded-full blur-3xl"></div>
@@ -63,7 +63,7 @@ const CTASection = () => {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="group bg-white text-blue-700 px-8 py-4 rounded-full font-bold text-lg shadow-xl hover:shadow-2xl transition-all duration-300 inline-flex items-center gap-2"
+            className="group bg-white text-[#214f77] px-8 py-4 rounded-full font-bold text-lg shadow-xl hover:shadow-2xl transition-all duration-300 inline-flex items-center gap-2"
           >
             Create your account
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />

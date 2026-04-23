@@ -98,7 +98,7 @@ const Landing = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
-        className="absolute inset-0 bg-gradient-to-br from-[#2104FF] via-[#3b1eff] to-green-300"
+          className="absolute inset-0 Base"
       />
       
       {/* Animated Background Patterns */}
@@ -204,7 +204,7 @@ const Landing = () => {
                 variants={buttonVariants}
                 whileHover="hover"
                 whileTap="tap"
-                className="group bg-white text-[#2104FF] px-8 py-3 rounded-full font-bold text-lg shadow-2xl hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2"
+                className="group bg-white text-[#214f77] px-8 py-3 rounded-full font-bold text-lg shadow-2xl hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2"
               >
                 Get Started
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
