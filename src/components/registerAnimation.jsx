@@ -531,7 +531,7 @@ const RegisterAnimation = () => {
             <p className="text-center text-sm text-gray-600">
               Already have an account?{" "}
               <a
-                href="/"
+                href="/login"
                 className="text-blue-600 font-semibold hover:underline"
               >
                 Sign In
