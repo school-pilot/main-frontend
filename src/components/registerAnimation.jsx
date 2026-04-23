@@ -13,7 +13,7 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import Loader from "./Loader";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 /* ================= Animations ================= */
@@ -147,7 +147,7 @@ const RegisterAnimation = () => {
         toast.success(
           result.hasTokens
             ? "Registration successful! You are now logged in."
-            : "Registration successful! Please login."
+            : "Registration successful! Please login.",
         );
 
         // Only navigate if we have tokens (auto-login)
@@ -171,7 +171,7 @@ const RegisterAnimation = () => {
       setLoading(false);
       console.error("🔥 Registration error caught:", error);
       toast.error(
-        "An unexpected error occurred. Please check your network connection."
+        "An unexpected error occurred. Please check your network connection.",
       );
     }
   };
@@ -216,17 +216,21 @@ const RegisterAnimation = () => {
         initial="hidden"
         animate="visible"
       >
-        {/* Back button for mobile */}
-        <motion.button
-          onClick={() => navigate(-1)}
-          className="sm:hidden flex items-center gap-2 text-gray-600 mb-1 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
-          whileHover={{ x: -5 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Back
-        </motion.button>
-
+<div>  {/* Back button for mobile */}
+        <Link to="/">
+          {" "}
+          <motion.button
+            onClick={() => navigate(-1)}
+            className="sm:hidden flex border boreder-[#214f77] items-center gap-2 text-gray-600 mt-6 mb-0.5 px-4 py-1 rounded-lg hover:bg-gray-50 transition-colors"
+            whileHover={{ x: -5 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back
+          </motion.button>
+        </Link></div>
+        
+      
         <div className="rounded-xl shadow-xl bg-white/90 backdrop-blur border border-gray-100 overflow-hidden">
           {/* Logo and Header */}
           <div className="p-6 border-b border-gray-100">
