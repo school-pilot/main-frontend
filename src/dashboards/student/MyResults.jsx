@@ -1,5 +1,5 @@
-import { motion } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
 import {
   FileText,
   TrendingUp,
@@ -17,11 +17,11 @@ import {
   Target,
   LineChart,
   Trophy,
-} from 'lucide-react';
-import { resultsAPI } from '../../services/api';
-import { useAuth } from '../../context/AuthContext';
-import toast from 'react-hot-toast';
-import Loader from '../../components/Loader';
+} from "lucide-react";
+import { resultsAPI } from "../../services/api";
+import { useAuth } from "../../context/AuthContext";
+import toast from "react-hot-toast";
+import Loader from "../../components/Loader";
 
 const MyResults = () => {
   const { user } = useAuth();
@@ -35,8 +35,8 @@ const MyResults = () => {
     totalScore: 0,
     gpa: 0,
   });
-  const [selectedTerm, setSelectedTerm] = useState('all');
-  const [selectedSubject, setSelectedSubject] = useState('all');
+  const [selectedTerm, setSelectedTerm] = useState("all");
+  const [selectedSubject, setSelectedSubject] = useState("all");
   const [performanceData, setPerformanceData] = useState([]);
 
   useEffect(() => {
@@ -49,33 +49,51 @@ const MyResults = () => {
     setLoading(true);
     try {
       const response = await resultsAPI.studentResults(user.id);
-      const allResults = response.data || [];
-      
+
+      const data =
+        response?.data?.data || 
+        response?.data?.results || 
+        response?.data ||
+        [];
+
+      const allResults = Array.isArray(data) ? data : [];
+
       // Filter results based on selections
       let filteredResults = allResults;
-      if (selectedTerm !== 'all') {
-        filteredResults = filteredResults.filter(r => r.term === selectedTerm);
+      if (selectedTerm !== "all") {
+        filteredResults = filteredResults.filter(
+          (r) => r.term === selectedTerm,
+        );
       }
-      if (selectedSubject !== 'all') {
-        filteredResults = filteredResults.filter(r => r.subject === selectedSubject);
+      if (selectedSubject !== "all") {
+        filteredResults = filteredResults.filter(
+          (r) => r.subject === selectedSubject,
+        );
       }
-      
+
       setResults(filteredResults);
-      
+
       // Calculate summary and performance data
       if (filteredResults.length > 0) {
-        const totalScore = filteredResults.reduce((sum, r) => sum + (r.score || 0), 0);
+        const totalScore = filteredResults.reduce(
+          (sum, r) => sum + (r.score || 0),
+          0,
+        );
         const averageScore = totalScore / filteredResults.length;
-        const highestScore = Math.max(...filteredResults.map(r => r.score || 0));
-        const lowestScore = Math.min(...filteredResults.map(r => r.score || 0));
-        
+        const highestScore = Math.max(
+          ...filteredResults.map((r) => r.score || 0),
+        );
+        const lowestScore = Math.min(
+          ...filteredResults.map((r) => r.score || 0),
+        );
+
         // Calculate GPA
         const totalGPA = filteredResults.reduce((sum, r) => {
           const gradeInfo = getGrade(r.score);
           return sum + gradeInfo.gpa;
         }, 0);
         const averageGPA = totalGPA / filteredResults.length;
-        
+
         setSummary({
           average: averageScore.toFixed(1),
           highest: highestScore,
@@ -84,7 +102,7 @@ const MyResults = () => {
           totalScore: totalScore,
           gpa: averageGPA.toFixed(2),
         });
-        
+
         // Prepare performance data for chart
         const performanceChart = filteredResults.map((result, index) => ({
           subject: result.subject,
@@ -95,55 +113,133 @@ const MyResults = () => {
         setPerformanceData(performanceChart);
       }
     } catch (error) {
-      toast.error('Failed to fetch results');
+      toast.error("Failed to fetch results");
     } finally {
       setLoading(false);
     }
   };
 
   const getGrade = (score) => {
-    if (score >= 90) return { grade: 'A+', color: 'text-green-600', bgColor: 'bg-green-100', gpa: 4.0 };
-    if (score >= 85) return { grade: 'A', color: 'text-green-600', bgColor: 'bg-green-100', gpa: 3.7 };
-    if (score >= 80) return { grade: 'A-', color: 'text-green-600', bgColor: 'bg-green-100', gpa: 3.3 };
-    if (score >= 75) return { grade: 'B+', color: 'text-blue-600', bgColor: 'bg-blue-100', gpa: 3.0 };
-    if (score >= 70) return { grade: 'B', color: 'text-blue-600', bgColor: 'bg-blue-100', gpa: 2.7 };
-    if (score >= 65) return { grade: 'B-', color: 'text-blue-600', bgColor: 'bg-blue-100', gpa: 2.3 };
-    if (score >= 60) return { grade: 'C+', color: 'text-yellow-600', bgColor: 'bg-yellow-100', gpa: 2.0 };
-    if (score >= 55) return { grade: 'C', color: 'text-yellow-600', bgColor: 'bg-yellow-100', gpa: 1.7 };
-    if (score >= 50) return { grade: 'C-', color: 'text-yellow-600', bgColor: 'bg-yellow-100', gpa: 1.3 };
-    if (score >= 45) return { grade: 'D', color: 'text-gray-600', bgColor: 'bg-gray-100', gpa: 1.0 };
-    return { grade: 'F', color: 'text-red-600', bgColor: 'bg-red-100', gpa: 0.0 };
+    if (score >= 90)
+      return {
+        grade: "A+",
+        color: "text-green-600",
+        bgColor: "bg-green-100",
+        gpa: 4.0,
+      };
+    if (score >= 85)
+      return {
+        grade: "A",
+        color: "text-green-600",
+        bgColor: "bg-green-100",
+        gpa: 3.7,
+      };
+    if (score >= 80)
+      return {
+        grade: "A-",
+        color: "text-green-600",
+        bgColor: "bg-green-100",
+        gpa: 3.3,
+      };
+    if (score >= 75)
+      return {
+        grade: "B+",
+        color: "text-blue-600",
+        bgColor: "bg-blue-100",
+        gpa: 3.0,
+      };
+    if (score >= 70)
+      return {
+        grade: "B",
+        color: "text-blue-600",
+        bgColor: "bg-blue-100",
+        gpa: 2.7,
+      };
+    if (score >= 65)
+      return {
+        grade: "B-",
+        color: "text-blue-600",
+        bgColor: "bg-blue-100",
+        gpa: 2.3,
+      };
+    if (score >= 60)
+      return {
+        grade: "C+",
+        color: "text-yellow-600",
+        bgColor: "bg-yellow-100",
+        gpa: 2.0,
+      };
+    if (score >= 55)
+      return {
+        grade: "C",
+        color: "text-yellow-600",
+        bgColor: "bg-yellow-100",
+        gpa: 1.7,
+      };
+    if (score >= 50)
+      return {
+        grade: "C-",
+        color: "text-yellow-600",
+        bgColor: "bg-yellow-100",
+        gpa: 1.3,
+      };
+    if (score >= 45)
+      return {
+        grade: "D",
+        color: "text-gray-600",
+        bgColor: "bg-gray-100",
+        gpa: 1.0,
+      };
+    return {
+      grade: "F",
+      color: "text-red-600",
+      bgColor: "bg-red-100",
+      gpa: 0.0,
+    };
   };
 
   const getRemarks = (score) => {
-    if (score >= 90) return { text: 'Excellent', color: 'text-green-600', bg: 'bg-green-50' };
-    if (score >= 80) return { text: 'Very Good', color: 'text-green-600', bg: 'bg-green-50' };
-    if (score >= 70) return { text: 'Good', color: 'text-blue-600', bg: 'bg-blue-50' };
-    if (score >= 60) return { text: 'Satisfactory', color: 'text-yellow-600', bg: 'bg-yellow-50' };
-    if (score >= 50) return { text: 'Needs Improvement', color: 'text-orange-600', bg: 'bg-orange-50' };
-    return { text: 'Poor', color: 'text-red-600', bg: 'bg-red-50' };
+    if (score >= 90)
+      return { text: "Excellent", color: "text-green-600", bg: "bg-green-50" };
+    if (score >= 80)
+      return { text: "Very Good", color: "text-green-600", bg: "bg-green-50" };
+    if (score >= 70)
+      return { text: "Good", color: "text-blue-600", bg: "bg-blue-50" };
+    if (score >= 60)
+      return {
+        text: "Satisfactory",
+        color: "text-yellow-600",
+        bg: "bg-yellow-50",
+      };
+    if (score >= 50)
+      return {
+        text: "Needs Improvement",
+        color: "text-orange-600",
+        bg: "bg-orange-50",
+      };
+    return { text: "Poor", color: "text-red-600", bg: "bg-red-50" };
   };
 
   const getProgressColor = (percentage) => {
-    if (percentage >= 90) return 'bg-green-500';
-    if (percentage >= 80) return 'bg-green-400';
-    if (percentage >= 70) return 'bg-blue-500';
-    if (percentage >= 60) return 'bg-yellow-500';
-    if (percentage >= 50) return 'bg-orange-500';
-    return 'bg-red-500';
+    if (percentage >= 90) return "bg-green-500";
+    if (percentage >= 80) return "bg-green-400";
+    if (percentage >= 70) return "bg-blue-500";
+    if (percentage >= 60) return "bg-yellow-500";
+    if (percentage >= 50) return "bg-orange-500";
+    return "bg-red-500";
   };
 
   const handlePrint = () => {
     window.print();
-    toast.success('Printing results...');
+    toast.success("Printing results...");
   };
 
   const handleDownload = () => {
-    toast.success('Downloading results report...');
+    toast.success("Downloading results report...");
   };
 
-  const subjects = [...new Set(results.map(r => r.subject))];
-  const terms = [...new Set(results.map(r => r.term))];
+  const subjects = [...new Set(results.map((r) => r.subject))];
+  const terms = [...new Set(results.map((r) => r.term))];
 
   if (loading) {
     return <Loader fullScreen />;
@@ -159,7 +255,9 @@ const MyResults = () => {
       >
         <div>
           <h1 className="text-2xl font-bold text-gray-900">My Results</h1>
-          <p className="text-gray-600">View your academic performance and results</p>
+          <p className="text-gray-600">
+            View your academic performance and results
+          </p>
         </div>
 
         <div className="flex items-center space-x-3">
@@ -313,8 +411,8 @@ const MyResults = () => {
           <div className="flex items-end">
             <button
               onClick={() => {
-                setSelectedTerm('all');
-                setSelectedSubject('all');
+                setSelectedTerm("all");
+                setSelectedSubject("all");
               }}
               className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200"
             >
@@ -333,14 +431,18 @@ const MyResults = () => {
           className="lg:col-span-2 bg-white rounded-xl shadow-sm overflow-hidden"
         >
           <div className="p-6 border-b border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-900">Detailed Results</h2>
+            <h2 className="text-lg font-semibold text-gray-900">
+              Detailed Results
+            </h2>
             <p className="text-gray-600">All your assessment scores</p>
           </div>
 
           {results.length === 0 ? (
             <div className="p-8 text-center">
               <FileText className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-              <p className="text-gray-500">No results found for the selected filters</p>
+              <p className="text-gray-500">
+                No results found for the selected filters
+              </p>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -360,7 +462,7 @@ const MyResults = () => {
                   {results.map((result, index) => {
                     const gradeInfo = getGrade(result.score);
                     const remarks = getRemarks(result.score);
-                    
+
                     return (
                       <motion.tr
                         key={index}
@@ -371,7 +473,9 @@ const MyResults = () => {
                         <td className="table-cell">
                           <div className="flex items-center">
                             <BookOpen className="w-4 h-4 text-gray-400 mr-3" />
-                            <span className="font-medium">{result.subject}</span>
+                            <span className="font-medium">
+                              {result.subject}
+                            </span>
                           </div>
                         </td>
                         <td className="table-cell">{result.assessment}</td>
@@ -389,15 +493,21 @@ const MyResults = () => {
                           </div>
                         </td>
                         <td className="table-cell">
-                          <span className={`px-3 py-1 rounded-full text-sm font-medium ${gradeInfo.bgColor} ${gradeInfo.color}`}>
+                          <span
+                            className={`px-3 py-1 rounded-full text-sm font-medium ${gradeInfo.bgColor} ${gradeInfo.color}`}
+                          >
                             {gradeInfo.grade}
                           </span>
                         </td>
                         <td className="table-cell">
-                          <span className="font-medium">{gradeInfo.gpa.toFixed(1)}</span>
+                          <span className="font-medium">
+                            {gradeInfo.gpa.toFixed(1)}
+                          </span>
                         </td>
                         <td className="table-cell">
-                          <span className={`px-3 py-1 rounded-full text-sm ${remarks.bg} ${remarks.color}`}>
+                          <span
+                            className={`px-3 py-1 rounded-full text-sm ${remarks.bg} ${remarks.color}`}
+                          >
                             {remarks.text}
                           </span>
                         </td>
@@ -417,7 +527,9 @@ const MyResults = () => {
           className="bg-white rounded-xl shadow-sm p-6"
         >
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-semibold text-gray-900">Performance Insights</h2>
+            <h2 className="text-lg font-semibold text-gray-900">
+              Performance Insights
+            </h2>
             <LineChart className="w-5 h-5 text-gray-400" />
           </div>
 
@@ -425,17 +537,35 @@ const MyResults = () => {
             <div className="space-y-6">
               {/* Grade Distribution */}
               <div>
-                <h3 className="text-sm font-medium text-gray-700 mb-3">Grade Distribution</h3>
+                <h3 className="text-sm font-medium text-gray-700 mb-3">
+                  Grade Distribution
+                </h3>
                 <div className="space-y-2">
-                  {['A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D', 'F'].map((grade) => {
-                    const count = results.filter(r => getGrade(r.score).grade === grade).length;
+                  {[
+                    "A+",
+                    "A",
+                    "A-",
+                    "B+",
+                    "B",
+                    "B-",
+                    "C+",
+                    "C",
+                    "C-",
+                    "D",
+                    "F",
+                  ].map((grade) => {
+                    const count = results.filter(
+                      (r) => getGrade(r.score).grade === grade,
+                    ).length;
                     const percentage = (count / results.length) * 100;
-                    
+
                     return (
                       <div key={grade} className="space-y-1">
                         <div className="flex justify-between text-sm">
                           <span className="text-gray-600">{grade}</span>
-                          <span className="font-medium">{count} ({percentage.toFixed(0)}%)</span>
+                          <span className="font-medium">
+                            {count} ({percentage.toFixed(0)}%)
+                          </span>
                         </div>
                         <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
                           <div
@@ -451,15 +581,20 @@ const MyResults = () => {
 
               {/* Overall Assessment */}
               <div>
-                <h3 className="text-sm font-medium text-gray-700 mb-3">Overall Assessment</h3>
-                <div className={`p-4 rounded-lg ${getRemarks(summary.average).bg}`}>
+                <h3 className="text-sm font-medium text-gray-700 mb-3">
+                  Overall Assessment
+                </h3>
+                <div
+                  className={`p-4 rounded-lg ${getRemarks(summary.average).bg}`}
+                >
                   <div className="flex items-start">
                     <div className="flex-shrink-0">
                       <CheckCircle className="w-5 h-5 text-green-500" />
                     </div>
                     <div className="ml-3">
                       <p className="text-sm font-medium">
-                        Overall Performance: <span className={getRemarks(summary.average).color}>
+                        Overall Performance:{" "}
+                        <span className={getRemarks(summary.average).color}>
                           {getRemarks(summary.average).text}
                         </span>
                       </p>
@@ -470,19 +605,28 @@ const MyResults = () => {
 
               {/* Top Subjects */}
               <div>
-                <h3 className="text-sm font-medium text-gray-700 mb-3">Top Subjects</h3>
+                <h3 className="text-sm font-medium text-gray-700 mb-3">
+                  Top Subjects
+                </h3>
                 <div className="space-y-2">
                   {performanceData
                     .sort((a, b) => b.score - a.score)
                     .slice(0, 3)
                     .map((subject, index) => (
-                      <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                      <div
+                        key={index}
+                        className="flex items-center justify-between p-2 bg-gray-50 rounded"
+                      >
                         <div className="flex items-center">
-                          <Trophy className={`w-4 h-4 mr-2 ${index === 0 ? 'text-yellow-500' : 'text-gray-400'}`} />
+                          <Trophy
+                            className={`w-4 h-4 mr-2 ${index === 0 ? "text-yellow-500" : "text-gray-400"}`}
+                          />
                           <span className="text-sm">{subject.subject}</span>
                         </div>
                         <div className="text-right">
-                          <span className="text-sm font-medium">{subject.score}%</span>
+                          <span className="text-sm font-medium">
+                            {subject.score}%
+                          </span>
                           <span className={`ml-2 text-xs ${subject.color}`}>
                             {subject.grade}
                           </span>
@@ -509,7 +653,9 @@ const MyResults = () => {
           className="bg-white rounded-xl shadow-sm p-6"
         >
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-semibold text-gray-900">Recommendations & Actions</h2>
+            <h2 className="text-lg font-semibold text-gray-900">
+              Recommendations & Actions
+            </h2>
             <Target className="w-5 h-5 text-gray-400" />
           </div>
 
@@ -525,15 +671,21 @@ const MyResults = () => {
               <ul className="space-y-2 text-sm text-green-700">
                 <li className="flex items-start">
                   <div className="flex-shrink-0 w-4 h-4 mt-0.5">•</div>
-                  <span className="ml-2">Excellent performance in Mathematics and Physics</span>
+                  <span className="ml-2">
+                    Excellent performance in Mathematics and Physics
+                  </span>
                 </li>
                 <li className="flex items-start">
                   <div className="flex-shrink-0 w-4 h-4 mt-0.5">•</div>
-                  <span className="ml-2">Consistent improvement over the terms</span>
+                  <span className="ml-2">
+                    Consistent improvement over the terms
+                  </span>
                 </li>
                 <li className="flex items-start">
                   <div className="flex-shrink-0 w-4 h-4 mt-0.5">•</div>
-                  <span className="ml-2">Strong analytical skills demonstrated in science subjects</span>
+                  <span className="ml-2">
+                    Strong analytical skills demonstrated in science subjects
+                  </span>
                 </li>
               </ul>
             </div>
@@ -544,20 +696,28 @@ const MyResults = () => {
                 <div className="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center mr-3">
                   <AlertCircle className="w-4 h-4 text-yellow-600" />
                 </div>
-                <h3 className="font-medium text-yellow-900">Areas for Improvement</h3>
+                <h3 className="font-medium text-yellow-900">
+                  Areas for Improvement
+                </h3>
               </div>
               <ul className="space-y-2 text-sm text-yellow-700">
                 <li className="flex items-start">
                   <div className="flex-shrink-0 w-4 h-4 mt-0.5">•</div>
-                  <span className="ml-2">Could improve in English and History subjects</span>
+                  <span className="ml-2">
+                    Could improve in English and History subjects
+                  </span>
                 </li>
                 <li className="flex items-start">
                   <div className="flex-shrink-0 w-4 h-4 mt-0.5">•</div>
-                  <span className="ml-2">Focus on essay writing and creative expression</span>
+                  <span className="ml-2">
+                    Focus on essay writing and creative expression
+                  </span>
                 </li>
                 <li className="flex items-start">
                   <div className="flex-shrink-0 w-4 h-4 mt-0.5">•</div>
-                  <span className="ml-2">Practice time management during examinations</span>
+                  <span className="ml-2">
+                    Practice time management during examinations
+                  </span>
                 </li>
               </ul>
             </div>
@@ -565,7 +725,9 @@ const MyResults = () => {
 
           {/* Action Items */}
           <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-            <h3 className="font-medium text-blue-900 mb-3">Recommended Actions</h3>
+            <h3 className="font-medium text-blue-900 mb-3">
+              Recommended Actions
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <button className="flex items-center justify-center p-3 bg-white text-blue-700 rounded-lg hover:bg-blue-100 border border-blue-200">
                 <Clock className="w-4 h-4 mr-2" />
@@ -590,7 +752,9 @@ const MyResults = () => {
         animate={{ opacity: 1, y: 0 }}
         className="bg-white rounded-xl shadow-sm p-6"
       >
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Export Results</h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          Export Results
+        </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <button className="p-4 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors">
             <div className="flex items-center">
@@ -606,7 +770,9 @@ const MyResults = () => {
               <FileText className="w-5 h-5 mr-3" />
               <div className="text-left">
                 <p className="font-medium">All Terms Report</p>
-                <p className="text-sm text-green-600">Complete academic history</p>
+                <p className="text-sm text-green-600">
+                  Complete academic history
+                </p>
               </div>
             </div>
           </button>
@@ -615,7 +781,9 @@ const MyResults = () => {
               <FileText className="w-5 h-5 mr-3" />
               <div className="text-left">
                 <p className="font-medium">Performance Chart</p>
-                <p className="text-sm text-purple-600">Visual progress report</p>
+                <p className="text-sm text-purple-600">
+                  Visual progress report
+                </p>
               </div>
             </div>
           </button>

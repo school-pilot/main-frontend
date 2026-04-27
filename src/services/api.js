@@ -160,6 +160,8 @@ export const communicationsAPI = {
   announcements: () => api.get("/api/communications/announcements/"),
   createAnnouncement: (data) =>
     api.post("/api/communications/announcements/", data),
+  updateAnnouncement: (id, data) =>
+    api.patch(`/api/communications/announcements/${id}/update/`, data),
   notifications: async () => {
     try {
       const response = await api.get("/api/communications/notifications/");
@@ -169,6 +171,10 @@ export const communicationsAPI = {
       throw error;
     }
   },
+  createNotification: (data) =>
+    api.post("/api/communications/notifications/create/", data),
+  updateNotification: (id, data) =>
+    api.patch(`/api/communications/notifications/${id}/update/`, data),
   markAsRead: (id) => api.patch(`/api/communications/notifications/${id}/read/`),
 };
 
@@ -202,7 +208,7 @@ export const reportsAPI = {
 export const resultsAPI = {
   approve: (data) => api.post("/api/results/approve/", data),
   assessments: () => api.get("/api/results/assessments/"),
-  createAssessments: (data) => ("/api/results/assessments/", data),
+  createAssessments: (data) => api.post("/api/results/assessments/", data),
   classResults: (params) => api.get("/api/results/class/", { params }),
   enterScores: (data) => api.post("/api/results/scores/", data),
   updateScore: (id, data) => api.patch(`/api/results/scores/${id}/`, data),
@@ -216,6 +222,8 @@ export const resultsAPI = {
 export const schoolsAPI = {
   //  Create school with FormData (file upload)
   create: (formData) => api.post("/api/schools/add/", formData),
+  // Get all schools
+  getAll: () => api.get("/api/schools/view-all/"),
   // Sessions
   createSession: (formData) =>
     api.post("/api/schools/session/create/", formData),
@@ -285,6 +293,9 @@ export const teachersAPI = {
       subjects,
     }),
   classes: (id) => api.get(`/api/teachers/${id}/classes/`),
+  assignSubjectsToTeacher: (id, data) =>
+    api.post(`/api/teachers/${id}/assign-subjects/`, data),
+  getTeacherClasses: (id) => api.get(`/api/teachers/${id}/classes/`),
 };
 
 /* =====================================================

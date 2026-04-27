@@ -33,10 +33,14 @@ import SchoolAdminDashboard from "../dashboards/admin/SchoolAdminDashboard";
 import CreateTeacher from "../dashboards/admin/Teachers";
 import CreateStudent from "../dashboards/admin/Students";
 import SchoolSettings from "../dashboards/admin/SchoolSetting";
+import AcademicsManagement from "../dashboards/admin/AcademicsManagement";
+import SessionTermManagement from "../dashboards/admin/SessionTermManagement";
+import AnnouncementsManagement from "../dashboards/admin/AnnouncementsManagement";
+import SubscriptionPlans from "../dashboards/admin/SubscriptionPlans";
+import BulkStudentUpload from "../dashboards/admin/BulkStudentUpload";
+import ResultApproval from "../dashboards/admin/ResultApproval";
 
 /* Admin (Legacy) */
-import Students from "../dashboards/admin/Students";
-import Teachers from "../dashboards/admin/Teachers";
 import Fees from "../dashboards/admin/Fees";
 import Reports from "../dashboards/admin/Reports";
 import TimetableAdmin from "../dashboards/admin/TimetableAdmin";
@@ -55,12 +59,13 @@ import Timetable from "../dashboards/student/Timetable";
 import Profile from "../dashboards/student/Profile";
 import Notifications from "../dashboards/student/Notifications";
 import StudentFees from "../dashboards/student/StudentFees";
-import StudentAttendance from "../dashboards/student/Attendance"
+import StudentAttendance from "../dashboards/student/Attendance";
+
+/* Parent */
+import ParentDashboard from "../dashboards/parent/ParentDashboard";
 
 import Home from "../pages/Home";
 import CreateNotification from "../pages/CreateNotification";
-
-
 
 const AppRoutes = () => {
   const { isAuthenticated, user } = useAuth();
@@ -99,11 +104,8 @@ const AppRoutes = () => {
         }
       />
 
-
-
       {/* ================= AUTH ================= */}
       <Route element={<AuthLayout />}>
-
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
       </Route>
@@ -131,9 +133,24 @@ const AppRoutes = () => {
             <Route path="school-admin">
               <Route index element={<SchoolAdminDashboard />} />
               <Route path="create-teacher" element={<CreateTeacher />} />
-              <Route path="create-notification" element={<CreateNotification />} />
+              <Route
+                path="create-notification"
+                element={<CreateNotification />}
+              />
               <Route path="create-student" element={<CreateStudent />} />
               <Route path="school-settings" element={<SchoolSettings />} />
+              <Route path="academics" element={<AcademicsManagement />} />
+              <Route
+                path="sessions-terms"
+                element={<SessionTermManagement />}
+              />
+              <Route
+                path="announcements"
+                element={<AnnouncementsManagement />}
+              />
+              <Route path="subscriptions" element={<SubscriptionPlans />} />
+              <Route path="bulk-upload" element={<BulkStudentUpload />} />
+              <Route path="result-approval" element={<ResultApproval />} />
             </Route>
           </Route>
 
@@ -146,8 +163,6 @@ const AppRoutes = () => {
             }
           >
             <Route path="admin">
-              <Route path="students" element={<Students />} />
-              <Route path="teachers" element={<Teachers />} />
               <Route path="fees" element={<Fees />} />
               <Route path="reports" element={<Reports />} />
               <Route path="timetable" element={<TimetableAdmin />} />
@@ -181,7 +196,7 @@ const AppRoutes = () => {
           {/* ===== PARENT ===== */}
           <Route element={<RequireRole allowedRoles={["parent"]} />}>
             <Route path="parent">
-              <Route index element={<StudentDashboard />} />
+              <Route index element={<ParentDashboard />} />
             </Route>
           </Route>
         </Route>

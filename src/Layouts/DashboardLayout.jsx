@@ -34,7 +34,11 @@ import {
   Package,
   Layers,
   HelpCircle,
+  FileCheck,
+  Upload,
+  PlusCircle,
 } from "lucide-react";
+import { Announcement, ControlPoint, MoneyOff } from "@mui/icons-material";
 
 const DashboardLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -74,25 +78,39 @@ const DashboardLayout = () => {
       case "school_admin":
         return [
           ...baseItems,
-          { text: "Students", icon: Users, path: "/admin/students" },
-          { text: "Teachers", icon: UserPlus, path: "/admin/teachers" },
-          { text: "Classes", icon: GraduationCap, path: "/admin/classes" },
-          { text: "Subjects", icon: BookOpen, path: "/admin/subjects" },
-          { text: "Sessions", icon: Calendar, path: "/admin/sessions" },
-          { text: "Timetable", icon: Clock, path: "/admin/timetable" },
-          {
-            text: "Attendance",
-            icon: ClipboardCheck,
-            path: "/admin/attendance",
-          },
+          { text: "Students", icon: Users, path: "/school-admin/create-student" },
+          { text: "Teachers", icon: UserPlus, path: "/school-admin/create-teacher" },
+
+          // { text: "Classes", icon: GraduationCap, path: "/admin/classes" },
+
+          // { text: "Subjects", icon: BookOpen, path: "/admin/subjects" },
+
+          // { text: "Sessions", icon: Calendar, path: "/admin/sessions" },
+
+          {text: "Session management", icon: ControlPoint, path:"/school-admin/sessions-terms"},
+          {text: "Subscription Plan", icon: MoneyOff, path: "/school-admin/subscriptions"},
+
+          // { text: "Timetable", icon: Clock, path: "/school-admin/timetable" },
+          // {
+          //   text: "Attendance",
+          //   icon: ClipboardCheck,
+          //   path: "/school-admin/attendance",
+          // },
           {
             text: "Create Notifications",
             icon: Mail,
-            path: "/admin/create-notification",
+            path: "/school-admin/create-notification",
           },
-          { text: "Results", icon: FileText, path: "/admin/results" },
-          { text: "Fees", icon: CreditCard, path: "/admin/fees" },
-          { text: "Reports", icon: BarChart3, path: "/admin/reports" },
+
+           { text: "Result Approval", icon: FileCheck, path: "/school-admin/result-approval" },
+           {text:"BulkStudentUpload", icon: Upload, path:"/school-admin/bulk-upload" },
+          {text:"AnnouncementsManagement", icon: Announcement, path: "/school-admin/announcements" },
+           {text:"AcademicsManagement", icon: PlusCircle, path: "/school-admin/academics" },
+           
+          // i will need to add the following routes to the AppRoutes.jsx file for these to work:
+          // { text: "Fees", icon: CreditCard, path: "/school-admin/fees" },
+          // { text: "Reports", icon: BarChart3, path: "/school-admin/reports" },
+              //  { text: "Results", icon: FileText, path: "/school-admin/results" },
         ];
       case "teacher":
         return [
