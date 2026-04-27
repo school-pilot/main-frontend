@@ -128,6 +128,8 @@ export const academicsAPI = {
   createClasses: (data) => api.post("/api/academics/classes/", data),
   subjects: () => api.get("/api/academics/subjects/"),
   createSubject: (data) => api.post("/api/academics/subjects/", data),
+  updateSubject: (id, data) => api.patch(`/api/academics/subjects/${id}/`, data),
+  deleteSubject: (id) => api.delete(`/api/academics/subjects/${id}/`),
   assignSubjects: (data) => api.post("/api/academics/subjects/assign/", data),
 };
 

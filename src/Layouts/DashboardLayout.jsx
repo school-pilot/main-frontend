@@ -81,21 +81,17 @@ const DashboardLayout = () => {
           { text: "Students", icon: Users, path: "/school-admin/create-student" },
           { text: "Teachers", icon: UserPlus, path: "/school-admin/create-teacher" },
 
-          // { text: "Classes", icon: GraduationCap, path: "/admin/classes" },
+          { text: "Classes", icon: GraduationCap, path: "/school-admin/classes" },
 
-          // { text: "Subjects", icon: BookOpen, path: "/admin/subjects" },
+          { text: "Subjects", icon: BookOpen, path: "/school-admin/subjects" },
 
-          // { text: "Sessions", icon: Calendar, path: "/admin/sessions" },
+          { text: "Timetable", icon: Clock, path: "/school-admin/timetable" },
+          { text: "Attendance", icon: ClipboardCheck, path: "/school-admin/attendance" },
+
 
           {text: "Session management", icon: ControlPoint, path:"/school-admin/sessions-terms"},
           {text: "Subscription Plan", icon: MoneyOff, path: "/school-admin/subscriptions"},
 
-          // { text: "Timetable", icon: Clock, path: "/school-admin/timetable" },
-          // {
-          //   text: "Attendance",
-          //   icon: ClipboardCheck,
-          //   path: "/school-admin/attendance",
-          // },
           {
             text: "Create Notifications",
             icon: Mail,

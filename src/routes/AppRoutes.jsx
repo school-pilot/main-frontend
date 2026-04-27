@@ -51,6 +51,7 @@ import Attendance from "../dashboards/teacher/Attendance";
 import EnterScores from "../dashboards/teacher/EnterScores";
 import MyClasses from "../dashboards/teacher/MyClasses";
 import TeacherTimetable from "../dashboards/teacher/TeacherTimetable";
+import SubjectManagement from "../components/SubjectManagement";
 
 /* Student */
 import StudentDashboard from "../dashboards/student/StudentDashboard";
@@ -66,6 +67,8 @@ import ParentDashboard from "../dashboards/parent/ParentDashboard";
 
 import Home from "../pages/Home";
 import CreateNotification from "../pages/CreateNotification";
+import TimetableManagement from "../components/TimetableManagement";
+import AttendanceManagement from "../components/AttendanceManagement";
 
 const AppRoutes = () => {
   const { isAuthenticated, user } = useAuth();
@@ -144,13 +147,17 @@ const AppRoutes = () => {
                 path="sessions-terms"
                 element={<SessionTermManagement />}
               />
+              <Route path="subjects" element={<SubjectManagement />} />
               <Route
                 path="announcements"
                 element={<AnnouncementsManagement />}
               />
               <Route path="subscriptions" element={<SubscriptionPlans />} />
+              <Route path="timetable" element={<TimetableManagement />} />
+              <Route path="attendance" element={<AttendanceManagement />} />
               <Route path="bulk-upload" element={<BulkStudentUpload />} />
               <Route path="result-approval" element={<ResultApproval />} />
+              <Route path="classes" element={<MyClasses />} />
             </Route>
           </Route>
 
