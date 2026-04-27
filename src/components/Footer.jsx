@@ -145,10 +145,10 @@ const Footer = () => {
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="bg-gradient-to-r from-indigo-500 to-[#214f77] hover:from-blue-700 hover:to-indigo-700 px-6 py-3 rounded-r-lg text-white font-medium flex items-center gap-2 transition"
+                className="bg-gradient-to-r from-indigo-500 to-[#214f77] hover:from-blue-700 hover:to-indigo-700 px-3 py-3 rounded-r-lg text-white font-medium flex items-center gap-2 transition"
               >
                 Subscribe
-                <Send className="w-4 h-4" />
+                {/* <Send className="w-4 h-4" /> */}
               </motion.button>
             </div>
           </div>
