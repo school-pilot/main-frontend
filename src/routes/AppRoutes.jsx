@@ -20,6 +20,9 @@ import ChangePassword from "../pages/auth/ChangePassword";
 /* Shared Pages */
 import Dashboard from "../pages/Dashboard";
 import NotificationsPage from "../pages/NotificationsPage";
+import MyProfile from "../pages/MyProfile";
+import AccountSettings from "../pages/AccountSettings";
+import HelpSupport from "../pages/HelpSupport";
 
 /* Super Admin */
 import SuperAdminDashboard from "../dashboards/superAdmin/SuperAdminDashboard";
@@ -119,6 +122,9 @@ const AppRoutes = () => {
           <Route index element={<Dashboard />} />
           <Route path="notifications" element={<NotificationsPage />} />
           <Route path="change-password" element={<ChangePassword />} />
+          <Route path="profile" element={<MyProfile />} />
+          <Route path="account-settings" element={<AccountSettings />} />
+          <Route path="help" element={<HelpSupport />} />
 
           {/* ===== SUPER ADMIN ===== */}
           <Route element={<RequireRole allowedRoles={["super_admin"]} />}>

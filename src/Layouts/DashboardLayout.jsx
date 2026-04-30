@@ -39,6 +39,7 @@ import {
   PlusCircle,
 } from "lucide-react";
 import { Announcement, ControlPoint, MoneyOff } from "@mui/icons-material";
+import FloatingChatbot from "../components/FloatingChatbot";
 
 const DashboardLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -465,6 +466,7 @@ const DashboardLayout = () => {
 
           <main className="flex-1 overflow-y-auto p-4 md:p-6">
             <Outlet />
+             <FloatingChatbot />
           </main>
         </div>
       </div>

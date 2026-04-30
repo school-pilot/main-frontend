@@ -12,6 +12,8 @@ import {
   Moon,
   Calendar,
   MessageSquare,
+  Settings,
+  LogOut,
 } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
@@ -41,8 +43,9 @@ const Navbar = ({ toggleSidebar, title, subtitle }) => {
       className="
         bg-gradient-to-r from-white via-white to-primary-50/30
         shadow-sm border-b border-gray-300
-        backdrop-blur-sm backdrop-filter
+         backdrop-filter
         px-4 py-3
+        z-[60]
       "
     >
       <div className="flex items-center justify-between">
@@ -171,7 +174,7 @@ const Navbar = ({ toggleSidebar, title, subtitle }) => {
                   rounded-xl shadow-xl shadow-primary-500/10
                   border border-primary-100/50
                   backdrop-blur-sm backdrop-filter
-                  z-50 overflow-hidden
+                  z-[70] overflow-hidden
                 "
               >
                 {/* User Info */}
@@ -233,7 +236,7 @@ const Navbar = ({ toggleSidebar, title, subtitle }) => {
                   </Link>
 
                   <Link
-                    to="/settings"
+                    to="/account-settings"
                     onClick={() => setUserMenuOpen(false)}
                     className="
                       flex items-center px-4 py-3
