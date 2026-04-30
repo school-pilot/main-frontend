@@ -4,6 +4,9 @@ import { Mail, Lock, Eye, EyeOff, User } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Loader from "./Loader";
+import DotSpinner from "./Loader";
+import AuthLoader from "./authLoader";
+
 
 /* ================= Animations (UNCHANGED) ================= */
 
@@ -323,10 +326,10 @@ const LoginAnimation = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold shadow-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+              className="w-full py-3 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold shadow-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 min-h-[48px]"
             >
               {loading ? (
-                <Loader size="sm" />
+                <AuthLoader size="sm" text={null} />
               ) : (
                 <>
                   <Lock className="w-5 h-5" />
