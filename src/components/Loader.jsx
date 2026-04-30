@@ -1,29 +1,27 @@
-import { motion } from 'framer-motion';
+// components/DotSpinner.jsx (clean centered version)
+import React from "react";
 
-const Loader = ({ size = 'md', fullScreen = false }) => {
-  const sizeClasses = {
-    sm: 'w-6 h-6',
-    md: 'w-12 h-12',
-    lg: 'w-16 h-16'
+const DotSpinner = ({ size = "2.8rem", speed = "0.9s", color = "#183153" }) => {
+  const spinnerStyle = {
+    "--uib-size": size,
+    "--uib-speed": speed,
+    "--uib-color": color,
   };
 
-  const loader = (
-    <motion.div
-      animate={{ rotate: 360 }}
-      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-      className={`${sizeClasses[size]} border-4 border-primary-200 border-t-primary-600 rounded-full`}
-    />
-  );
-
-  if (fullScreen) {
-    return (
-      <div className="fixed inset-0 bg-white bg-opacity-80 flex items-center justify-center z-50">
-        {loader}
+  return (
+    <div className="flex items-center justify-center min-h-[200px] w-full">
+      <div className="dot-spinner" style={spinnerStyle}>
+        <div className="dot-spinner__dot"></div>
+        <div className="dot-spinner__dot"></div>
+        <div className="dot-spinner__dot"></div>
+        <div className="dot-spinner__dot"></div>
+        <div className="dot-spinner__dot"></div>
+        <div className="dot-spinner__dot"></div>
+        <div className="dot-spinner__dot"></div>
+        <div className="dot-spinner__dot"></div>
       </div>
-    );
-  }
-
-  return loader;
+    </div>
+  );
 };
 
-export default Loader;
+export default DotSpinner;
