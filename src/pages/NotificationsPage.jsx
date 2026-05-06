@@ -29,7 +29,7 @@ const NotificationsPage = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={handleMarkAllAsRead}
-            className="flex items-center space-x-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+            className="flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
           >
             <Check className="w-4 h-4" />
             <span>Mark all as read</span>
@@ -64,40 +64,6 @@ const NotificationsPage = () => {
         <Notifications limit={null} showActions={true} />
       </div>
 
-      {/* Notification Preferences */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="bg-white rounded-xl shadow-sm p-6"
-      >
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
-          Notification Preferences
-        </h3>
-        <div className="space-y-4">
-          {[
-            { label: 'Email notifications', enabled: true },
-            { label: 'Push notifications', enabled: true },
-            { label: 'Results announcements', enabled: true },
-            { label: 'Fee reminders', enabled: false },
-            { label: 'Attendance alerts', enabled: true },
-          ].map((preference, index) => (
-            <div key={index} className="flex items-center justify-between">
-              <span className="text-gray-700">{preference.label}</span>
-              <button
-                className={`relative inline-flex h-6 w-11 items-center rounded-full ${
-                  preference.enabled ? 'bg-primary-600' : 'bg-gray-200'
-                }`}
-              >
-                <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${
-                    preference.enabled ? 'translate-x-6' : 'translate-x-1'
-                  }`}
-                />
-              </button>
-            </div>
-          ))}
-        </div>
-      </motion.div>
     </motion.div>
   );
 };

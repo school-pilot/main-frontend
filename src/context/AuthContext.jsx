@@ -6,175 +6,174 @@ import toast from "react-hot-toast";
 import { authAPI } from "../services/api";
 import {
   getAccessToken,
-  getRefreshToken,
-  setTokens,
   clearTokens,
 } from "../utils/token";
 
 const AuthContext = createContext(null);
-
 export const useAuth = () => useContext(AuthContext);
 
-/* =====================================================
-   AUTH PROVIDER
-===================================================== */
-
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-
   const navigate = useNavigate();
 
-  /* =====================================================
-     INIT AUTH STATE
-  ===================================================== */
+  const [user, setUser] = useState(null);
+  const [loadingAuth, setLoadingAuth] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  /* =========================================
+     INITIAL AUTH CHECK
+  ========================================= */
 
   useEffect(() => {
-    const token = getAccessToken();
+    const initAuth = async () => {
+      const token = getAccessToken();
 
-    if (!token) {
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const decoded = jwtDecode(token);
-
-      // Token expired
-      if (decoded.exp * 1000 < Date.now()) {
-        clearTokens();
-        setUser(null);
-      } else {
-        setUser(decoded);
+      if (!token) {
+        setLoadingAuth(false);
+        return;
       }
-    } catch {
-      clearTokens();
-      setUser(null);
-    }
 
-    setLoading(false);
+      try {
+        const decoded = jwtDecode(token);
+
+        // Token expired
+        if (decoded.exp * 1000 < Date.now()) {
+          clearTokens();
+          setLoadingAuth(false);
+          return;
+        }
+
+        // 🔥 Get role + user from backend (NOT email)
+        const res = await authAPI.getUser(decoded.user_id);
+        const userData = res.data;
+
+        setUser(userData);
+        setIsAuthenticated(true);
+      } catch (error) {
+        console.error("Auth init failed:", error);
+        clearTokens();
+      } finally {
+        setLoadingAuth(false);
+      }
+    };
+
+    initAuth();
   }, []);
 
-  /* =====================================================
+  /* =========================================
      LOGIN
-  ===================================================== */
+  ========================================= */
 
   const login = async (credentials) => {
     try {
       const res = await authAPI.login(credentials);
-
       const { access, refresh } = res.data;
-      setTokens({ access, refresh });
+
+      // Tokens saved in localStorage
+      localStorage.setItem("access_token", access);
+      localStorage.setItem("refresh_token", refresh);
 
       const decoded = jwtDecode(access);
-      setUser(decoded);
+
+      // Get full user (includes role from backend)
+      const userRes = await authAPI.getUser(decoded.user_id);
+
+      setUser(userRes.data);
+      setIsAuthenticated(true);
 
       toast.success("Login successful");
       navigate("/dashboard");
 
       return true;
-    } catch (err) {
+    } catch (error) {
       toast.error(
-        err.response?.data?.detail || "Invalid login credentials"
+        error.response?.data?.detail || "Login failed"
       );
       return false;
     }
   };
 
-  /* =====================================================
+  /* =========================================
      REGISTER
-  ===================================================== */
+  ========================================= */
 
-  const register = async (userData) => {
+  const register = async (data) => {
     try {
-      await authAPI.register(userData);
+      await authAPI.register(data);
 
       toast.success("Registration successful. Please login.");
       navigate("/login");
-
       return true;
-    } catch (err) {
-      const data = err.response?.data;
+    } catch (error) {
+      const errData = error.response?.data;
+      const firstError = errData
+        ? Object.values(errData)[0]?.[0]
+        : "Registration failed";
 
-      if (data) {
-        const firstError = Object.values(data)[0]?.[0];
-        toast.error(firstError || "Registration failed");
-      } else {
-        toast.error("Network error");
-      }
-
+      toast.error(firstError);
       return false;
     }
   };
 
-  /* =====================================================
+  /* =========================================
      LOGOUT
-  ===================================================== */
+  ========================================= */
 
   const logout = () => {
     clearTokens();
     setUser(null);
+    setIsAuthenticated(false);
     navigate("/login");
     toast.success("Logged out");
   };
 
-  /* =====================================================
+  /* =========================================
+     UPDATE PROFILE
+  ========================================= */
+
+  const updateProfile = async (data) => {
+    try {
+      if (!user?.id) throw new Error("User not loaded");
+
+      const res = await authAPI.updateUser(user.id, data);
+
+      setUser(res.data);
+      toast.success("Profile updated");
+      return true;
+    } catch (error) {
+      toast.error("Profile update failed");
+      return false;
+    }
+  };
+
+  /* =========================================
      CHANGE PASSWORD
-  ===================================================== */
+  ========================================= */
 
   const changePassword = async (data) => {
     try {
       await authAPI.changePassword(data);
       toast.success("Password changed successfully");
       return true;
-    } catch (err) {
-      toast.error(
-        err.response?.data?.detail || "Password change failed"
-      );
+    } catch (error) {
+      toast.error("Password change failed");
       return false;
     }
   };
-
-  /* =====================================================
-     UPDATE PROFILE
-  ===================================================== */
-
-  const updateProfile = async (data) => {
-    try {
-      if (!user?.user_id) throw new Error("User not loaded");
-
-      const res = await authAPI.updateUser(user.user_id, data);
-
-      setUser((prev) => ({ ...prev, ...res.data }));
-      toast.success("Profile updated");
-
-      return true;
-    } catch (err) {
-      toast.error(
-        err.response?.data?.detail || "Profile update failed"
-      );
-      return false;
-    }
-  };
-
-  /* =====================================================
-     CONTEXT VALUE
-  ===================================================== */
 
   const value = {
     user,
-    loading,
-    isAuthenticated: !!getAccessToken(),
+    isAuthenticated,
+    loadingAuth,
     login,
     register,
     logout,
-    changePassword,
     updateProfile,
+    changePassword,
   };
 
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {!loadingAuth && children}
     </AuthContext.Provider>
   );
-}; 
+};

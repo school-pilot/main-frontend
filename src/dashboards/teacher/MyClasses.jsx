@@ -1,5 +1,5 @@
-import { motion } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
 import {
   Users,
   BookOpen,
@@ -8,15 +8,17 @@ import {
   BarChart3,
   MessageSquare,
   Upload,
-} from 'lucide-react';
-import { teachersAPI } from '../../services/api';
-import toast from 'react-hot-toast';
-import Loader from '../../components/Loader';
+} from "lucide-react";
+import { teachersAPI } from "../../services/api";
+import toast from "react-hot-toast";
+import Loader from "../../components/Loader";
+import { useAuth } from "../../context/AuthContext";
 
 const MyClasses = () => {
   const [loading, setLoading] = useState(true);
   const [classes, setClasses] = useState([]);
   const [selectedClass, setSelectedClass] = useState(null);
+  const { user } = useAuth();
 
   useEffect(() => {
     fetchClasses();
@@ -31,36 +33,36 @@ const MyClasses = () => {
         setSelectedClass(response.data[0]);
       }
     } catch (error) {
-      console.error('Failed to fetch classes:', error);
+      console.error("Failed to fetch classes:", error);
       // Mock data for demo
       setClasses([
         {
           id: 1,
-          name: 'Grade 10A',
-          subject: 'Mathematics',
+          name: "Grade 10A",
+          subject: "Mathematics",
           students_count: 35,
-          schedule: 'Mon, Wed, Fri - 08:00-09:00',
-          room: 'Room 101',
+          schedule: "Mon, Wed, Fri - 08:00-09:00",
+          room: "Room 101",
           attendance_rate: 92,
           average_score: 85,
         },
         {
           id: 2,
-          name: 'Grade 11B',
-          subject: 'Physics',
+          name: "Grade 11B",
+          subject: "Physics",
           students_count: 28,
-          schedule: 'Tue, Thu - 10:00-11:00',
-          room: 'Lab 2',
+          schedule: "Tue, Thu - 10:00-11:00",
+          room: "Lab 2",
           attendance_rate: 88,
           average_score: 82,
         },
         {
           id: 3,
-          name: 'Grade 9C',
-          subject: 'Mathematics',
+          name: "Grade 9C",
+          subject: "Mathematics",
           students_count: 40,
-          schedule: 'Mon, Wed, Fri - 13:00-14:00',
-          room: 'Room 102',
+          schedule: "Mon, Wed, Fri - 13:00-14:00",
+          room: "Room 102",
           attendance_rate: 95,
           average_score: 78,
         },
@@ -75,10 +77,30 @@ const MyClasses = () => {
 
   const getClassStats = (cls) => {
     return [
-      { label: 'Students', value: cls.students_count, icon: Users, color: 'blue' },
-      { label: 'Attendance Rate', value: `${cls.attendance_rate}%`, icon: Users, color: 'green' },
-      { label: 'Average Score', value: `${cls.average_score}%`, icon: BarChart3, color: 'purple' },
-      { label: 'Schedule', value: cls.schedule, icon: Calendar, color: 'orange' },
+      {
+        label: "Students",
+        value: cls.students_count,
+        icon: Users,
+        color: "blue",
+      },
+      {
+        label: "Attendance Rate",
+        value: `${cls.attendance_rate}%`,
+        icon: Users,
+        color: "green",
+      },
+      {
+        label: "Average Score",
+        value: `${cls.average_score}%`,
+        icon: BarChart3,
+        color: "purple",
+      },
+      {
+        label: "Schedule",
+        value: cls.schedule,
+        icon: Calendar,
+        color: "orange",
+      },
     ];
   };
 
@@ -95,8 +117,12 @@ const MyClasses = () => {
         className="flex flex-col md:flex-row md:items-center justify-between gap-4"
       >
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">My Classes</h1>
-          <p className="text-gray-600">View and manage your assigned classes</p>
+          <h1 className="text-2xl font-bold text-gray-900">
+            {user.role === "teacher" ? "My Classes" : "Classes"}
+          </h1>
+          <p className="text-gray-600 mt-1">
+            Overview of your assigned classes
+          </p>
         </div>
       </motion.div>
 
@@ -112,8 +138,8 @@ const MyClasses = () => {
             onClick={() => setSelectedClass(cls)}
             className={`bg-white rounded-xl shadow-sm p-6 cursor-pointer border-2 ${
               selectedClass?.id === cls.id
-                ? 'border-primary-500'
-                : 'border-transparent hover:border-primary-200'
+                ? "border-primary-500"
+                : "border-transparent hover:border-primary-200"
             }`}
           >
             <div className="flex items-start justify-between mb-4">
@@ -129,7 +155,9 @@ const MyClasses = () => {
             <div className="space-y-3">
               {getClassStats(cls).map((stat, idx) => (
                 <div key={idx} className="flex items-center text-sm">
-                  <stat.icon className={`w-4 h-4 mr-2 text-${stat.color}-500`} />
+                  <stat.icon
+                    className={`w-4 h-4 mr-2 text-${stat.color}-500`}
+                  />
                   <span className="text-gray-600">{stat.label}:</span>
                   <span className="ml-2 font-medium">{stat.value}</span>
                 </div>
@@ -175,16 +203,20 @@ const MyClasses = () => {
           {/* Tabs */}
           <div className="border-b border-gray-200 mb-6">
             <nav className="-mb-px flex space-x-8">
-              {['Overview', 'Students', 'Materials', 'Assignments', 'Results'].map(
-                (tab) => (
-                  <button
-                    key={tab}
-                    className="px-1 py-4 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                  >
-                    {tab}
-                  </button>
-                )
-              )}
+              {[
+                "Overview",
+                "Students",
+                "Materials",
+                "Assignments",
+                "Results",
+              ].map((tab) => (
+                <button
+                  key={tab}
+                  className="px-1 py-4 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                >
+                  {tab}
+                </button>
+              ))}
             </nav>
           </div>
 
@@ -197,22 +229,22 @@ const MyClasses = () => {
               <div className="space-y-4">
                 {[
                   {
-                    title: 'Mathematics Test',
-                    description: 'First Term Exam conducted',
-                    date: '2 hours ago',
-                    type: 'exam',
+                    title: "Mathematics Test",
+                    description: "First Term Exam conducted",
+                    date: "2 hours ago",
+                    type: "exam",
                   },
                   {
-                    title: 'Homework Assignment',
-                    description: 'Chapter 3 exercises assigned',
-                    date: '1 day ago',
-                    type: 'assignment',
+                    title: "Homework Assignment",
+                    description: "Chapter 3 exercises assigned",
+                    date: "1 day ago",
+                    type: "assignment",
                   },
                   {
-                    title: 'Class Announcement',
-                    description: 'Parent-teacher meeting scheduled',
-                    date: '2 days ago',
-                    type: 'announcement',
+                    title: "Class Announcement",
+                    description: "Parent-teacher meeting scheduled",
+                    date: "2 days ago",
+                    type: "announcement",
                   },
                 ].map((activity, index) => (
                   <motion.div
@@ -231,7 +263,9 @@ const MyClasses = () => {
                           {activity.description}
                         </p>
                       </div>
-                      <span className="text-sm text-gray-500">{activity.date}</span>
+                      <span className="text-sm text-gray-500">
+                        {activity.date}
+                      </span>
                     </div>
                   </motion.div>
                 ))}
@@ -277,22 +311,22 @@ const MyClasses = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {[
             {
-              title: 'Parent-Teacher Meeting',
-              class: 'Grade 10A',
-              date: 'Tomorrow, 2:00 PM',
-              type: 'meeting',
+              title: "Parent-Teacher Meeting",
+              class: "Grade 10A",
+              date: "Tomorrow, 2:00 PM",
+              type: "meeting",
             },
             {
-              title: 'Mathematics Test',
-              class: 'Grade 11B',
-              date: 'Friday, 10:00 AM',
-              type: 'exam',
+              title: "Mathematics Test",
+              class: "Grade 11B",
+              date: "Friday, 10:00 AM",
+              type: "exam",
             },
             {
-              title: 'Submission Deadline',
-              class: 'Grade 9C',
-              date: 'Next Monday',
-              type: 'deadline',
+              title: "Submission Deadline",
+              class: "Grade 9C",
+              date: "Next Monday",
+              type: "deadline",
             },
           ].map((event, index) => (
             <div key={index} className="p-4 bg-gray-50 rounded-lg">

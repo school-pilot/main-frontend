@@ -30,19 +30,29 @@ const Attendance = () => {
     if (selectedClass) {
       fetchStudents();
       fetchAttendance();
+    } else {
+      // If no class selected, still show the UI but with empty data
+      setStudents([]);
+      setAttendanceRecords({});
+      setLoading(false);
     }
   }, [selectedClass, selectedDate]);
 
   const fetchClasses = async () => {
     try {
+      setLoading(true);
       // Assuming teacher ID is 1 for demo
       const response = await teachersAPI.getClasses(1);
       setClasses(response.data);
       if (response.data.length > 0) {
         setSelectedClass(response.data[0].id);
+      } else {
+        // If no classes, stop loading
+        setLoading(false);
       }
     } catch (error) {
       toast.error('Failed to fetch classes');
+      setLoading(false);
     }
   };
 
@@ -72,6 +82,8 @@ const Attendance = () => {
       setAttendanceRecords(records);
     } catch (error) {
       console.error('Failed to fetch attendance:', error);
+      // If API fails, still show UI with empty attendance records
+      setAttendanceRecords({});
     } finally {
       setLoading(false);
     }
@@ -93,8 +105,8 @@ const Attendance = () => {
     setSaving(true);
     try {
       const attendanceData = Object.entries(attendanceRecords).map(([studentId, status]) => ({
-        student_id: studentId,
-        class_id: selectedClass,
+        student_id: parseInt(studentId),
+        class_id: parseInt(selectedClass),
         date: selectedDate,
         status,
       }));
@@ -106,6 +118,15 @@ const Attendance = () => {
     } finally {
       setSaving(false);
     }
+  };
+
+  const markAllPresent = () => {
+    const allPresent = {};
+    students.forEach(student => {
+      allPresent[student.id] = 'present';
+    });
+    setAttendanceRecords(allPresent);
+    toast.success('All students marked as present');
   };
 
   const getStatusColor = (status) => {
@@ -181,8 +202,8 @@ const Attendance = () => {
           <div className="flex items-end">
             <button
               onClick={handleSaveAttendance}
-              disabled={saving}
-              className="w-full flex items-center justify-center space-x-2 bg-primary-600 text-white py-2 px-4 rounded-lg hover:bg-primary-700 disabled:opacity-50"
+              disabled={saving || !selectedClass}
+              className="w-full flex items-center justify-center space-x-2 bg-primary-600 text-white py-2 px-4 rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {saving ? (
                 <>
@@ -201,45 +222,47 @@ const Attendance = () => {
       </motion.div>
 
       {/* Attendance Summary */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="bg-white rounded-xl shadow-sm p-6"
-      >
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">
-          Attendance Summary
-        </h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="text-center p-4 bg-green-50 rounded-lg">
-            <CheckCircle className="w-8 h-8 text-green-500 mx-auto mb-2" />
-            <p className="text-2xl font-bold text-green-900">
-              {Object.values(attendanceRecords).filter(v => v === 'present').length}
-            </p>
-            <p className="text-sm text-green-600">Present</p>
+      {selectedClass && students.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-white rounded-xl shadow-sm p-6"
+        >
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+            Attendance Summary
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="text-center p-4 bg-green-50 rounded-lg">
+              <CheckCircle className="w-8 h-8 text-green-500 mx-auto mb-2" />
+              <p className="text-2xl font-bold text-green-900">
+                {Object.values(attendanceRecords).filter(v => v === 'present').length}
+              </p>
+              <p className="text-sm text-green-600">Present</p>
+            </div>
+            <div className="text-center p-4 bg-red-50 rounded-lg">
+              <XCircle className="w-8 h-8 text-red-500 mx-auto mb-2" />
+              <p className="text-2xl font-bold text-red-900">
+                {Object.values(attendanceRecords).filter(v => v === 'absent').length}
+              </p>
+              <p className="text-sm text-red-600">Absent</p>
+            </div>
+            <div className="text-center p-4 bg-yellow-50 rounded-lg">
+              <Clock className="w-8 h-8 text-yellow-500 mx-auto mb-2" />
+              <p className="text-2xl font-bold text-yellow-900">
+                {Object.values(attendanceRecords).filter(v => v === 'late').length}
+              </p>
+              <p className="text-sm text-yellow-600">Late</p>
+            </div>
+            <div className="text-center p-4 bg-blue-50 rounded-lg">
+              <Users className="w-8 h-8 text-blue-500 mx-auto mb-2" />
+              <p className="text-2xl font-bold text-blue-900">
+                {students.length}
+              </p>
+              <p className="text-sm text-blue-600">Total Students</p>
+            </div>
           </div>
-          <div className="text-center p-4 bg-red-50 rounded-lg">
-            <XCircle className="w-8 h-8 text-red-500 mx-auto mb-2" />
-            <p className="text-2xl font-bold text-red-900">
-              {Object.values(attendanceRecords).filter(v => v === 'absent').length}
-            </p>
-            <p className="text-sm text-red-600">Absent</p>
-          </div>
-          <div className="text-center p-4 bg-yellow-50 rounded-lg">
-            <Clock className="w-8 h-8 text-yellow-500 mx-auto mb-2" />
-            <p className="text-2xl font-bold text-yellow-900">
-              {Object.values(attendanceRecords).filter(v => v === 'late').length}
-            </p>
-            <p className="text-sm text-yellow-600">Late</p>
-          </div>
-          <div className="text-center p-4 bg-blue-50 rounded-lg">
-            <Users className="w-8 h-8 text-blue-500 mx-auto mb-2" />
-            <p className="text-2xl font-bold text-blue-900">
-              {students.length}
-            </p>
-            <p className="text-sm text-blue-600">Total Students</p>
-          </div>
-        </div>
-      </motion.div>
+        </motion.div>
+      )}
 
       {/* Attendance Sheet */}
       <motion.div
@@ -252,111 +275,131 @@ const Attendance = () => {
             Attendance Sheet
           </h2>
           <p className="text-gray-600">
-            Click on status to change attendance status
+            {selectedClass 
+              ? 'Click on status to change attendance status'
+              : 'Please select a class to view students'}
           </p>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="table-header">#</th>
-                <th className="table-header">Admission No.</th>
-                <th className="table-header">Student Name</th>
-                <th className="table-header">Status</th>
-                <th className="table-header">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {students.map((student, index) => (
-                <motion.tr
-                  key={student.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.05 }}
-                >
-                  <td className="table-cell">{index + 1}</td>
-                  <td className="table-cell font-medium">
-                    {student.admission_number}
-                  </td>
-                  <td className="table-cell">{student.name}</td>
-                  <td className="table-cell">
-                    <div className="flex space-x-2">
-                      {['present', 'absent', 'late', 'excused'].map((status) => (
-                        <button
-                          key={status}
-                          onClick={() => handleStatusChange(student.id, status)}
-                          className={`px-3 py-1 rounded-full text-sm capitalize ${
-                            attendanceRecords[student.id] === status
-                              ? getStatusColor(status)
-                              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                          }`}
-                        >
-                          {status}
-                        </button>
-                      ))}
-                    </div>
-                  </td>
-                  <td className="table-cell">
-                    <button
-                      onClick={() => {
-                        // Handle remarks
-                        const remark = prompt('Enter remark for this student:');
-                        if (remark) {
-                          toast.success('Remark added');
-                        }
-                      }}
-                      className="text-sm text-primary-600 hover:text-primary-700"
-                    >
-                      Add Remark
-                    </button>
-                  </td>
-                </motion.tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        {!selectedClass ? (
+          <div className="p-12 text-center">
+            <Users className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No Class Selected</h3>
+            <p className="text-gray-600">Please select a class from the dropdown above to mark attendance.</p>
+          </div>
+        ) : students.length === 0 ? (
+          <div className="p-12 text-center">
+            <Users className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No Students Found</h3>
+            <p className="text-gray-600">There are no students in this class.</p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="table-header">#</th>
+                  <th className="table-header">Admission No.</th>
+                  <th className="table-header">Student Name</th>
+                  <th className="table-header">Status</th>
+                  <th className="table-header">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {students.map((student, index) => (
+                  <motion.tr
+                    key={student.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                  >
+                    <td className="table-cell">{index + 1}</td>
+                    <td className="table-cell font-medium">
+                      {student.admission_number}
+                    </td>
+                    <td className="table-cell">{student.name}</td>
+                    <td className="table-cell">
+                      <div className="flex space-x-2">
+                        {['present', 'absent', 'late', 'excused'].map((status) => (
+                          <button
+                            key={status}
+                            onClick={() => handleStatusChange(student.id, status)}
+                            className={`px-3 py-1 rounded-full text-sm capitalize transition-colors ${
+                              attendanceRecords[student.id] === status
+                                ? getStatusColor(status)
+                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                            }`}
+                          >
+                            {status}
+                          </button>
+                        ))}
+                      </div>
+                    </td>
+                    <td className="table-cell">
+                      <button
+                        onClick={() => {
+                          const remark = prompt('Enter remark for this student:');
+                          if (remark) {
+                            toast.success('Remark added successfully');
+                          }
+                        }}
+                        className="text-sm text-primary-600 hover:text-primary-700"
+                      >
+                        Add Remark
+                      </button>
+                    </td>
+                  </motion.tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </motion.div>
 
       {/* Quick Actions */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="bg-white rounded-xl shadow-sm p-6"
-      >
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
-          Quick Actions
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <button className="p-4 bg-green-50 text-green-700 rounded-lg hover:bg-green-100">
-            <div className="flex items-center">
-              <CheckCircle className="w-5 h-5 mr-3" />
-              <div>
-                <p className="font-medium">Mark All Present</p>
-                <p className="text-sm">Set all students as present</p>
+      {selectedClass && students.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-white rounded-xl shadow-sm p-6"
+        >
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            Quick Actions
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <button 
+              onClick={markAllPresent}
+              className="p-4 bg-green-50 text-green-700 rounded-lg hover:bg-green-100 transition-colors text-left"
+            >
+              <div className="flex items-center">
+                <CheckCircle className="w-5 h-5 mr-3 flex-shrink-0" />
+                <div>
+                  <p className="font-medium">Mark All Present</p>
+                  <p className="text-sm">Set all students as present</p>
+                </div>
               </div>
-            </div>
-          </button>
-          <button className="p-4 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100">
-            <div className="flex items-center">
-              <Calendar className="w-5 h-5 mr-3" />
-              <div>
-                <p className="font-medium">View Attendance History</p>
-                <p className="text-sm">Check previous records</p>
+            </button>
+            <button className="p-4 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors text-left">
+              <div className="flex items-center">
+                <Calendar className="w-5 h-5 mr-3 flex-shrink-0" />
+                <div>
+                  <p className="font-medium">View Attendance History</p>
+                  <p className="text-sm">Check previous records</p>
+                </div>
               </div>
-            </div>
-          </button>
-          <button className="p-4 bg-purple-50 text-purple-700 rounded-lg hover:bg-purple-100">
-            <div className="flex items-center">
-              <Users className="w-5 h-5 mr-3" />
-              <div>
-                <p className="font-medium">Generate Report</p>
-                <p className="text-sm">Export attendance data</p>
+            </button>
+            <button className="p-4 bg-purple-50 text-purple-700 rounded-lg hover:bg-purple-100 transition-colors text-left">
+              <div className="flex items-center">
+                <Users className="w-5 h-5 mr-3 flex-shrink-0" />
+                <div>
+                  <p className="font-medium">Generate Report</p>
+                  <p className="text-sm">Export attendance data</p>
+                </div>
               </div>
-            </div>
-          </button>
-        </div>
-      </motion.div>
+            </button>
+          </div>
+        </motion.div>
+      )}
     </div>
   );
 };

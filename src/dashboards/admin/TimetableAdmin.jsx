@@ -45,8 +45,8 @@ const TimetableAdmin = () => {
     try {
       setLoading(true);
       const [classesRes, subjectsRes] = await Promise.all([
-        academicsAPI.getClasses(),
-        academicsAPI.getSubjects(),
+        academicsAPI.classes(),
+        academicsAPI.subjects(),
       ]);
       setClasses(classesRes.data);
       setSubjects(subjectsRes.data);
@@ -64,7 +64,7 @@ const TimetableAdmin = () => {
 
   const fetchTimetable = async (classId) => {
     try {
-      const response = await timetableAPI.getClassTimetable(classId);
+      const response = await timetableAPI.class(classId);
       setTimetable(response.data);
     } catch (error) {
       console.error('Failed to fetch timetable:', error);

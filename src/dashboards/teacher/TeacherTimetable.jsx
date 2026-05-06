@@ -13,10 +13,10 @@ const TeacherTimetable = () => {
     fetchTimetable();
   }, [currentWeek]);
 
-  const fetchTimetable = async () => {
+  const fetchTimetable = async (TeacherId) => {
     try {
       // Assuming teacher ID is 1 for demo
-      const response = await timetableAPI.getTeacherTimetable(1);
+      const response = await timetableAPI.teacher(TeacherId);
       setTimetable(response.data);
     } catch (error) {
       console.error('Failed to fetch timetable:', error);
@@ -120,7 +120,7 @@ const TeacherTimetable = () => {
 
         <div className="flex items-center space-x-3">
           <div className="flex items-center space-x-2">
-            <Calendar className="text-gray-400 w-5 h-5" />
+            <Calendar className="text-indigo-400 w-5 h-5" />
             <input
               type="week"
               className="input-field"
@@ -128,7 +128,7 @@ const TeacherTimetable = () => {
               onChange={(e) => setCurrentWeek(new Date(e.target.value))}
             />
           </div>
-          <button className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700">
+          <button className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-primary-700">
             Export
           </button>
         </div>
@@ -139,12 +139,12 @@ const TeacherTimetable = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-gradient-to-r from-primary-500 to-primary-600 rounded-2xl p-6 text-white"
+          className="bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-2xl p-6 text-white"
         >
           <div className="flex items-center justify-between mb-4">
             <div>
               <h2 className="text-xl font-bold">Today's Schedule</h2>
-              <p className="text-primary-100">
+              <p className="text-white">
                 {new Date().toLocaleDateString('en-US', {
                   weekday: 'long',
                   month: 'long',
@@ -166,14 +166,14 @@ const TeacherTimetable = () => {
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="font-bold">{period.subject}</h3>
-                    <p className="text-primary-100 text-sm">
+                    <h3 className="font-bold text-indigo-600">{period.subject}</h3>
+                    <p className="text-gray-600 text-sm">
                       {period.class} • {period.room}
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="font-bold">{period.time_slot}</p>
-                    <p className="text-primary-100 text-sm">Duration: 1 hour</p>
+                    <p className="font-bold text-indigo-500">{period.time_slot}</p>
+                    <p className="text-gray-600 text-sm">Duration: 1 hour</p>
                   </div>
                 </div>
               </motion.div>
@@ -315,3 +315,4 @@ const TeacherTimetable = () => {
 };
 
 export default TeacherTimetable;
+

@@ -9,12 +9,14 @@ import {
   TrendingUp,
   FileText,
   CheckCircle,
+  RefreshCw,
 } from 'lucide-react';
 import { teachersAPI, attendanceAPI, resultsAPI } from '../../services/api';
 import Loader from '../../components/Loader';
 
 const TeacherDashboard = () => {
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [teacherData, setTeacherData] = useState({});
   const [upcomingClasses, setUpcomingClasses] = useState([]);
   const [recentAttendance, setRecentAttendance] = useState({});
@@ -24,17 +26,23 @@ const TeacherDashboard = () => {
     attendanceRate: 0,
     averageScore: 0,
   });
+  const [lastUpdated, setLastUpdated] = useState(new Date());
 
   useEffect(() => {
     fetchTeacherData();
   }, []);
 
-  const fetchTeacherData = async () => {
+  const fetchTeacherData = async (isRefreshing = false) => {
     try {
-      setLoading(true);
+      if (isRefreshing) {
+        setRefreshing(true);
+      } else {
+        setLoading(true);
+      }
+      
       const [classesRes, attendanceRes] = await Promise.all([
-        teachersAPI.getClasses(1), // Assuming teacher ID is 1
-        attendanceAPI.getSummary(),
+        teachersAPI.classes(11), // Assuming teacher ID is 1
+        attendanceAPI.summary(),
       ]);
 
       // Mock data for demonstration
@@ -62,11 +70,24 @@ const TeacherDashboard = () => {
         attendanceRate: 92,
         averageScore: 85,
       });
+
+      setLastUpdated(new Date());
     } catch (error) {
       console.error('Failed to fetch teacher data:', error);
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
+  };
+
+  const handleRefresh = () => {
+    fetchTeacherData(true);
+  };
+
+  const formatLastUpdated = (date) => {
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
   };
 
   if (loading) {
@@ -83,20 +104,32 @@ const TeacherDashboard = () => {
       >
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold">Good morning, {teacherData.name}!</h1>
-            <p className="text-primary-100 mt-2">
+            <h1 className="text-2xl text-indigo-700 font-bold">Good morning, {teacherData.name}!</h1>
+            <p className="text-gray-500 mt-2">
               {teacherData.subjects?.join(', ')} • {teacherData.department}
             </p>
           </div>
-          <div className="text-right">
-            <p className="text-primary-100">Today</p>
-            <p className="text-xl font-bold">
-              {new Date().toLocaleDateString('en-US', {
-                weekday: 'long',
-                month: 'long',
-                day: 'numeric',
-              })}
-            </p>
+          <div className="flex items-center space-x-4">
+            <div className="text-right">
+              <p className="text-gray-500">Today</p>
+              <p className="text-xl text-black font-bold">
+                {new Date().toLocaleDateString('en-US', {
+                  weekday: 'long',
+                  month: 'long',
+                  day: 'numeric',
+                })}
+              </p>
+            </div>
+            <button
+              onClick={handleRefresh}
+              disabled={refreshing}
+              className="flex items-center space-x-2 px-4 py-2 bg-white text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+              <span className="text-sm font-medium">
+                {refreshing ? 'Refreshing...' : 'Refresh'}
+              </span>
+            </button>
           </div>
         </div>
       </motion.div>
@@ -172,9 +205,14 @@ const TeacherDashboard = () => {
         >
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-lg font-semibold text-gray-900">Today's Schedule</h2>
-            <button className="text-sm text-primary-600 hover:text-primary-700">
-              View Full Timetable →
-            </button>
+            <div className="flex items-center space-x-4">
+              <p className="text-xs text-gray-500">
+                Last updated: {formatLastUpdated(lastUpdated)}
+              </p>
+              <button className="text-sm text-primary-600 hover:text-primary-700">
+                View Full Timetable →
+              </button>
+            </div>
           </div>
 
           <div className="space-y-4">
@@ -250,9 +288,14 @@ const TeacherDashboard = () => {
         animate={{ opacity: 1, y: 0 }}
         className="bg-white rounded-xl shadow-sm p-6"
       >
-        <h2 className="text-lg font-semibold text-gray-900 mb-6">
-          Recent Attendance
-        </h2>
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-lg font-semibold text-gray-900">
+            Recent Attendance
+          </h2>
+          <p className="text-xs text-gray-500">
+            Updated: {formatLastUpdated(lastUpdated)}
+          </p>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-green-50 p-4 rounded-lg">
             <div className="flex items-center justify-between">

@@ -41,8 +41,8 @@ const Fees = () => {
     try {
       setLoading(true);
       const [invoicesRes, paymentsRes] = await Promise.all([
-        feesAPI.getInvoices(),
-        feesAPI.getPaymentHistory(),
+        feesAPI.invoices(),
+        feesAPI.paymentHistory(),
       ]);
       setInvoices(invoicesRes.data);
       setPayments(paymentsRes.data);
@@ -66,7 +66,7 @@ const Fees = () => {
 
   const handleRecordPayment = async (paymentData) => {
     try {
-      await feesAPI.recordPayment(paymentData);
+      await feesAPI.payment(paymentData);
       toast.success('Payment recorded successfully');
       fetchData();
       setShowRecordPayment(false);

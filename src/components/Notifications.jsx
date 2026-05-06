@@ -1,74 +1,79 @@
-import { motion } from 'framer-motion';
-import { Bell, Check, X, AlertCircle, Info } from 'lucide-react';
-import { formatDistanceToNow } from 'date-fns';
-import { useNotification } from '../context/NotificationContext';
+import React from "react";
+import { useNotification } from "../context/NotificationContext";
 
-const Notifications = ({ limit = null, showActions = true }) => {
+const Notifications = () => {
   const { notifications, markAsRead } = useNotification();
 
-  const getNotificationIcon = (type) => {
-    switch (type) {
-      case 'success':
-        return <Check className="w-5 h-5 text-green-500" />;
-      case 'error':
-        return <X className="w-5 h-5 text-red-500" />;
-      case 'warning':
-        return <AlertCircle className="w-5 h-5 text-yellow-500" />;
-      default:
-        return <Info className="w-5 h-5 text-blue-500" />;
-    }
-  };
-
-  const displayedNotifications = limit ? notifications.slice(0, limit) : notifications;
-
-  if (notifications.length === 0) {
-    return (
-      <div className="text-center py-12">
-        <Bell className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-        <p className="text-gray-500">No notifications yet</p>
-      </div>
-    );
-  }
-
   return (
-    <div className="space-y-2">
-      {displayedNotifications.map((notification, index) => (
-        <motion.div
-          key={notification.id}
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: index * 0.05 }}
-          className={`p-4 rounded-lg border ${
-            notification.read
-              ? 'bg-white border-gray-200'
-              : 'bg-blue-50 border-blue-200'
-          }`}
-        >
-          <div className="flex items-start justify-between">
-            <div className="flex items-start space-x-3">
-              <div className="mt-1">
-                {getNotificationIcon(notification.type)}
-              </div>
-              <div className="flex-1">
-                <p className="text-sm text-gray-900">{notification.message}</p>
-                <p className="text-xs text-gray-500 mt-1">
-                  {formatDistanceToNow(new Date(notification.created_at), {
-                    addSuffix: true,
-                  })}
-                </p>
-              </div>
-            </div>
-            {showActions && !notification.read && (
-              <button
-                onClick={() => markAsRead(notification.id)}
-                className="text-xs text-primary-600 hover:text-primary-700"
-              >
-                Mark as read
-              </button>
-            )}
+    <div className="p-6 bg-gray-50 min-h-screen">
+      <div className="max-w-3xl mx-auto">
+        
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold text-gray-800">
+            Notifications
+          </h2>
+          <span className="text-sm text-gray-500">
+            {notifications.length} Total
+          </span>
+        </div>
+
+        {/* Empty State */}
+        {notifications.length === 0 ? (
+          <div className="bg-white rounded-xl shadow-sm p-8 text-center">
+            <p className="text-gray-500 text-lg">
+              No notifications available
+            </p>
           </div>
-        </motion.div>
-      ))}
+        ) : (
+          <div className="space-y-4">
+            {notifications.map((notification) => (
+              <div
+                key={notification.id}
+                onClick={() => {
+                  if (!notification.read) {
+                    markAsRead(notification.id);
+                  }
+                }}
+                className={`cursor-pointer rounded-xl p-5 transition-all duration-200 shadow-sm hover:shadow-md border ${
+                  notification.read
+                    ? "bg-white border-gray-200"
+                    : "bg-blue-50 border-blue-200"
+                }`}
+              >
+                <div className="flex justify-between items-start mb-2">
+                  
+                  {/* Title */}
+                  <h4 className={`font-semibold text-lg ${
+                    notification.read
+                      ? "text-gray-700"
+                      : "text-blue-800"
+                  }`}>
+                    {notification.title}
+                  </h4>
+
+                  {/* Unread Badge */}
+                  {!notification.read && (
+                    <span className="text-xs font-medium px-2 py-1 rounded-full bg-blue-600 text-white">
+                      New
+                    </span>
+                  )}
+                </div>
+
+                {/* Message */}
+                <p className="text-gray-600 mb-3">
+                  {notification.message}
+                </p>
+
+                {/* Date */}
+                <small className="text-gray-400 text-sm">
+                  {new Date(notification.created_at).toLocaleString()}
+                </small>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

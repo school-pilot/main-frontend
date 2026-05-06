@@ -457,5 +457,5 @@ const EnterScores = () => {
     </div>
   );
 };
-
-export default EnterScores;
+ 
+export default EnterScores; 
