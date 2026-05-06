@@ -49,9 +49,7 @@ const AppRoutes = () => {
       <Route
         path="/"
         element={
-          <RequireAuth>
-            <DashboardLayout />
-          </RequireAuth>
+          <DashboardLayout />
         }
       >
         <Route index element={<Dashboard />} />
@@ -62,11 +60,7 @@ const AppRoutes = () => {
         <Route
           path="admin"
           element={
-            <RequireRole
-              allowedRoles={["super_admin", "school_admin", "admin"]}
-            >
-              <DashboardLayout />
-            </RequireRole>
+            <DashboardLayout />
           }
         >
           <Route path="students" element={<Students />} />
@@ -80,9 +74,7 @@ const AppRoutes = () => {
         <Route
           path="teacher"
           element={
-            <RequireRole allowedRoles={["teacher"]}>
-              <DashboardLayout />
-            </RequireRole>
+            <DashboardLayout />
           }
         >
           <Route index element={<TeacherDashboard />} />
@@ -96,9 +88,7 @@ const AppRoutes = () => {
         <Route
           path="student"
           element={
-            <RequireRole allowedRoles={["student"]}>
-              <DashboardLayout />
-            </RequireRole>
+            <DashboardLayout />
           }
         >
           <Route index element={<StudentDashboard />} />
