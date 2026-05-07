@@ -1,9 +1,4 @@
-import { Routes, Route, Navigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-
-/* Guards */
-import RequireAuth from "../components/RequireAuth";
-import RequireRole from "../components/RequireRole";
+import { Routes, Route } from "react-router-dom";
 
 /* Layouts */
 import DashboardLayout from "../Layouts/DashboardLayout";
@@ -74,41 +69,10 @@ import TimetableManagement from "../components/TimetableManagement";
 import AttendanceManagement from "../components/AttendanceManagement";
 
 const AppRoutes = () => {
-  const { isAuthenticated, user } = useAuth();
-
-  const getDefaultRoute = () => {
-    if (!isAuthenticated || !user) return "/";
-
-    switch (user.role) {
-      case "super_admin":
-        return "/super-admin";
-      case "school_admin":
-        return "/school-admin";
-      case "teacher":
-        return "/teacher";
-      case "student":
-        return "/student";
-      case "parent":
-        return "/parent";
-      default:
-        return "/";
-    }
-  };
-
   return (
     <Routes>
       {/* ================= PUBLIC ================= */}
-      <Route
-        index
-        path="/"
-        element={
-          !isAuthenticated ? (
-            <Home />
-          ) : (
-            <Navigate to={getDefaultRoute()} replace />
-          )
-        }
-      />
+      <Route index path="/" element={<Home />} />
 
       {/* ================= AUTH ================= */}
       <Route element={<AuthLayout />}>
@@ -116,102 +80,73 @@ const AppRoutes = () => {
         <Route path="/register" element={<Register />} />
       </Route>
 
-      {/* ================= PROTECTED ================= */}
-      <Route element={<RequireAuth />}>
-        <Route element={<DashboardLayout />}>
-          <Route index element={<Dashboard />} />
-          <Route path="notifications" element={<NotificationsPage />} />
-          <Route path="change-password" element={<ChangePassword />} />
-          <Route path="profile" element={<MyProfile />} />
-          <Route path="account-settings" element={<AccountSettings />} />
-          <Route path="help" element={<HelpSupport />} />
+      {/* ================= ALL PAGES ACCESSIBLE ================= */}
+      <Route element={<DashboardLayout />}>
+        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="notifications" element={<NotificationsPage />} />
+        <Route path="change-password" element={<ChangePassword />} />
+        <Route path="profile" element={<MyProfile />} />
+        <Route path="account-settings" element={<AccountSettings />} />
+        <Route path="help" element={<HelpSupport />} />
 
-          {/* ===== SUPER ADMIN ===== */}
-          <Route element={<RequireRole allowedRoles={["super_admin"]} />}>
-            <Route path="super-admin">
-              <Route index element={<SuperAdminDashboard />} />
-              <Route path="create-school" element={<CreateSchool />} />
-              <Route path="activate-accounts" element={<ActivateAccounts />} />
-              <Route path="audit-logs" element={<AuditLogs />} />
-              <Route path="settings" element={<SuperAdminSettings />} />
-            </Route>
-          </Route>
+        {/* ===== SUPER ADMIN ===== */}
+        <Route path="super-admin">
+          <Route index element={<SuperAdminDashboard />} />
+          <Route path="create-school" element={<CreateSchool />} />
+          <Route path="activate-accounts" element={<ActivateAccounts />} />
+          <Route path="audit-logs" element={<AuditLogs />} />
+          <Route path="settings" element={<SuperAdminSettings />} />
+        </Route>
 
-          {/* ===== SCHOOL ADMIN ===== */}
-          <Route element={<RequireRole allowedRoles={["school_admin"]} />}>
-            <Route path="school-admin">
-              <Route index element={<SchoolAdminDashboard />} />
-              <Route path="create-teacher" element={<CreateTeacher />} />
-              <Route
-                path="create-notification"
-                element={<CreateNotification />}
-              />
-              <Route path="create-student" element={<CreateStudent />} />
-              <Route path="school-settings" element={<SchoolSettings />} />
-              <Route path="academics" element={<AcademicsManagement />} />
-              <Route
-                path="sessions-terms"
-                element={<SessionTermManagement />}
-              />
-              <Route path="subjects" element={<SubjectManagement />} />
-              <Route
-                path="announcements"
-                element={<AnnouncementsManagement />}
-              />
-              <Route path="subscriptions" element={<SubscriptionPlans />} />
-              <Route path="timetable" element={<TimetableManagement />} />
-              <Route path="attendance" element={<AttendanceManagement />} />
-              <Route path="bulk-upload" element={<BulkStudentUpload />} />
-              <Route path="result-approval" element={<ResultApproval />} />
-              <Route path="classes" element={<MyClasses />} />
-            </Route>
-          </Route>
+        {/* ===== SCHOOL ADMIN ===== */}
+        <Route path="school-admin">
+          <Route index element={<SchoolAdminDashboard />} />
+          <Route path="create-teacher" element={<CreateTeacher />} />
+          <Route path="create-notification" element={<CreateNotification />} />
+          <Route path="create-student" element={<CreateStudent />} />
+          <Route path="school-settings" element={<SchoolSettings />} />
+          <Route path="academics" element={<AcademicsManagement />} />
+          <Route path="sessions-terms" element={<SessionTermManagement />} />
+          <Route path="subjects" element={<SubjectManagement />} />
+          <Route path="announcements" element={<AnnouncementsManagement />} />
+          <Route path="subscriptions" element={<SubscriptionPlans />} />
+          <Route path="timetable" element={<TimetableManagement />} />
+          <Route path="attendance" element={<AttendanceManagement />} />
+          <Route path="bulk-upload" element={<BulkStudentUpload />} />
+          <Route path="result-approval" element={<ResultApproval />} />
+          <Route path="classes" element={<MyClasses />} />
+        </Route>
 
-          {/* ===== ADMIN (LEGACY) ===== */}
-          <Route
-            element={
-              <RequireRole
-                allowedRoles={["super_admin", "school_admin", "admin"]}
-              />
-            }
-          >
-            <Route path="admin">
-              <Route path="fees" element={<Fees />} />
-              <Route path="reports" element={<Reports />} />
-              <Route path="timetable" element={<TimetableAdmin />} />
-            </Route>
-          </Route>
+        {/* ===== ADMIN (LEGACY) ===== */}
+        <Route path="admin">
+          <Route path="fees" element={<Fees />} />
+          <Route path="reports" element={<Reports />} />
+          <Route path="timetable" element={<TimetableAdmin />} />
+        </Route>
 
-          {/* ===== TEACHER ===== */}
-          <Route element={<RequireRole allowedRoles={["teacher"]} />}>
-            <Route path="teacher">
-              <Route index element={<TeacherDashboard />} />
-              <Route path="attendance" element={<Attendance />} />
-              <Route path="enter-scores" element={<EnterScores />} />
-              <Route path="classes" element={<MyClasses />} />
-              <Route path="timetable" element={<TeacherTimetable />} />
-            </Route>
-          </Route>
+        {/* ===== TEACHER ===== */}
+        <Route path="teacher">
+          <Route index element={<TeacherDashboard />} />
+          <Route path="attendance" element={<Attendance />} />
+          <Route path="enter-scores" element={<EnterScores />} />
+          <Route path="classes" element={<MyClasses />} />
+          <Route path="timetable" element={<TeacherTimetable />} />
+        </Route>
 
-          {/* ===== STUDENT ===== */}
-          <Route element={<RequireRole allowedRoles={["student"]} />}>
-            <Route path="student">
-              <Route index element={<StudentDashboard />} />
-              <Route path="results" element={<MyResults />} />
-              <Route path="timetable" element={<Timetable />} />
-              <Route path="profile" element={<Profile />} />
-              <Route path="notifications" element={<Notifications />} />
-              <Route path="StudentFees" element={<StudentFees />} />
-              <Route path="attendance" element={<StudentAttendance />} />
-            </Route>
-          </Route>
+        {/* ===== STUDENT ===== */}
+        <Route path="student">
+          <Route index element={<StudentDashboard />} />
+          <Route path="results" element={<MyResults />} />
+          <Route path="timetable" element={<Timetable />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="notifications" element={<Notifications />} />
+          <Route path="StudentFees" element={<StudentFees />} />
+          <Route path="attendance" element={<StudentAttendance />} />
+        </Route>
 
-          {/* ===== PARENT ===== */}
-          <Route element={<RequireRole allowedRoles={["parent"]} />}>
-            <Route path="parent">
-              <Route index element={<ParentDashboard />} />
-            </Route>
-          </Route>
+        {/* ===== PARENT ===== */}
+        <Route path="parent">
+          <Route index element={<ParentDashboard />} />
         </Route>
       </Route>
 

@@ -36,30 +36,53 @@ const Sidebar = ({ isOpen, onClose }) => {
   ];
 
   const adminNavItems = [
-    { path: "/admin/students", icon: Users, label: "Students" },
-    { path: "/admin/teachers", icon: UserCircle, label: "Teachers" },
+    { path: "/school-admin", icon: Users, label: "School Admin" },
+    { path: "/school-admin/create-teacher", icon: UserCircle, label: "Create Teacher" },
+    { path: "/school-admin/create-student", icon: Users, label: "Create Student" },
+    { path: "/school-admin/school-settings", icon: Settings, label: "School Settings" },
+    { path: "/school-admin/academics", icon: BookOpen, label: "Academics" },
+    { path: "/school-admin/sessions-terms", icon: Calendar, label: "Sessions & Terms" },
+    { path: "/school-admin/subjects", icon: BookOpen, label: "Subjects" },
+    { path: "/school-admin/announcements", icon: Bell, label: "Announcements" },
+    { path: "/school-admin/subscriptions", icon: CreditCard, label: "Subscriptions" },
+    { path: "/school-admin/timetable", icon: Clock, label: "Timetable" },
+    { path: "/school-admin/attendance", icon: ClipboardCheck, label: "Attendance" },
+    { path: "/school-admin/bulk-upload", icon: Users, label: "Bulk Upload" },
+    { path: "/school-admin/result-approval", icon: FileText, label: "Result Approval" },
+    { path: "/school-admin/classes", icon: School, label: "Classes" },
     { path: "/admin/fees", icon: CreditCard, label: "Fees" },
-    { path: "/admin/timetable", icon: Clock, label: "Timetable" },
     { path: "/admin/reports", icon: BarChart3, label: "Reports" },
+    { path: "/admin/timetable", icon: Clock, label: "Timetable" },
   ];
 
   const teacherNavItems = [
+    { path: "/teacher", icon: UserCircle, label: "Teacher Dashboard" },
     { path: "/teacher/attendance", icon: ClipboardCheck, label: "Attendance" },
-    { path: "/teacher/scores", icon: BookOpen, label: "Enter Scores" },
+    { path: "/teacher/enter-scores", icon: BookOpen, label: "Enter Scores" },
     { path: "/teacher/classes", icon: School, label: "My Classes" },
     { path: "/teacher/timetable", icon: Clock, label: "My Timetable" },
   ];
 
   const studentNavItems = [
+    { path: "/student", icon: UserCircle, label: "Student Dashboard" },
     { path: "/student/results", icon: FileText, label: "My Results" },
     { path: "/student/timetable", icon: Clock, label: "Timetable" },
     { path: "/student/profile", icon: UserCircle, label: "Profile" },
+    { path: "/student/notifications", icon: Bell, label: "Notifications" },
+    { path: "/student/StudentFees", icon: CreditCard, label: "Fees" },
+    { path: "/student/attendance", icon: ClipboardCheck, label: "Attendance" },
   ];
 
   const superAdminNavItems = [
-    { path: "/super-admin/schools", icon: School, label: "Schools" },
-    { path: "/super-admin/admins", icon: Users, label: "Admins" },
-    { path: "/super-admin/settings", icon: Settings, label: "System Settings" },
+    { path: "/super-admin", icon: School, label: "Super Admin" },
+    { path: "/super-admin/create-school", icon: School, label: "Create School" },
+    { path: "/super-admin/activate-accounts", icon: Users, label: "Activate Accounts" },
+    { path: "/super-admin/audit-logs", icon: FileText, label: "Audit Logs" },
+    { path: "/super-admin/settings", icon: Settings, label: "Settings" },
+  ];
+
+  const parentNavItems = [
+    { path: "/parent", icon: UserCircle, label: "Parent Dashboard" },
   ];
 
   const academicNavItems = [
@@ -71,33 +94,16 @@ const Sidebar = ({ isOpen, onClose }) => {
   const getNavItems = () => {
     let items = [...baseNavItems];
 
-    if (user?.role === "super_admin") {
-      items = [...items, ...superAdminNavItems];
-    }
+    // Always include all nav items since auth is removed
+    items = [...items, ...superAdminNavItems, ...adminNavItems, ...teacherNavItems, ...studentNavItems, ...parentNavItems];
 
-    if (user?.role === "school_admin" || user?.role === "admin") {
-      items = [...items, ...adminNavItems];
-    }
-
-    if (user?.role === "teacher") {
-      items = [...items, ...teacherNavItems];
-    }
-
-    if (user?.role === "student") {
-      items = [...items, ...studentNavItems];
-    }
-
-    // Add academics for appropriate roles
-    if (
-      ["admin", "teacher", "super_admin", "school_admin"].includes(user?.role)
-    ) {
-      items.push({
-        path: "#",
-        icon: GraduationCap,
-        label: "Academics",
-        children: academicNavItems,
-      });
-    }
+    // Add academics
+    items.push({
+      path: "#",
+      icon: GraduationCap,
+      label: "Academics",
+      children: academicNavItems,
+    });
 
     return items;
   };
