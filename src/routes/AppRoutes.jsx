@@ -88,6 +88,7 @@ const AppRoutes = () => {
         <Route path="profile" element={<MyProfile />} />
         <Route path="account-settings" element={<AccountSettings />} />
         <Route path="help" element={<HelpSupport />} />
+        </Route>
 
         {/* ===== SUPER ADMIN ===== */}
         <Route path="super-admin">
