@@ -15,6 +15,7 @@ import {
 import Loader from "./Loader";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import AuthLoader from "./authLoader";
 
 /* ================= Animations ================= */
 
@@ -503,25 +504,22 @@ const RegisterAnimation = () => {
                 </motion.div>
 
                 {/* Submit Button */}
-                <motion.div className="pt-4" variants={itemVariants}>
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="w-full py-3 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold shadow-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
-                  >
-                    {loading ? (
-                      <>
-                        <Loader size="sm" />
-                        <span>Creating Account...</span>
-                      </>
-                    ) : (
-                      <>
-                        <Shield className="w-5 h-5" />
-                        <span>Register Account</span>
-                      </>
-                    )}
-                  </button>
-                </motion.div>
+                   <motion.div variants={itemVariants}>
+                            <button
+                              type="submit"
+                              disabled={loading}
+                              className="w-full py-3 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold shadow-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 min-h-[48px]"
+                            >
+                              {loading ? (
+                                <AuthLoader size="sm" text={null} />
+                              ) : (
+                                <>
+                                  <Lock className="w-5 h-5" />
+                                  <span>Sign In</span>
+                                </>
+                              )}
+                            </button>
+                          </motion.div>
               </motion.form>
             )}
           </div>
