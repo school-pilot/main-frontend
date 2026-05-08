@@ -9,57 +9,30 @@ export const useNotification = () => useContext(NotificationContext);
 export const NotificationProvider = ({ children }) => {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
-  const { isAuthenticated, logout } = useAuth();
+  // Auth removed, always authenticated
 
-  // Refresh token manually
+  // Refresh token manually - DISABLED
   const refreshAccessToken = async () => {
-    try {
-      const refresh = getRefreshToken();
-      if (!refresh) throw new Error("No refresh token available");
-
-      const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/accounts/token/refresh/`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ refresh }),
-        }
-      );
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.detail || "Token refresh failed");
-
-      setTokens({ access: data.access });
-      return data.access;
-    } catch (error) {
-      clearTokens();
-      logout();
-      return null;
-    }
+    // Auth removed
+    return "dummy_token";
   };
 
-  // Wrap API calls to auto-refresh token on 401
+  // Wrap API calls to auto-refresh token on 401 - DISABLED
   const fetchWithTokenRefresh = async (apiCall) => {
     try {
       return await apiCall();
     } catch (error) {
-      if (error.response?.status === 401) {
-        const newToken = await refreshAccessToken();
-        if (newToken) {
-          return await apiCall(); // retry original call
-        }
-      }
-      throw error;
+      // Auth removed
+      return null;
     }
   };
 
   useEffect(() => {
-    if (!isAuthenticated) return;
-
+    // Auth removed, always fetch
     fetchNotifications();
     const interval = setInterval(fetchNotifications, 30000);
     return () => clearInterval(interval);
-  }, [isAuthenticated]);
+  }, []);
 
  const fetchNotifications = async () => {
   try {
