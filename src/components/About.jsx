@@ -97,7 +97,7 @@ const About = () => {
     },
   ];
 
-  const values = [
+  const values =  [
     {
       icon: Target,
       title: "Our Mission",
@@ -126,32 +126,46 @@ const About = () => {
 
   const milestones = [
     {
-      year: "2016",
-      event: "SchoolPilot founded",
+      year: "April 24, 2025",
+      event: "SchoolPilot began as a class project focused on improving school administration through technology",
       active: false,
       color: "bg-blue-50 border-blue-200",
       textColor: "text-blue-600",
     },
     {
-      year: "2018",
-      event: "First 100 schools onboard",
+      year: "Mid 2025",
+      event: "A core team was formed and the vision, mission, and purpose of the platform were established ",
       active: false,
       color: "bg-green-50 border-green-200",
       textColor: "text-green-600",
     },
     {
-      year: "2020",
-      event: "AI analytics launched",
+      year: "November 2025",
+      event: "School Pilot secured its CAC and SMEDAN registrations, becoming a legally recognized business",
       active: false,
       color: "bg-purple-50 border-purple-200",
       textColor: "text-purple-600",
     },
     {
-      year: "2024",
-      event: "Global expansion",
+      year: "March 2026",
+      event: "Official business account details and operational structures were set up",
       active: true,
       color: "bg-amber-50 border-amber-200",
       textColor: "text-amber-600",
+    },
+    {
+      year: "April 2026",
+      event: "The platform began its first testing phase with school Pilot",
+      active: true,
+      color: "bg-red-30 border-red-200",
+      textColor: "text-red-600",
+    },
+    {
+      year: "Present Day",
+      event: "School Pilot now has a team of six members and active social media platforms, and is continuing development toward full deployment in school",
+      active: true,
+      color: "bg-green-50 border-green-200",
+      textColor: "text-green-600",
     },
   ];
 
