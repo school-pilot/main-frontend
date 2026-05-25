@@ -1,11 +1,11 @@
 const Testimonials = () => {
     const testimonials = [
-        { text: "SchoolPilot has completely transformed how we manage attendance and grades. Our teachers save hours every week.", name: "Sarah Johnson", role: "High School Teacher", image: "https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=200" },
-        { text: "As a principal, I finally have a clear view of school performance. The analytics dashboard is a game changer.", name: "Michael Okafor", role: "School Principal", image: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=200" },
-        { text: "My parents love the instant updates on their child's progress. Communication has never been this smooth.", name: "Grace Mwangi", role: "Class Teacher", image: "https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=200&auto=format&fit=crop&q=60" },
-        { text: "Running a multi-campus school is complex. SchoolPilot makes it feel simple and organized.", name: "David Chen", role: "School Owner", image: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=200&auto=format&fit=crop&q=60" },
-        { text: "The parent-teacher communication feature has boosted engagement by over 60%. Parents feel more involved now.", name: "Amara Nkosi", role: "Deputy Headteacher", image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=100&h=100&auto=format&fit=crop" },
-        { text: "I can track my child's homework, test scores, and attendance all in one app. Peace of mind for any parent.", name: "James Wilson", role: "Parent", image: "https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/userImage/userImage1.png" }
+        { text: "SchoolPilot has completely transformed how we manage attendance and grades. Our teachers save hours every week.", name: "okoro Johnson", role: "High School Teacher", image: "https://i.pinimg.com/1200x/ce/a9/f1/cea9f1f584f2470b2770cd137d54e34e.jpg" },
+        { text: "As a principal, I finally have a clear view of school performance. The analytics dashboard is a game changer.", name: "Michael Okafor", role: "School Principal", image: "https://i.pinimg.com/736x/b1/68/8e/b1688e493f110048cbbad1c67aea7b42.jpg" },
+        { text: "My parents love the instant updates on their child's progress. Communication has never been this smooth.", name: "Grace Mwangi", role: "Class Teacher", image: "https://i.pinimg.com/736x/37/5f/7b/375f7b97542b07b3c6a2cae848aeedc6.jpg" },
+        { text: "Running a multi-campus school is complex. SchoolPilot makes it feel simple and organized.", name: "David chukwu", role: "School Owner", image: "https://i.pinimg.com/736x/75/f2/ee/75f2ee195263a366321431c3f3c2e4f0.jpg" },
+        { text: "The parent-teacher communication feature has boosted engagement by over 60%. Parents feel more involved now.", name: "Amara Nkosi", role: "Deputy Headteacher", image: "https://i.pinimg.com/1200x/09/ef/7e/09ef7e73cdd1ddada4a30de9838c3207.jpg" },
+        { text: "I can track my child's homework, test scores, and attendance all in one app. Peace of mind for any parent.", name: "Joy Ugochukwu", role: "Parent", image: "https://i.pinimg.com/736x/7a/92/d8/7a92d8f02c17a347a09558a2450594e2.jpg" }
     ];
 
     const rows = [

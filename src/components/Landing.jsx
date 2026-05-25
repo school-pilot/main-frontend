@@ -195,6 +195,30 @@ const Landing = () => {
               all from one powerful platform.
             </motion.p>
 
+          
+
+<motion.p
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ 
+    opacity: 1, 
+    y: 0,
+    scale: [1, 1.02, 1],
+  }}
+  transition={{ 
+    duration: 0.6, 
+    ease: [0.25, 0.1, 0.25, 1],
+    scale: {
+      duration: 2,
+      repeat: Infinity,
+      repeatType: "reverse",
+      ease: "easeInOut"
+    }
+  }}
+  className="text-white/90 mb-8 max-w-lg mx-auto lg:mx-0 text-lg font-semibold tracking-wide"
+>
+  CLICK THE BUTTON BELOW TO REGISTER AND JOIN OUR WAITLIST
+</motion.p>
+
             {/* CTA Buttons */}
             <motion.div
               variants={itemVariants}
