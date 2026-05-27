@@ -179,7 +179,7 @@ const RegisterAnimation = () => {
   return (
     <div className="relative h-full flex flex-col px-4 sm:px-6 py-8 overflow-hidden">
       {/* Floating labels */}
-      <div className="hidden sm:block">
+      {/* <div className="hidden sm:block">
         <motion.div
           className="absolute top-6 left-10"
           variants={bounceVariants}
@@ -207,7 +207,7 @@ const RegisterAnimation = () => {
             Protected
           </span>
         </motion.div>
-      </div>
+      </div> */}
 
       {/* Card with scrollable content */}
       <motion.div
