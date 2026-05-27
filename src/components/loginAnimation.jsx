@@ -98,7 +98,7 @@ const LoginAnimation = () => {
   };
 
   return (
-    <div className="relative sm:min-h-dvh  h-[700px] flex items-center justify-center px-4 sm:px-6 overflow-hidden ">
+    <div className="relative h-full flex flex-col px-4 sm:px-6 overflow-hidden">
       {/* Background blobs */}
       <div className="sm:absolute sm:inset-0 hidden sm:block sm:overflow-hidden">
         <motion.div
@@ -198,7 +198,7 @@ const LoginAnimation = () => {
 
       {/* Login Card */}
       <motion.div
-        className="z-10 w-full max-w-sm sm:max-w-md p-5 sm:p-6 backdrop-blur-sm rounded-lg shadow-xl border border-gray-100"
+        className="z-10 w-full max-w-sm sm:max-w-md p-5 sm:p-6 backdrop-blur-sm rounded-lg shadow-xl border border-gray-100 my-auto mx-auto"
         variants={fadeInUp}
         initial="hidden"
         animate="visible"

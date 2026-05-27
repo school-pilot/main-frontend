@@ -75,12 +75,12 @@ const AuthLayout = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-1">
+    <div className="min-h-screen w-full flex flex-col">
       {/* REMOVE: bg-red-500 */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-4xl" // Increase max-width
+        className="w-full h-full"
       >
         {/* Background blobs */}
         <div className="absolute inset-0 overflow-hidden">
@@ -105,20 +105,7 @@ const AuthLayout = () => {
             animate="slow"
           />
         </div>
-        {/* Logo - Keep this if you want it */}
-        <div className="text-center mb-6">
-          <div className="inline-flex rounded-2xl mb-1">
-            <img
-              src="/logo.jpg"
-              alt="Company Logo"
-              className="w-15 h-15 object-contain drop-shadow-[0_10px_25px_rgba(59,130,246,0.35)]"
-            />
-          </div>
-          <h1 className=" mt-[-7px] text-3xl font-bold text-gray-900">
-            SchoolPilot
-          </h1>
-          <p className="text-gray-600 mt-[-7px]">Education Management System</p>
-        </div>
+      
 
         {/* Form Container - Make it transparent */}
         <motion.div
@@ -129,10 +116,6 @@ const AuthLayout = () => {
           <Outlet />
         </motion.div>
 
-        {/* Footer */}
-        <p className="text-center text-gray-500 text-sm mt-5">
-          © {new Date().getFullYear()} SchoolPilot. All rights reserved.
-        </p>
       </motion.div>
     </div>
   );

@@ -172,7 +172,7 @@ const LandingNav = () => {
               <motion.img
                 src={Image.Logo}
                 alt="company logo"
-                className="w-[60px] lg:w-[80px] cursor-pointer"
+                className="w-[60px] lg:w-[80px] rounded-full cursor-pointer"
                 whileHover={{ scale: 1.05 }}
                 transition={{ type: "spring", stiffness: 300 }}
               />
@@ -253,19 +253,19 @@ const LandingNav = () => {
               <motion.span
                 variants={lineVariants.top}
                 animate={mobileMenuOpen ? "open" : "closed"}
-                className="w-full h-1 bg-[#214f77] rounded-full"
+                className="w-full h-1 bg-[hsl(219.2deg_80.73%_42.75%)] rounded-full"
                 transition={{ duration: 0.3 }}
               />
               <motion.span
                 variants={lineVariants.middle}
                 animate={mobileMenuOpen ? "open" : "closed"}
-                className="w-full h-1 bg-[#214f77] rounded-full"
+                className="w-full h-1 bg-[hsl(219.2deg_80.73%_42.75%)] rounded-full"
                 transition={{ duration: 0.3 }}
               />
               <motion.span
                 variants={lineVariants.bottom}
                 animate={mobileMenuOpen ? "open" : "closed"}
-                className="w-full h-1 bg-[#214f77] rounded-full"
+                className="w-full h-1 bg-[hsl(219.2deg_80.73%_42.75%)] rounded-full"
                 transition={{ duration: 0.3 }}
               />
             </motion.div>

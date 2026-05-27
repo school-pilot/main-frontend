@@ -177,7 +177,7 @@ const RegisterAnimation = () => {
   };
 
   return (
-    <div className="relative min-h-dvh flex items-center justify-center px-4 sm:px-6 py-8 overflow-hidden">
+    <div className="relative h-full flex flex-col px-4 sm:px-6 py-8 overflow-hidden">
       {/* Floating labels */}
       <div className="hidden sm:block">
         <motion.div
@@ -211,7 +211,7 @@ const RegisterAnimation = () => {
 
       {/* Card with scrollable content */}
       <motion.div
-        className="z-10 w-full max-w-md lg:max-w-2xl"
+        className="z-10 w-full max-w-md lg:max-w-2xl my-auto"
         variants={fadeInUp}
         initial="hidden"
         animate="visible"
