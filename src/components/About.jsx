@@ -202,7 +202,8 @@ const About = () => {
         <motion.div
           variants={fadeUp}
           initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
           className="text-center max-w-2xl mx-auto mb-16"
         >
           <div className="inline-flex items-center gap-2 text-sm font-medium text-blue-600 mb-4">
@@ -226,7 +227,8 @@ const About = () => {
           <motion.div
             variants={scaleIn}
             initial="hidden"
-            animate={isInView ? "visible" : "hidden"}
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
             className="relative"
           >
             <div className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl overflow-hidden aspect-[4/3]">
@@ -257,7 +259,8 @@ const About = () => {
           <motion.div
   variants={containerVariants}
   initial="hidden"
-  animate={isInView ? "visible" : "hidden"}
+  whileInView="visible"
+  viewport={{ once: true, amount: 0.2 }}
   className="space-y-6"
 >
   <motion.p
@@ -294,7 +297,8 @@ const About = () => {
         <motion.div
           variants={containerVariants}
           initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
           className="grid md:grid-cols-3 gap-6 mb-24"
         >
           {values.map((item, idx) => (
@@ -323,7 +327,8 @@ const About = () => {
         <motion.div
           variants={containerVariants}
           initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
           className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-24"
         >
           {stats.map((stat, idx) => (
@@ -343,7 +348,8 @@ const About = () => {
         <motion.div
           variants={fadeUp}
           initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
           className="bg-gray-50 rounded-2xl p-8 md:p-10"
         >
           <div className="text-center mb-8">
@@ -399,7 +405,8 @@ const About = () => {
         <motion.div
           variants={fadeUp}
           initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
           className="mt-16 text-center"
         >
           <div className="inline-block bg-gray-100 rounded-full px-6 py-3">

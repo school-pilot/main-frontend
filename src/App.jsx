@@ -7,7 +7,7 @@ import { Toaster } from 'react-hot-toast';
 function App() {
   console.log("🚀 App Starting...");
   console.log("Environment:", import.meta.env.MODE);
-  console.log("API URL:", import.meta.env.VITE_API_URL || "https://school-pilot-api.vercel.app");
+  console.log("API URL:", import.meta.env.VITE_API_URL_TEST || "https://Localhost:3000");
 
   return (
     <Router>

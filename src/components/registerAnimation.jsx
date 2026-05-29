@@ -11,43 +11,17 @@ import {
   Shield,
   UserCircle,
   ArrowLeft,
+  Phone,
+  X,
+  Image as ImageIcon,
+  FileText,
 } from "lucide-react";
+import toast from "react-hot-toast";
 import Loader from "./Loader";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 /* ================= Animations ================= */
-
-const floatVariants = {
-  slow: {
-    y: [0, -20, 0],
-    transition: { duration: 8, repeat: Infinity, ease: "easeInOut" },
-  },
-  medium: {
-    y: [0, -15, 0],
-    transition: { duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1 },
-  },
-  fast: {
-    y: [0, -10, 0],
-    transition: { duration: 4, repeat: Infinity, ease: "easeInOut", delay: 2 },
-  },
-};
-
-const bounceVariants = {
-  slow: {
-    y: [0, -10, 0],
-    transition: { duration: 3, repeat: Infinity, ease: "easeInOut" },
-  },
-  medium: {
-    y: [0, -8, 0],
-    transition: {
-      duration: 2.5,
-      repeat: Infinity,
-      ease: "easeInOut",
-      delay: 0.5,
-    },
-  },
-};
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -71,166 +45,301 @@ const itemVariants = {
 
 const RegisterAnimation = () => {
   const [formData, setFormData] = useState({
-    first_name: "",
-    last_name: "",
+    schoolName: "",
+    schoolEmail: "",
+    logo: "",
+    phoneNumber: "",
+    website: "",
+    address: "",
+    city: "",
+    state: "",
+    country: "",
+    coverImage: "",
+    isRegistered: false,
+    registrationNumber: "",
+    registrationDocument: "",
+    principalName: "",
+    establishedYear: "",
+    firstName: "",
+    lastName: "",
     email: "",
     username: "",
-    password1: "",
-    password2: "",
+    password: "",
+    confirmPassword: "",
+    phone: "",
+    image: "",
+  });
+
+  // Preview URLs for images
+  const [imagePreviews, setImagePreviews] = useState({
+    logo: null,
+    coverImage: null,
+    registrationDocument: null,
+    profileImage: null,
   });
 
   const [showPassword1, setShowPassword1] = useState(false);
   const [showPassword2, setShowPassword2] = useState(false);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [uploadingImages, setUploadingImages] = useState({
+    logo: false,
+    coverImage: false,
+    registrationDocument: false,
+    profileImage: false,
+  });
+
   const { register } = useAuth();
   const navigate = useNavigate();
 
+  // Get Cloudinary config from environment variables
+  const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+  const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+
   const handleChange = (e) => {
+    const { name, type, value, checked } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: type === "checkbox" ? checked : value,
     });
+  };
+
+  // Create local preview for images
+  const createLocalPreview = (file, type) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImagePreviews(prev => ({
+        ...prev,
+        [type]: reader.result
+      }));
+    };
+    reader.readAsDataURL(file);
+  };
+
+  // Remove preview
+  const removePreview = (type, fieldName) => {
+    setImagePreviews(prev => ({
+      ...prev,
+      [type]: null
+    }));
+    setFormData(prev => ({
+      ...prev,
+      [fieldName]: ""
+    }));
+  };
+
+  const uploadToCloudinary = async (file, type) => {
+    setUploadingImages(prev => ({ ...prev, [type]: true }));
+    
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+
+    try {
+      const response = await fetch(
+        `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const data = await response.json();
+      
+      if (data.secure_url) {
+        toast.success(`${type} uploaded successfully!`);
+        return data.secure_url;
+      } else {
+        throw new Error(data.error?.message || "Upload failed");
+      }
+    } catch (error) {
+      console.error("Cloudinary upload error:", error);
+      toast.error(`Failed to upload ${type}. Please try again.`);
+      return null;
+    } finally {
+      setUploadingImages(prev => ({ ...prev, [type]: false }));
+    }
+  };
+
+  const handleFileUpload = async (e, fieldName, uploadType) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Validate file type
+    const allowedImageTypes = ["image/jpeg", "image/png", "image/jpg", "image/webp"];
+    const allowedDocTypes = ["application/pdf"];
+    
+    if (uploadType === "registrationDocument") {
+      if (![...allowedImageTypes, ...allowedDocTypes].includes(file.type)) {
+        toast.error("Please upload a valid file (PDF, JPEG, PNG, WEBP, or JPG)");
+        return;
+      }
+    } else {
+      if (!allowedImageTypes.includes(file.type)) {
+        toast.error("Please upload a valid image file (JPEG, PNG, WEBP, or JPG)");
+        return;
+      }
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("File size must be less than 5MB");
+      return;
+    }
+
+    // Create local preview for images (not for PDFs)
+    if (uploadType !== "registrationDocument" || file.type !== "application/pdf") {
+      createLocalPreview(file, uploadType);
+    } else {
+      // For PDFs, show file name instead
+      setImagePreviews(prev => ({
+        ...prev,
+        [uploadType]: { name: file.name, type: "pdf" }
+      }));
+    }
+
+    // Upload to Cloudinary
+    const imageUrl = await uploadToCloudinary(file, uploadType);
+    
+    if (imageUrl) {
+      setFormData(prev => ({
+        ...prev,
+        [fieldName]: imageUrl
+      }));
+    } else {
+      // Remove preview if upload failed
+      removePreview(uploadType, fieldName);
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Validate passwords match
-    if (formData.password1 !== formData.password2) {
+    if (formData.password !== formData.confirmPassword) {
       toast.error("Passwords do not match!");
       return;
     }
 
     // Basic validation
     if (
-      !formData.first_name ||
-      !formData.last_name ||
+      !formData.firstName ||
+      !formData.lastName ||
       !formData.email ||
       !formData.username ||
-      !formData.password1 ||
-      !formData.password2
+      !formData.password ||
+      !formData.confirmPassword
     ) {
       toast.error("Please fill in all required fields!");
       return;
     }
 
     setLoading(true);
-    setSuccess(false); // Reset success state
+    setSuccess(false);
 
-    // Format data to match Django API expectations
     const userData = {
-      first_name: formData.first_name,
-      last_name: formData.last_name,
+      first_name: formData.firstName,
+      last_name: formData.lastName,
       email: formData.email,
       username: formData.username,
-      password: formData.password1,
-      password2: formData.password2,
-      role: "school_admin", // Set role to school_admin internally
+      password: formData.password,
+      password2: formData.confirmPassword,
+      phone: formData.phone,
+      image: formData.image,
+      role: "school_admin",
+      school_name: formData.schoolName,
+      school_email: formData.schoolEmail,
+      logo: formData.logo,
+      phone_number: formData.phoneNumber,
+      website: formData.website,
+      address: formData.address,
+      city: formData.city,
+      state: formData.state,
+      country: formData.country,
+      cover_image: formData.coverImage,
+      is_registered: formData.isRegistered,
+      registration_number: formData.registrationNumber,
+      registration_document: formData.registrationDocument,
+      principal_name: formData.principalName,
+      established_year: formData.establishedYear,
     };
 
     try {
-      console.log("🔄 Sending registration request...");
-
-      // Call register and WAIT for response
       const result = await register(userData);
-      console.log("📋 Registration result:", result);
-
       setLoading(false);
 
-      // FIX: Only show success if backend actually succeeded
-      if (result && result.success) {
-        console.log("✅ Registration successful on backend");
+      if (result) {
         setSuccess(true);
-
-        // Show success message
-        toast.success(
-          result.hasTokens
-            ? "Registration successful! You are now logged in."
-            : "Registration successful! Please login.",
-        );
-
-        // Only navigate if we have tokens (auto-login)
-        if (result.hasTokens) {
-          setTimeout(() => {
-            navigate("/");
-          }, 2000);
-        } else {
-          setTimeout(() => {
-            navigate("/login");
-          }, 2000);
-        }
-      } else {
-        // Registration failed - show error
-        const errorMsg =
-          result?.error || "Registration failed. Please try again.";
-        console.error("❌ Registration failed:", errorMsg);
-        toast.error(errorMsg);
+        toast.success("Registration successful! Redirecting to login...");
+        setTimeout(() => {
+          navigate("/login");
+        }, 2000);
       }
     } catch (error) {
       setLoading(false);
       console.error("🔥 Registration error caught:", error);
       toast.error(
-        "An unexpected error occurred. Please check your network connection.",
+        error.message || "An unexpected error occurred. Please try again.",
       );
     }
   };
 
+  // Image Preview Component
+  const ImagePreview = ({ preview, type, onRemove, fieldName, label }) => {
+    if (!preview) return null;
+    
+    const isPdf = typeof preview === 'object' && preview.type === 'pdf';
+    
+    return (
+      <div className="mt-2 relative inline-block">
+        <div className="relative group">
+          {isPdf ? (
+            <div className="flex items-center gap-2 p-2 bg-gray-100 rounded-lg">
+              <FileText className="w-8 h-8 text-red-500" />
+              <span className="text-sm text-gray-700">{preview.name}</span>
+            </div>
+          ) : (
+            <img
+              src={preview}
+              alt={`${label} preview`}
+              className="w-20 h-20 object-cover rounded-lg border-2 border-gray-200"
+            />
+          )}
+          <button
+            type="button"
+            onClick={() => onRemove(type, fieldName)}
+            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors opacity-0 group-hover:opacity-100"
+          >
+            <X className="w-3 h-3" />
+          </button>
+        </div>
+      </div>
+    );
+  };
+
   return (
-    <div className="relative h-full flex flex-col px-4 sm:px-6 py-8 overflow-hidden">
-      {/* Floating labels */}
-      {/* <div className="hidden sm:block">
-        <motion.div
-          className="absolute top-6 left-10"
-          variants={bounceVariants}
-          animate="slow"
-        >
-          <span className="text-sm font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full shadow-sm">
-            Secure
-          </span>
-        </motion.div>
-        <motion.div
-          className="absolute top-1/3 right-10 z-30"
-          variants={bounceVariants}
-          animate="medium"
-        >
-          <span className="text-sm font-semibold text-green-600 bg-green-50 px-3 py-1 rounded-full shadow-sm">
-            Reliable
-          </span>
-        </motion.div>
-        <motion.div
-          className="absolute bottom-24 left-20 z-30"
-          variants={bounceVariants}
-          animate="medium"
-        >
-          <span className="text-sm font-semibold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full shadow-sm">
-            Protected
-          </span>
-        </motion.div>
-      </div> */}
+    <div className="relative min-h-screen flex flex-col px-4 sm:px-6 py-8 bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+      {/* Back button */}
+      <div className="max-w-4xl mx-auto w-full mb-4">
+        <Link to="/">
+          <motion.button
+            whileHover={{ x: -5 }}
+            whileTap={{ scale: 0.95 }}
+            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Home
+          </motion.button>
+        </Link>
+      </div>
 
       {/* Card with scrollable content */}
       <motion.div
-        className="z-10 w-full max-w-md lg:max-w-2xl my-auto"
+        className="z-10 w-full max-w-4xl mx-auto"
         variants={fadeInUp}
         initial="hidden"
         animate="visible"
       >
-<div>  {/* Back button for mobile */}
-        <Link to="/">
-          {" "}
-          <motion.button
-            onClick={() => navigate(-1)}
-            className="sm:hidden flex items-center gap-2 text-gray-600 mt-6 mb-0.5 px-4 py-1 rounded-lg hover:bg-gray-50 transition-colors"
-            whileHover={{ x: -5 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back
-          </motion.button>
-        </Link></div>
-        
-      
         <div className="rounded-xl shadow-xl bg-white/90 backdrop-blur border border-gray-100 overflow-hidden">
           {/* Logo and Header */}
           <div className="p-6 border-b border-gray-100">
@@ -256,7 +365,7 @@ const RegisterAnimation = () => {
                 <img
                   src="/logo.jpg"
                   alt="Company Logo"
-                  className="w-16 h-16 object-contain drop-shadow-[0_10px_25px_rgba(59,130,246,0.35)]"
+                  className="w-16 h-16 object-contain rounded-full drop-shadow-[0_10px_25px_rgba(59,130,246,0.35)]"
                 />
               </motion.div>
 
@@ -297,7 +406,7 @@ const RegisterAnimation = () => {
             ) : (
               <motion.form
                 onSubmit={handleSubmit}
-                className="space-y-4"
+                className="space-y-6"
                 variants={containerVariants}
                 initial="hidden"
                 animate="visible"
@@ -310,7 +419,6 @@ const RegisterAnimation = () => {
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {/* First Name */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         First Name *
@@ -320,8 +428,8 @@ const RegisterAnimation = () => {
                         <input
                           type="text"
                           required
-                          name="first_name"
-                          value={formData.first_name}
+                          name="firstName"
+                          value={formData.firstName}
                           onChange={handleChange}
                           className="w-full bg-blue-50 px-10 py-2 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors text-sm"
                           placeholder="Enter first name"
@@ -329,7 +437,6 @@ const RegisterAnimation = () => {
                       </div>
                     </div>
 
-                    {/* Last Name */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Last Name *
@@ -339,13 +446,327 @@ const RegisterAnimation = () => {
                         <input
                           type="text"
                           required
-                          name="last_name"
-                          value={formData.last_name}
+                          name="lastName"
+                          value={formData.lastName}
                           onChange={handleChange}
                           className="w-full bg-blue-50 px-10 py-2 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors text-sm"
                           placeholder="Enter last name"
                         />
                       </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Phone
+                      </label>
+                      <div className="relative">
+                        <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                        <input
+                          type="tel"
+                          name="phone"
+                          value={formData.phone}
+                          onChange={handleChange}
+                          className="w-full bg-blue-50 px-10 py-2 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors text-sm"
+                          placeholder="Enter phone number"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Profile Image
+                      </label>
+                      <div className="relative">
+                        <UserCircle className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => handleFileUpload(e, "image", "profileImage")}
+                          className="w-full bg-blue-50 px-10 py-2 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors text-sm file:mr-2 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-sm file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200"
+                          disabled={uploadingImages.profileImage}
+                        />
+                      </div>
+                      <ImagePreview
+                        preview={imagePreviews.profileImage}
+                        type="profileImage"
+                        fieldName="image"
+                        label="Profile"
+                        onRemove={removePreview}
+                      />
+                      {uploadingImages.profileImage && (
+                        <div className="flex items-center gap-2 mt-1">
+                          <Loader size="sm" />
+                          <span className="text-xs text-gray-500">Uploading...</span>
+                        </div>
+                      )}
+                      {formData.image && !imagePreviews.profileImage && (
+                        <p className="text-xs text-green-600 mt-1">✓ Image uploaded successfully</p>
+                      )}
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* School Information Section */}
+                <motion.div className="space-y-4" variants={itemVariants}>
+                  <div className="flex items-center gap-2 text-gray-700 mb-2">
+                    <Building className="w-5 h-5" />
+                    <h3 className="font-semibold">School Information</h3>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        School Name
+                      </label>
+                      <input
+                        type="text"
+                        name="schoolName"
+                        value={formData.schoolName}
+                        onChange={handleChange}
+                        className="w-full bg-blue-50 px-4 py-2 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors text-sm"
+                        placeholder="Enter school name"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        School Email
+                      </label>
+                      <input
+                        type="email"
+                        name="schoolEmail"
+                        value={formData.schoolEmail}
+                        onChange={handleChange}
+                        className="w-full bg-blue-50 px-4 py-2 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors text-sm"
+                        placeholder="Enter school email"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        School Phone
+                      </label>
+                      <input
+                        type="tel"
+                        name="phoneNumber"
+                        value={formData.phoneNumber}
+                        onChange={handleChange}
+                        className="w-full bg-blue-50 px-4 py-2 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors text-sm"
+                        placeholder="Enter school phone"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Website
+                      </label>
+                      <input
+                        type="url"
+                        name="website"
+                        value={formData.website}
+                        onChange={handleChange}
+                        className="w-full bg-blue-50 px-4 py-2 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors text-sm"
+                        placeholder="Enter website URL"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Address
+                      </label>
+                      <input
+                        type="text"
+                        name="address"
+                        value={formData.address}
+                        onChange={handleChange}
+                        className="w-full bg-blue-50 px-4 py-2 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors text-sm"
+                        placeholder="Enter address"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        City
+                      </label>
+                      <input
+                        type="text"
+                        name="city"
+                        value={formData.city}
+                        onChange={handleChange}
+                        className="w-full bg-blue-50 px-4 py-2 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors text-sm"
+                        placeholder="Enter city"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        State
+                      </label>
+                      <input
+                        type="text"
+                        name="state"
+                        value={formData.state}
+                        onChange={handleChange}
+                        className="w-full bg-blue-50 px-4 py-2 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors text-sm"
+                        placeholder="Enter state"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Country
+                      </label>
+                      <input
+                        type="text"
+                        name="country"
+                        value={formData.country}
+                        onChange={handleChange}
+                        className="w-full bg-blue-50 px-4 py-2 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors text-sm"
+                        placeholder="Enter country"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Principal Name
+                      </label>
+                      <input
+                        type="text"
+                        name="principalName"
+                        value={formData.principalName}
+                        onChange={handleChange}
+                        className="w-full bg-blue-50 px-4 py-2 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors text-sm"
+                        placeholder="Enter principal name"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Established Year
+                      </label>
+                      <input
+                        type="text"
+                        name="establishedYear"
+                        value={formData.establishedYear}
+                        onChange={handleChange}
+                        className="w-full bg-blue-50 px-4 py-2 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors text-sm"
+                        placeholder="Enter year established"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Registration Number
+                      </label>
+                      <input
+                        type="text"
+                        name="registrationNumber"
+                        value={formData.registrationNumber}
+                        onChange={handleChange}
+                        className="w-full bg-blue-50 px-4 py-2 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors text-sm"
+                        placeholder="Enter registration number"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        School Logo
+                      </label>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleFileUpload(e, "logo", "logo")}
+                        className="w-full bg-blue-50 px-4 py-2 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors text-sm file:mr-2 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-sm file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200"
+                        disabled={uploadingImages.logo}
+                      />
+                      <ImagePreview
+                        preview={imagePreviews.logo}
+                        type="logo"
+                        fieldName="logo"
+                        label="Logo"
+                        onRemove={removePreview}
+                      />
+                      {uploadingImages.logo && (
+                        <div className="flex items-center gap-2 mt-1">
+                          <Loader size="sm" />
+                          <span className="text-xs text-gray-500">Uploading...</span>
+                        </div>
+                      )}
+                      {formData.logo && !imagePreviews.logo && (
+                        <p className="text-xs text-green-600 mt-1">✓ Logo uploaded successfully</p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Cover Image
+                      </label>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleFileUpload(e, "coverImage", "coverImage")}
+                        className="w-full bg-blue-50 px-4 py-2 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors text-sm file:mr-2 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-sm file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200"
+                        disabled={uploadingImages.coverImage}
+                      />
+                      <ImagePreview
+                        preview={imagePreviews.coverImage}
+                        type="coverImage"
+                        fieldName="coverImage"
+                        label="Cover"
+                        onRemove={removePreview}
+                      />
+                      {uploadingImages.coverImage && (
+                        <div className="flex items-center gap-2 mt-1">
+                          <Loader size="sm" />
+                          <span className="text-xs text-gray-500">Uploading...</span>
+                        </div>
+                      )}
+                      {formData.coverImage && !imagePreviews.coverImage && (
+                        <p className="text-xs text-green-600 mt-1">✓ Cover image uploaded successfully</p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Registration Document (PDF/Image)
+                      </label>
+                      <input
+                        type="file"
+                        accept=".pdf,.jpg,.jpeg,.png,.webp"
+                        onChange={(e) => handleFileUpload(e, "registrationDocument", "registrationDocument")}
+                        className="w-full bg-blue-50 px-4 py-2 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors text-sm file:mr-2 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-sm file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200"
+                        disabled={uploadingImages.registrationDocument}
+                      />
+                      <ImagePreview
+                        preview={imagePreviews.registrationDocument}
+                        type="registrationDocument"
+                        fieldName="registrationDocument"
+                        label="Document"
+                        onRemove={removePreview}
+                      />
+                      {uploadingImages.registrationDocument && (
+                        <div className="flex items-center gap-2 mt-1">
+                          <Loader size="sm" />
+                          <span className="text-xs text-gray-500">Uploading...</span>
+                        </div>
+                      )}
+                      {formData.registrationDocument && !imagePreviews.registrationDocument && (
+                        <p className="text-xs text-green-600 mt-1">✓ Document uploaded successfully</p>
+                      )}
+                    </div>
+
+                    <div className="sm:col-span-2 flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        id="isRegistered"
+                        name="isRegistered"
+                        checked={formData.isRegistered}
+                        onChange={handleChange}
+                        className="rounded text-blue-600 focus:ring-blue-500"
+                      />
+                      <label htmlFor="isRegistered" className="cursor-pointer text-sm text-gray-700">
+                        School is registered
+                      </label>
                     </div>
                   </div>
                 </motion.div>
@@ -358,7 +779,6 @@ const RegisterAnimation = () => {
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {/* Username */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Username *
@@ -377,7 +797,6 @@ const RegisterAnimation = () => {
                       </div>
                     </div>
 
-                    {/* Email */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Email *
@@ -406,7 +825,6 @@ const RegisterAnimation = () => {
                   </div>
 
                   <div className="space-y-4">
-                    {/* Password 1 */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Password *
@@ -416,8 +834,8 @@ const RegisterAnimation = () => {
                         <input
                           type={showPassword1 ? "text" : "password"}
                           required
-                          name="password1"
-                          value={formData.password1}
+                          name="password"
+                          value={formData.password}
                           onChange={handleChange}
                           className="w-full bg-blue-50 px-10 py-2 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors text-sm pr-10"
                           placeholder="Create a password"
@@ -428,11 +846,7 @@ const RegisterAnimation = () => {
                           onClick={() => setShowPassword1(!showPassword1)}
                           className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                         >
-                          {showPassword1 ? (
-                            <EyeOff className="w-4 h-4" />
-                          ) : (
-                            <Eye className="w-4 h-4" />
-                          )}
+                          {showPassword1 ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                         </button>
                       </div>
                       <p className="text-xs text-gray-500 mt-1.5">
@@ -440,7 +854,6 @@ const RegisterAnimation = () => {
                       </p>
                     </div>
 
-                    {/* Password 2 (Confirm) */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Confirm Password *
@@ -450,8 +863,8 @@ const RegisterAnimation = () => {
                         <input
                           type={showPassword2 ? "text" : "password"}
                           required
-                          name="password2"
-                          value={formData.password2}
+                          name="confirmPassword"
+                          value={formData.confirmPassword}
                           onChange={handleChange}
                           className="w-full bg-blue-50 px-10 py-2 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors text-sm pr-10"
                           placeholder="Confirm your password"
@@ -462,16 +875,11 @@ const RegisterAnimation = () => {
                           onClick={() => setShowPassword2(!showPassword2)}
                           className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                         >
-                          {showPassword2 ? (
-                            <EyeOff className="w-4 h-4" />
-                          ) : (
-                            <Eye className="w-4 h-4" />
-                          )}
+                          {showPassword2 ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                         </button>
                       </div>
                     </div>
 
-                    {/* Show Password Toggle for password1 */}
                     <div className="flex items-center gap-2 text-sm text-gray-700">
                       <input
                         type="checkbox"
@@ -506,7 +914,7 @@ const RegisterAnimation = () => {
                 <motion.div className="pt-4" variants={itemVariants}>
                   <button
                     type="submit"
-                    disabled={loading}
+                    disabled={loading || Object.values(uploadingImages).some(uploading => uploading)}
                     className="w-full py-3 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold shadow-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
                   >
                     {loading ? (
@@ -530,10 +938,7 @@ const RegisterAnimation = () => {
           <div className="p-4 border-t border-gray-100 bg-gray-50/50">
             <p className="text-center text-sm text-gray-600">
               Already have an account?{" "}
-              <a
-                href="/login"
-                className="text-blue-600 font-semibold hover:underline"
-              >
+              <a href="/login" className="text-blue-600 font-semibold hover:underline">
                 Sign In
               </a>
             </p>
