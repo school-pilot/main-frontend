@@ -523,7 +523,6 @@ const RegisterAnimation = () => {
                   <div className="flex items-center gap-2 text-gray-700 mb-2">
                     <Building className="w-5 h-5" />
                     <h3 className="font-semibold">School Information</h3>
-                    <span className="text-xs text-gray-500 ml-2">(All fields are optional)</span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
