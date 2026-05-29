@@ -421,7 +421,7 @@ const RegisterAnimation = () => {
                   <div className="flex items-center gap-2 text-gray-700 mb-2">
                     <User className="w-5 h-5" />
                     <h3 className="font-semibold">Personal Information</h3>
-                    <span className="text-xs text-gray-500 ml-2">(Required fields marked with *)</span>
+                  
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -815,7 +815,7 @@ const RegisterAnimation = () => {
                   <div className="flex items-center gap-2 text-gray-700 mb-2">
                     <UserCircle className="w-5 h-5" />
                     <h3 className="font-semibold">Account Information</h3>
-                    <span className="text-xs text-gray-500 ml-2">(Required fields marked with *)</span>
+                  
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -862,7 +862,7 @@ const RegisterAnimation = () => {
                   <div className="flex items-center gap-2 text-gray-700 mb-2">
                     <Lock className="w-5 h-5" />
                     <h3 className="font-semibold">Password</h3>
-                    <span className="text-xs text-gray-500 ml-2">(Required fields marked with *)</span>
+                  
                   </div>
 
                   <div className="space-y-4">
