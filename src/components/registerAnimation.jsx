@@ -94,7 +94,8 @@ const RegisterAnimation = () => {
 
   // Get Cloudinary config from environment variables
   const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
-  const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+  const CLOUDINARY_UPLOAD_PRESET = import.meta.env
+    .VITE_CLOUDINARY_UPLOAD_PRESET;
 
   const handleChange = (e) => {
     const { name, type, value, checked } = e.target;
@@ -108,9 +109,9 @@ const RegisterAnimation = () => {
   const createLocalPreview = (file, type) => {
     const reader = new FileReader();
     reader.onloadend = () => {
-      setImagePreviews(prev => ({
+      setImagePreviews((prev) => ({
         ...prev,
-        [type]: reader.result
+        [type]: reader.result,
       }));
     };
     reader.readAsDataURL(file);
@@ -118,19 +119,19 @@ const RegisterAnimation = () => {
 
   // Remove preview
   const removePreview = (type, fieldName) => {
-    setImagePreviews(prev => ({
+    setImagePreviews((prev) => ({
       ...prev,
-      [type]: null
+      [type]: null,
     }));
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [fieldName]: ""
+      [fieldName]: "",
     }));
   };
 
   const uploadToCloudinary = async (file, type) => {
-    setUploadingImages(prev => ({ ...prev, [type]: true }));
-    
+    setUploadingImages((prev) => ({ ...prev, [type]: true }));
+
     const formData = new FormData();
     formData.append("file", file);
     formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
@@ -141,11 +142,11 @@ const RegisterAnimation = () => {
         {
           method: "POST",
           body: formData,
-        }
+        },
       );
 
       const data = await response.json();
-      
+
       if (data.secure_url) {
         toast.success(`${type} uploaded successfully!`);
         return data.secure_url;
@@ -157,7 +158,7 @@ const RegisterAnimation = () => {
       toast.error(`Failed to upload ${type}. Please try again.`);
       return null;
     } finally {
-      setUploadingImages(prev => ({ ...prev, [type]: false }));
+      setUploadingImages((prev) => ({ ...prev, [type]: false }));
     }
   };
 
@@ -166,17 +167,26 @@ const RegisterAnimation = () => {
     if (!file) return;
 
     // Validate file type
-    const allowedImageTypes = ["image/jpeg", "image/png", "image/jpg", "image/webp"];
+    const allowedImageTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/jpg",
+      "image/webp",
+    ];
     const allowedDocTypes = ["application/pdf"];
-    
+
     if (uploadType === "registrationDocument") {
       if (![...allowedImageTypes, ...allowedDocTypes].includes(file.type)) {
-        toast.error("Please upload a valid file (PDF, JPEG, PNG, WEBP, or JPG)");
+        toast.error(
+          "Please upload a valid file (PDF, JPEG, PNG, WEBP, or JPG)",
+        );
         return;
       }
     } else {
       if (!allowedImageTypes.includes(file.type)) {
-        toast.error("Please upload a valid image file (JPEG, PNG, WEBP, or JPG)");
+        toast.error(
+          "Please upload a valid image file (JPEG, PNG, WEBP, or JPG)",
+        );
         return;
       }
     }
@@ -188,23 +198,26 @@ const RegisterAnimation = () => {
     }
 
     // Create local preview for images (not for PDFs)
-    if (uploadType !== "registrationDocument" || file.type !== "application/pdf") {
+    if (
+      uploadType !== "registrationDocument" ||
+      file.type !== "application/pdf"
+    ) {
       createLocalPreview(file, uploadType);
     } else {
       // For PDFs, show file name instead
-      setImagePreviews(prev => ({
+      setImagePreviews((prev) => ({
         ...prev,
-        [uploadType]: { name: file.name, type: "pdf" }
+        [uploadType]: { name: file.name, type: "pdf" },
       }));
     }
 
     // Upload to Cloudinary
     const imageUrl = await uploadToCloudinary(file, uploadType);
-    
+
     if (imageUrl) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        [fieldName]: imageUrl
+        [fieldName]: imageUrl,
       }));
     } else {
       // Remove preview if upload failed
@@ -287,9 +300,9 @@ const RegisterAnimation = () => {
   // Image Preview Component
   const ImagePreview = ({ preview, type, onRemove, fieldName, label }) => {
     if (!preview) return null;
-    
-    const isPdf = typeof preview === 'object' && preview.type === 'pdf';
-    
+
+    const isPdf = typeof preview === "object" && preview.type === "pdf";
+
     return (
       <div className="mt-2 relative inline-block">
         <div className="relative group">
@@ -318,20 +331,8 @@ const RegisterAnimation = () => {
   };
 
   return (
-    <div className="relative min-h-screen flex flex-col px-4 sm:px-6 py-8 bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+    <div className="relative min-h-screen flex flex-col px-4 sm:px-6 py-4 bg-gradient-to-br from-blue-50 via-white to-indigo-50">
       {/* Back button */}
-      <div className="max-w-4xl mx-auto w-full mb-4">
-        <Link to="/">
-          <motion.button
-            whileHover={{ x: -5 }}
-            whileTap={{ scale: 0.95 }}
-            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to Home
-          </motion.button>
-        </Link>
-      </div>
 
       {/* Card with scrollable content */}
       <motion.div
@@ -342,7 +343,8 @@ const RegisterAnimation = () => {
       >
         <div className="rounded-xl shadow-xl bg-white/90 backdrop-blur border border-gray-100 overflow-hidden">
           {/* Logo and Header */}
-          <div className="p-6 border-b border-gray-100">
+          <div className="p-6 border-b border-gray-100 flex flex-col sm:flex-row items-center gap-7">
+        
             <div className="flex flex-col sm:flex-row items-center gap-4">
               <motion.div
                 className="w-16 h-16 flex items-center justify-center bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full drop-shadow-[0_10px_25px_rgba(59,130,246,0.35)]"
@@ -481,7 +483,9 @@ const RegisterAnimation = () => {
                         <input
                           type="file"
                           accept="image/*"
-                          onChange={(e) => handleFileUpload(e, "image", "profileImage")}
+                          onChange={(e) =>
+                            handleFileUpload(e, "image", "profileImage")
+                          }
                           className="w-full bg-blue-50 px-10 py-2 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors text-sm file:mr-2 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-sm file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200"
                           disabled={uploadingImages.profileImage}
                         />
@@ -496,11 +500,15 @@ const RegisterAnimation = () => {
                       {uploadingImages.profileImage && (
                         <div className="flex items-center gap-2 mt-1">
                           <Loader size="sm" />
-                          <span className="text-xs text-gray-500">Uploading...</span>
+                          <span className="text-xs text-gray-500">
+                            Uploading...
+                          </span>
                         </div>
                       )}
                       {formData.image && !imagePreviews.profileImage && (
-                        <p className="text-xs text-green-600 mt-1">✓ Image uploaded successfully</p>
+                        <p className="text-xs text-green-600 mt-1">
+                          ✓ Image uploaded successfully
+                        </p>
                       )}
                     </div>
                   </div>
@@ -689,11 +697,15 @@ const RegisterAnimation = () => {
                       {uploadingImages.logo && (
                         <div className="flex items-center gap-2 mt-1">
                           <Loader size="sm" />
-                          <span className="text-xs text-gray-500">Uploading...</span>
+                          <span className="text-xs text-gray-500">
+                            Uploading...
+                          </span>
                         </div>
                       )}
                       {formData.logo && !imagePreviews.logo && (
-                        <p className="text-xs text-green-600 mt-1">✓ Logo uploaded successfully</p>
+                        <p className="text-xs text-green-600 mt-1">
+                          ✓ Logo uploaded successfully
+                        </p>
                       )}
                     </div>
 
@@ -704,7 +716,9 @@ const RegisterAnimation = () => {
                       <input
                         type="file"
                         accept="image/*"
-                        onChange={(e) => handleFileUpload(e, "coverImage", "coverImage")}
+                        onChange={(e) =>
+                          handleFileUpload(e, "coverImage", "coverImage")
+                        }
                         className="w-full bg-blue-50 px-4 py-2 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors text-sm file:mr-2 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-sm file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200"
                         disabled={uploadingImages.coverImage}
                       />
@@ -718,11 +732,15 @@ const RegisterAnimation = () => {
                       {uploadingImages.coverImage && (
                         <div className="flex items-center gap-2 mt-1">
                           <Loader size="sm" />
-                          <span className="text-xs text-gray-500">Uploading...</span>
+                          <span className="text-xs text-gray-500">
+                            Uploading...
+                          </span>
                         </div>
                       )}
                       {formData.coverImage && !imagePreviews.coverImage && (
-                        <p className="text-xs text-green-600 mt-1">✓ Cover image uploaded successfully</p>
+                        <p className="text-xs text-green-600 mt-1">
+                          ✓ Cover image uploaded successfully
+                        </p>
                       )}
                     </div>
 
@@ -733,7 +751,13 @@ const RegisterAnimation = () => {
                       <input
                         type="file"
                         accept=".pdf,.jpg,.jpeg,.png,.webp"
-                        onChange={(e) => handleFileUpload(e, "registrationDocument", "registrationDocument")}
+                        onChange={(e) =>
+                          handleFileUpload(
+                            e,
+                            "registrationDocument",
+                            "registrationDocument",
+                          )
+                        }
                         className="w-full bg-blue-50 px-4 py-2 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors text-sm file:mr-2 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-sm file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200"
                         disabled={uploadingImages.registrationDocument}
                       />
@@ -747,12 +771,17 @@ const RegisterAnimation = () => {
                       {uploadingImages.registrationDocument && (
                         <div className="flex items-center gap-2 mt-1">
                           <Loader size="sm" />
-                          <span className="text-xs text-gray-500">Uploading...</span>
+                          <span className="text-xs text-gray-500">
+                            Uploading...
+                          </span>
                         </div>
                       )}
-                      {formData.registrationDocument && !imagePreviews.registrationDocument && (
-                        <p className="text-xs text-green-600 mt-1">✓ Document uploaded successfully</p>
-                      )}
+                      {formData.registrationDocument &&
+                        !imagePreviews.registrationDocument && (
+                          <p className="text-xs text-green-600 mt-1">
+                            ✓ Document uploaded successfully
+                          </p>
+                        )}
                     </div>
 
                     <div className="sm:col-span-2 flex items-center gap-2">
@@ -764,7 +793,10 @@ const RegisterAnimation = () => {
                         onChange={handleChange}
                         className="rounded text-blue-600 focus:ring-blue-500"
                       />
-                      <label htmlFor="isRegistered" className="cursor-pointer text-sm text-gray-700">
+                      <label
+                        htmlFor="isRegistered"
+                        className="cursor-pointer text-sm text-gray-700"
+                      >
                         School is registered
                       </label>
                     </div>
@@ -846,7 +878,11 @@ const RegisterAnimation = () => {
                           onClick={() => setShowPassword1(!showPassword1)}
                           className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                         >
-                          {showPassword1 ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                          {showPassword1 ? (
+                            <EyeOff className="w-4 h-4" />
+                          ) : (
+                            <Eye className="w-4 h-4" />
+                          )}
                         </button>
                       </div>
                       <p className="text-xs text-gray-500 mt-1.5">
@@ -875,7 +911,11 @@ const RegisterAnimation = () => {
                           onClick={() => setShowPassword2(!showPassword2)}
                           className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                         >
-                          {showPassword2 ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                          {showPassword2 ? (
+                            <EyeOff className="w-4 h-4" />
+                          ) : (
+                            <Eye className="w-4 h-4" />
+                          )}
                         </button>
                       </div>
                     </div>
@@ -914,7 +954,12 @@ const RegisterAnimation = () => {
                 <motion.div className="pt-4" variants={itemVariants}>
                   <button
                     type="submit"
-                    disabled={loading || Object.values(uploadingImages).some(uploading => uploading)}
+                    disabled={
+                      loading ||
+                      Object.values(uploadingImages).some(
+                        (uploading) => uploading,
+                      )
+                    }
                     className="w-full py-3 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold shadow-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
                   >
                     {loading ? (
@@ -938,7 +983,10 @@ const RegisterAnimation = () => {
           <div className="p-4 border-t border-gray-100 bg-gray-50/50">
             <p className="text-center text-sm text-gray-600">
               Already have an account?{" "}
-              <a href="/login" className="text-blue-600 font-semibold hover:underline">
+              <a
+                href="/login"
+                className="text-blue-600 font-semibold hover:underline"
+              >
                 Sign In
               </a>
             </p>

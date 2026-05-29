@@ -1,42 +1,12 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Mail, Lock, Eye, EyeOff, User } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, User, ArrowLeft, Shield } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Loader from "./Loader";
+import toast from "react-hot-toast";
 
-/* ================= Animations (UNCHANGED) ================= */
-
-const floatVariants = {
-  slow: {
-    y: [0, -20, 0],
-    transition: { duration: 8, repeat: Infinity, ease: "easeInOut" },
-  },
-  medium: {
-    y: [0, -15, 0],
-    transition: { duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1 },
-  },
-  fast: {
-    y: [0, -10, 0],
-    transition: { duration: 4, repeat: Infinity, ease: "easeInOut", delay: 2 },
-  },
-};
-
-const bounceVariants = {
-  slow: {
-    y: [0, -10, 0],
-    transition: { duration: 3, repeat: Infinity, ease: "easeInOut" },
-  },
-  medium: {
-    y: [0, -8, 0],
-    transition: {
-      duration: 2.5,
-      repeat: Infinity,
-      ease: "easeInOut",
-      delay: 0.5,
-    },
-  },
-};
+/* ================= Animations ================= */
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -83,6 +53,12 @@ const LoginAnimation = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!formData.email || !formData.password) {
+      toast.error("Please enter both email and password");
+      return;
+    }
+    
     setLoading(true);
 
     const success = await login({
@@ -93,187 +69,209 @@ const LoginAnimation = () => {
     setLoading(false);
 
     if (success) {
+      toast.success("Login successful! Redirecting...");
       navigate(from, { replace: true });
     }
   };
 
   return (
-    <div className="relative h-full flex flex-col px-4 sm:px-6 overflow-hidden">
-      {/* Background blobs */}
-      <div className="sm:absolute sm:inset-0 hidden sm:block sm:overflow-hidden">
-        <motion.div
-          className="absolute -top-20 -right-20 w-48 sm:w-64 h-48 sm:h-64 bg-blue-400 sm:bg-blue-100 rounded-full opacity-20"
-          variants={floatVariants}
-          animate="slow"
-        />
-        <motion.div
-          className="absolute top-1/4 -left-16 w-36 sm:w-48 h-36 sm:h-48 bg-indigo-500 sm:bg-indigo-100 rounded-full opacity-15"
-          variants={floatVariants}
-          animate="medium"
-        />
-        <motion.div
-          className="absolute bottom-1/3 right-1/4 w-24 sm:w-32 h-24 sm:h-32 bg-purple-600 sm:bg-purple-100 rounded-full opacity-10"
-          variants={floatVariants}
-          animate="fast"
-        />
-        <motion.div
-          className="absolute bottom-20 left-1/4 w-32 sm:w-40 h-32 sm:h-40 bg-gray-600 sm:bg-gray-100 rounded-full opacity-10"
-          variants={floatVariants}
-          animate="slow"
-        />
+    <div className="relative min-h-screen flex flex-col px-4 sm:px-6 py-4 bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+      {/* Back button */}
+      <div className="max-w-md mx-auto w-full mb-4">
+        <Link to="/">
+          <motion.button
+            whileHover={{ x: -5 }}
+            whileTap={{ scale: 0.95 }}
+            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Home
+          </motion.button>
+        </Link>
       </div>
 
-   
       {/* Login Card */}
       <motion.div
-        className="z-10 w-full max-w-sm sm:max-w-md p-5 sm:p-6 backdrop-blur-sm rounded-lg shadow-xl border border-gray-100 my-auto mx-auto"
+        className="z-10 w-full max-w-md mx-auto"
         variants={fadeInUp}
         initial="hidden"
         animate="visible"
       >
-        <div className="flex justify-center mb-3">
-          <motion.div
-            className="w-20 h-20 flex items-center justify-center bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full drop-shadow-[0_10px_25px_rgba(59,130,246,0.35)]"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{
-              opacity: 1,
-              scale: 1,
-              y: [0, -6, 0],
-            }}
-            transition={{
-              duration: 0.8,
-              ease: "easeOut",
-              y: {
-                duration: 3,
-                repeat: Infinity,
-                ease: "easeInOut",
-              },
-            }}
-          >
-            <img
-              src="/logo.jpg"
-              alt="Company Logo"
-              className="w-20 h-20 object-contain drop-shadow-[0_10px_25px_rgba(59,130,246,0.35)]"
-            />
-          </motion.div>
-        </div>
-
-        <motion.div
-          className="mb-6"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          <motion.h2
-            className="text-2xl sm:text-3xl font-bold text-gray-800"
-            variants={itemVariants}
-          >
-            Welcome back
-          </motion.h2>
-          <motion.p
-            className="text-sm sm:text-base text-gray-600 mt-1"
-            variants={itemVariants}
-          >
-            Welcome back! Please enter your details
-          </motion.p>
-        </motion.div>
-
-        <motion.form
-          onSubmit={handleSubmit}
-          className="space-y-4"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          <motion.div variants={itemVariants} className="lg:col-span-2">
-            <label className="text-sm font-medium text-gray-700">Email</label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-              <input
-                type="email"
-                required
-                value={formData.email}
-                name="email"
-                onChange={handleChange}
-                className="w-full bg-blue-50 px-10 py-2.5 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors"
-                placeholder="Enter your email"
-              />
-            </div>
-          </motion.div>
-
-          <motion.div variants={itemVariants} className="lg:col-span-2">
-            <label className="text-sm font-medium text-gray-700">
-              Password
-            </label>
-            <div className="relative">
-              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-              <input
-                type={showPassword ? "text" : "password"}
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                className="w-full bg-blue-50 px-10 pr-12 py-2.5 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors"
-                placeholder="Enter your password"
-              />
-              <button
-                type="button"
-                onClick={togglePasswordVisibility}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+        <div className="rounded-xl shadow-xl bg-white/90 backdrop-blur border border-gray-100 overflow-hidden">
+          {/* Logo and Header */}
+          <div className="p-6 border-b border-gray-100">
+            <div className="flex flex-col sm:flex-row items-center gap-4">
+              <motion.div
+                className="w-16 h-16 flex items-center justify-center bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full drop-shadow-[0_10px_25px_rgba(59,130,246,0.35)]"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{
+                  opacity: 1,
+                  scale: 1,
+                  y: [0, -6, 0],
+                }}
+                transition={{
+                  duration: 0.8,
+                  ease: "easeOut",
+                  y: {
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  },
+                }}
               >
-                {showPassword ? (
-                  <EyeOff className="w-5 h-5" />
-                ) : (
-                  <Eye className="w-5 h-5" />
-                )}
-              </button>
-            </div>
-          </motion.div>
+                <img
+                  src="/logo.jpg"
+                  alt="Company Logo"
+                  className="w-16 h-16 object-contain rounded-full drop-shadow-[0_10px_25px_rgba(59,130,246,0.35)]"
+                />
+              </motion.div>
 
-          <div className="flex items-center justify-between">
-            <label className="flex items-center space-x-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
-                className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
-              />
-              <span className="text-sm text-gray-700">Remember me</span>
-            </label>
-            <a
-              className="text-sm text-blue-600 hover:underline pointer"
-              href="/change-password"
-            >
-              Forgot password?
-            </a>
+              <div className="text-center sm:text-left">
+                <motion.h2
+                  className="text-xl sm:text-2xl font-bold text-gray-800"
+                  variants={itemVariants}
+                >
+                  Welcome Back
+                </motion.h2>
+                <motion.p
+                  className="text-sm text-gray-600 mt-1"
+                  variants={itemVariants}
+                >
+                  Please sign in to your account
+                </motion.p>
+              </div>
+            </div>
           </div>
 
-          <motion.div variants={itemVariants}>
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-3 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold shadow-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+          {/* Form Container */}
+          <div className="p-6">
+            <motion.form
+              onSubmit={handleSubmit}
+              className="space-y-5"
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
             >
-              {loading ? (
-                <Loader size="sm" />
-              ) : (
-                <>
-                  <Lock className="w-5 h-5" />
-                  <span>Sign In</span>
-                </>
-              )}
-            </button>
-          </motion.div>
-        </motion.form>
+              {/* Email Field */}
+              <motion.div variants={itemVariants}>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Email Address <span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <input
+                    type="email"
+                    required
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="w-full bg-blue-50 px-10 py-2.5 rounded-lg outline-none border border-transparent focus:border-blue-300 focus:ring-2 focus:ring-blue-200 transition-all text-sm"
+                    placeholder="Enter your email address"
+                  />
+                </div>
+              </motion.div>
 
-        <p className="text-center text-sm mt-6">
-          Don't have an account?{" "}
-          <a
-            href="/register"
-            className="text-blue-600 font-semibold hover:underline"
-          >
-            Sign Up
-          </a>
-        </p>
+              {/* Password Field */}
+              <motion.div variants={itemVariants}>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Password <span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    required
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    className="w-full bg-blue-50 px-10 pr-12 py-2.5 rounded-lg outline-none border border-transparent focus:border-blue-300 focus:ring-2 focus:ring-blue-200 transition-all text-sm"
+                    placeholder="Enter your password"
+                  />
+                  <button
+                    type="button"
+                    onClick={togglePasswordVisibility}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="w-4 h-4" />
+                    ) : (
+                      <Eye className="w-4 h-4" />
+                    )}
+                  </button>
+                </div>
+              </motion.div>
+
+              {/* Remember Me and Forgot Password */}
+              <motion.div 
+                variants={itemVariants}
+                className="flex items-center justify-between"
+              >
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                    className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+                  />
+                  <span className="text-sm text-gray-700">Remember me</span>
+                </label>
+                <Link
+                  to="/change-password"
+                  className="text-sm text-blue-600 hover:underline font-medium"
+                >
+                  Forgot password?
+                </Link>
+              </motion.div>
+
+              {/* Show Password Toggle */}
+              <motion.div variants={itemVariants}>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={showPassword}
+                    onChange={() => setShowPassword(!showPassword)}
+                    className="rounded text-blue-600 focus:ring-blue-500 w-4 h-4"
+                  />
+                  <span className="text-sm text-gray-700">Show Password</span>
+                </label>
+              </motion.div>
+
+              {/* Submit Button */}
+              <motion.div variants={itemVariants} className="pt-2">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full py-3 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold shadow-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  {loading ? (
+                    <>
+                      <Loader size="sm" />
+                      <span>Signing In...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Lock className="w-5 h-5" />
+                      <span>Sign In</span>
+                    </>
+                  )}
+                </button>
+              </motion.div>
+            </motion.form>
+          </div>
+
+          {/* Footer */}
+          <div className="p-4 border-t border-gray-100 bg-gray-50/50">
+            <p className="text-center text-sm text-gray-600">
+              Don't have an account?{" "}
+              <Link
+                to="/register"
+                className="text-blue-600 font-semibold hover:underline"
+              >
+                Sign Up
+              </Link>
+            </p>
+          </div>
+        </div>
       </motion.div>
     </div>
   );
