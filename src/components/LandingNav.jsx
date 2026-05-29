@@ -321,7 +321,7 @@ const LandingNav = () => {
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className="bg-[#214f77] text-white px-6 py-3 rounded-full font-semibold w-full"
+                      className="bg-[hsl(219.2deg_80.73%_42.75%)] text-white px-6 py-3 rounded-full font-semibold w-full"
                     >
                       Login
                     </motion.button>
@@ -332,7 +332,7 @@ const LandingNav = () => {
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className="border-2 border-[#214f77] text-[#214f77] px-6 py-3 rounded-full font-semibold w-full"
+                      className="border-2 border-[hsl(219.2deg_80.73%_42.75%)] text-[hsl(219.2deg_80.73%_42.75%)] px-6 py-3 rounded-full font-semibold w-full"
                     >
                       Register
                     </motion.button>
