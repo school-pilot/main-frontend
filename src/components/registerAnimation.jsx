@@ -234,7 +234,7 @@ const RegisterAnimation = () => {
       return;
     }
 
-    // Basic validation
+    // Basic validation for required fields
     if (
       !formData.firstName ||
       !formData.lastName ||
@@ -244,6 +244,12 @@ const RegisterAnimation = () => {
       !formData.confirmPassword
     ) {
       toast.error("Please fill in all required fields!");
+      return;
+    }
+
+    // Validate school required fields if school name is provided
+    if (formData.schoolName && !formData.schoolEmail) {
+      toast.error("School email is required when school name is provided");
       return;
     }
 
@@ -257,24 +263,24 @@ const RegisterAnimation = () => {
       username: formData.username,
       password: formData.password,
       password2: formData.confirmPassword,
-      phone: formData.phone,
-      image: formData.image,
+      phone: formData.phone || undefined,
+      image: formData.image || undefined,
       role: "school_admin",
-      school_name: formData.schoolName,
-      school_email: formData.schoolEmail,
-      logo: formData.logo,
-      phone_number: formData.phoneNumber,
-      website: formData.website,
-      address: formData.address,
-      city: formData.city,
-      state: formData.state,
-      country: formData.country,
-      cover_image: formData.coverImage,
+      school_name: formData.schoolName || undefined,
+      school_email: formData.schoolEmail || undefined,
+      logo: formData.logo || undefined,
+      phone_number: formData.phoneNumber || undefined,
+      website: formData.website || undefined,
+      address: formData.address || undefined,
+      city: formData.city || undefined,
+      state: formData.state || undefined,
+      country: formData.country || undefined,
+      cover_image: formData.coverImage || undefined,
       is_registered: formData.isRegistered,
-      registration_number: formData.registrationNumber,
-      registration_document: formData.registrationDocument,
-      principal_name: formData.principalName,
-      established_year: formData.establishedYear,
+      registration_number: formData.registrationNumber || undefined,
+      registration_document: formData.registrationDocument || undefined,
+      principal_name: formData.principalName || undefined,
+      established_year: formData.establishedYear || undefined,
     };
 
     try {
@@ -332,8 +338,6 @@ const RegisterAnimation = () => {
 
   return (
     <div className="relative min-h-screen flex flex-col px-4 sm:px-6 py-4 bg-gradient-to-br from-blue-50 via-white to-indigo-50">
-      {/* Back button */}
-
       {/* Card with scrollable content */}
       <motion.div
         className="z-10 w-full max-w-4xl mx-auto"
@@ -343,8 +347,7 @@ const RegisterAnimation = () => {
       >
         <div className="rounded-xl shadow-xl bg-white/90 backdrop-blur border border-gray-100 overflow-hidden">
           {/* Logo and Header */}
-          <div className="p-6 border-b border-gray-100 flex flex-col sm:flex-row items-center gap-7">
-        
+          <div className="p-6 border-b border-gray-100">
             <div className="flex flex-col sm:flex-row items-center gap-4">
               <motion.div
                 className="w-16 h-16 flex items-center justify-center bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full drop-shadow-[0_10px_25px_rgba(59,130,246,0.35)]"
@@ -413,17 +416,18 @@ const RegisterAnimation = () => {
                 initial="hidden"
                 animate="visible"
               >
-                {/* Personal Information Section */}
+                {/* Personal Information Section - All fields are REQUIRED except Phone and Image */}
                 <motion.div className="space-y-4" variants={itemVariants}>
                   <div className="flex items-center gap-2 text-gray-700 mb-2">
                     <User className="w-5 h-5" />
                     <h3 className="font-semibold">Personal Information</h3>
+                    <span className="text-xs text-gray-500 ml-2">(Required fields marked with *)</span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        First Name *
+                        First Name <span className="text-red-500">*</span>
                       </label>
                       <div className="relative">
                         <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -441,7 +445,7 @@ const RegisterAnimation = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Last Name *
+                        Last Name <span className="text-red-500">*</span>
                       </label>
                       <div className="relative">
                         <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -459,7 +463,7 @@ const RegisterAnimation = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Phone
+                        Phone <span className="text-gray-400 text-xs">(Optional)</span>
                       </label>
                       <div className="relative">
                         <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -476,7 +480,7 @@ const RegisterAnimation = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Profile Image
+                        Profile Image <span className="text-gray-400 text-xs">(Optional)</span>
                       </label>
                       <div className="relative">
                         <UserCircle className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -514,17 +518,18 @@ const RegisterAnimation = () => {
                   </div>
                 </motion.div>
 
-                {/* School Information Section */}
+                {/* School Information Section - All fields are OPTIONAL */}
                 <motion.div className="space-y-4" variants={itemVariants}>
                   <div className="flex items-center gap-2 text-gray-700 mb-2">
                     <Building className="w-5 h-5" />
                     <h3 className="font-semibold">School Information</h3>
+                    <span className="text-xs text-gray-500 ml-2">(All fields are optional)</span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        School Name
+                        School Name <span className="text-gray-400 text-xs">(Optional)</span>
                       </label>
                       <input
                         type="text"
@@ -538,7 +543,7 @@ const RegisterAnimation = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        School Email
+                        School Email <span className="text-gray-400 text-xs">(Optional)</span>
                       </label>
                       <input
                         type="email"
@@ -552,7 +557,7 @@ const RegisterAnimation = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        School Phone
+                        School Phone <span className="text-gray-400 text-xs">(Optional)</span>
                       </label>
                       <input
                         type="tel"
@@ -566,7 +571,7 @@ const RegisterAnimation = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Website
+                        Website <span className="text-gray-400 text-xs">(Optional)</span>
                       </label>
                       <input
                         type="url"
@@ -578,9 +583,9 @@ const RegisterAnimation = () => {
                       />
                     </div>
 
-                    <div>
+                    <div className="sm:col-span-2">
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Address
+                        Address <span className="text-gray-400 text-xs">(Optional)</span>
                       </label>
                       <input
                         type="text"
@@ -594,7 +599,7 @@ const RegisterAnimation = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        City
+                        City <span className="text-gray-400 text-xs">(Optional)</span>
                       </label>
                       <input
                         type="text"
@@ -608,7 +613,7 @@ const RegisterAnimation = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        State
+                        State <span className="text-gray-400 text-xs">(Optional)</span>
                       </label>
                       <input
                         type="text"
@@ -622,7 +627,7 @@ const RegisterAnimation = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Country
+                        Country <span className="text-gray-400 text-xs">(Optional)</span>
                       </label>
                       <input
                         type="text"
@@ -636,7 +641,7 @@ const RegisterAnimation = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Principal Name
+                        Principal Name <span className="text-gray-400 text-xs">(Optional)</span>
                       </label>
                       <input
                         type="text"
@@ -650,21 +655,23 @@ const RegisterAnimation = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Established Year
+                        Established Year <span className="text-gray-400 text-xs">(Optional)</span>
                       </label>
                       <input
-                        type="text"
+                        type="number"
                         name="establishedYear"
                         value={formData.establishedYear}
                         onChange={handleChange}
                         className="w-full bg-blue-50 px-4 py-2 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors text-sm"
                         placeholder="Enter year established"
+                        min="1800"
+                        max={new Date().getFullYear()}
                       />
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Registration Number
+                        Registration Number <span className="text-gray-400 text-xs">(Optional)</span>
                       </label>
                       <input
                         type="text"
@@ -678,7 +685,7 @@ const RegisterAnimation = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        School Logo
+                        School Logo <span className="text-gray-400 text-xs">(Optional)</span>
                       </label>
                       <input
                         type="file"
@@ -711,7 +718,7 @@ const RegisterAnimation = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Cover Image
+                        Cover Image <span className="text-gray-400 text-xs">(Optional)</span>
                       </label>
                       <input
                         type="file"
@@ -744,9 +751,9 @@ const RegisterAnimation = () => {
                       )}
                     </div>
 
-                    <div>
+                    <div className="sm:col-span-2">
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Registration Document (PDF/Image)
+                        Registration Document (PDF/Image) <span className="text-gray-400 text-xs">(Optional)</span>
                       </label>
                       <input
                         type="file"
@@ -797,23 +804,24 @@ const RegisterAnimation = () => {
                         htmlFor="isRegistered"
                         className="cursor-pointer text-sm text-gray-700"
                       >
-                        School is registered
+                        School is registered with the government
                       </label>
                     </div>
                   </div>
                 </motion.div>
 
-                {/* Account Information Section */}
+                {/* Account Information Section - ALL fields are REQUIRED */}
                 <motion.div className="space-y-4" variants={itemVariants}>
                   <div className="flex items-center gap-2 text-gray-700 mb-2">
                     <UserCircle className="w-5 h-5" />
                     <h3 className="font-semibold">Account Information</h3>
+                    <span className="text-xs text-gray-500 ml-2">(Required fields marked with *)</span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Username *
+                        Username <span className="text-red-500">*</span>
                       </label>
                       <div className="relative">
                         <UserCircle className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -831,7 +839,7 @@ const RegisterAnimation = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Email *
+                        Email <span className="text-red-500">*</span>
                       </label>
                       <div className="relative">
                         <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -849,17 +857,18 @@ const RegisterAnimation = () => {
                   </div>
                 </motion.div>
 
-                {/* Password Section */}
+                {/* Password Section - ALL fields are REQUIRED */}
                 <motion.div className="space-y-4" variants={itemVariants}>
                   <div className="flex items-center gap-2 text-gray-700 mb-2">
                     <Lock className="w-5 h-5" />
                     <h3 className="font-semibold">Password</h3>
+                    <span className="text-xs text-gray-500 ml-2">(Required fields marked with *)</span>
                   </div>
 
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Password *
+                        Password <span className="text-red-500">*</span>
                       </label>
                       <div className="relative">
                         <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -892,7 +901,7 @@ const RegisterAnimation = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Confirm Password *
+                        Confirm Password <span className="text-red-500">*</span>
                       </label>
                       <div className="relative">
                         <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -945,7 +954,7 @@ const RegisterAnimation = () => {
                       className="mt-0.5 rounded text-blue-600 focus:ring-blue-500"
                     />
                     <label htmlFor="terms" className="cursor-pointer">
-                      I agree to the Terms of Service and Privacy Policy
+                      I agree to the Terms of Service and Privacy Policy <span className="text-red-500">*</span>
                     </label>
                   </div>
                 </motion.div>
