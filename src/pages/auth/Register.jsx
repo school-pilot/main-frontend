@@ -37,6 +37,16 @@ const Register = () => {
 
       {/* Form section */}
       <div className="w-full md:w-1/2 overflow-y-auto bg-white">
+        <div className="flex items-center justify-between px-4 py-4 md:hidden">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 text-sm font-medium "
+            aria-label="Back to home"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to home
+          </Link>
+        </div>
         <RegisterAnimation />
       </div>
     </div>
