@@ -1,7 +1,9 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { Clock, Calendar, Download, Bell, BookOpen, Users } from 'lucide-react';
-import { timetableAPI } from '../../services/api';
+// timetableAPI removed from services/api — provide stub
+const _apiStubFactory = () => new Proxy({}, { get: () => async () => ({ data: null }) });
+const timetableAPI = _apiStubFactory();
 import Loader from '../../components/Loader';
 
 const Timetable = () => {

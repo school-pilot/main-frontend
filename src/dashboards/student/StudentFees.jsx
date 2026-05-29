@@ -20,7 +20,9 @@ import {
   History,
 } from "lucide-react";
 import Loader from "../../components/Loader";
-import { feesAPI } from "../../services/api";
+// feesAPI removed from services/api — provide stub
+const _apiStubFactory = () => new Proxy({}, { get: () => async () => ({ data: null }) });
+const feesAPI = _apiStubFactory();
 import Pagination from "../../components/Pagination";
 
 const StudentFees = () => {

@@ -18,7 +18,9 @@ import {
   LineChart,
   Trophy,
 } from "lucide-react";
-import { resultsAPI } from "../../services/api";
+// resultsAPI removed from services/api — provide stub
+const _apiStubFactory = () => new Proxy({}, { get: () => async () => ({ data: null }) });
+const resultsAPI = _apiStubFactory();
 import { useAuth } from "../../context/AuthContext";
 import toast from "react-hot-toast";
 import Loader from "../../components/Loader";

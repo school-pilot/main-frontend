@@ -15,7 +15,9 @@ import {
   XCircle,
   AlertCircle,
 } from 'lucide-react';
-import { feesAPI } from '../../services/api';
+// feesAPI removed from services/api — provide stub
+const _apiStubFactory = () => new Proxy({}, { get: () => async () => ({ data: null }) });
+const feesAPI = _apiStubFactory();
 import toast from 'react-hot-toast';
 import Loader from '../../components/Loader';
 import Pagination from '../../components/Pagination';

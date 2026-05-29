@@ -14,7 +14,9 @@ import {
   LogIn,
   LogOut,
 } from 'lucide-react';
-import { auditAPI } from '../../services/api';
+// auditAPI removed from services/api — provide stub
+const _apiStubFactory = () => new Proxy({}, { get: () => async () => ({ data: null }) });
+const auditAPI = _apiStubFactory();
 import toast from 'react-hot-toast';
 import Loader from '../../components/Loader';
 

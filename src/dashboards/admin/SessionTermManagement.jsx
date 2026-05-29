@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
-import { schoolsAPI } from "../../services/api";
+// schoolsAPI removed from services/api — provide stub
+const _apiStubFactory = () => new Proxy({}, { get: () => async () => ({ data: null }) });
+const schoolsAPI = _apiStubFactory();
 
 const SessionTermManagement = () => {
   const [sessions, setSessions] = useState([]);

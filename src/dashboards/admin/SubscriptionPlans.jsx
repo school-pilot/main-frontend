@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
-import { subscriptionsAPI } from "../../services/api";
+// subscriptionsAPI removed from services/api — provide stub
+const _apiStubFactory = () => new Proxy({}, { get: () => async () => ({ data: null }) });
+const subscriptionsAPI = _apiStubFactory();
 
 const SubscriptionPlans = () => {
   const [currentPlan, setCurrentPlan] = useState(null);

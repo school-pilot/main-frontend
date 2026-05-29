@@ -23,25 +23,24 @@ const Register = () => {
             </motion.button>
           </Link>
         </div>
-        
+
         {/* Background Image */}
-        <img 
-          src={Image.Logo} 
-          alt="School Registration" 
+        <img
+          src={Image.Logo}
+          alt="School Registration"
           className="absolute inset-0 w-full h-full object-cover object-center"
         />
-        
+
         {/* Optional overlay for better text readability */}
         <div className="absolute inset-0 bg-black/20 z-10"></div>
       </div>
 
       {/* Form section */}
       <div className="w-full md:w-1/2 overflow-y-auto bg-white">
-        <div className="flex items-center justify-between px-4 py-4 md:hidden">
+        <div className="relative z-50 flex items-center justify-between px-4 py-4 md:hidden">
           <Link
             to="/"
-            className="inline-flex items-center gap-2 text-sm font-medium "
-            aria-label="Back to home"
+            className="inline-flex items-center gap-2 text-sm font-medium relative z-50"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to home

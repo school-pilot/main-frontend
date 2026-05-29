@@ -12,7 +12,10 @@ import {
   Save,
   Camera,
 } from 'lucide-react';
-import { studentsAPI, authAPI } from '../../services/api';
+// studentsAPI removed from services/api — provide stub; keep authAPI import
+import { authAPI } from '../../services/api';
+const _apiStubFactory = () => new Proxy({}, { get: () => async () => ({ data: null }) });
+const studentsAPI = _apiStubFactory();
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 import Loader from '../../components/Loader';

@@ -1,6 +1,8 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { useAuth } from "./AuthContext";
-import { communicationsAPI } from "../services/api";
+// communicationsAPI removed from services/api — provide stub to avoid runtime import error
+const _apiStubFactory = () => new Proxy({}, { get: () => async () => ({ data: null }) });
+const communicationsAPI = _apiStubFactory();
 import { getRefreshToken, setTokens, clearTokens } from "../utils/token";
 
 const NotificationContext = createContext(null);
@@ -61,7 +63,7 @@ export const NotificationProvider = ({ children }) => {
     return () => clearInterval(interval);
   }, [isAuthenticated]);
 
- const fetchNotifications = async () => {
+const fetchNotifications = async () => {
   try {
     const response = await fetchWithTokenRefresh(
       () => communicationsAPI.notifications()

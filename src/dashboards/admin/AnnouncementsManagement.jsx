@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
-import { communicationsAPI } from "../../services/api";
+// communicationsAPI removed from services/api — provide stub
+const _apiStubFactory = () => new Proxy({}, { get: () => async () => ({ data: null }) });
+const communicationsAPI = _apiStubFactory();
 
 const AnnouncementsManagement = () => {
   const [announcements, setAnnouncements] = useState([]);

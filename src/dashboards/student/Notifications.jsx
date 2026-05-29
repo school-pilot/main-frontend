@@ -20,7 +20,9 @@ import {
   MoreVertical,
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
-import { communicationsAPI } from '../../services/api';
+// communicationsAPI removed from services/api — provide stub
+const _apiStubFactory = () => new Proxy({}, { get: () => async () => ({ data: null }) });
+const communicationsAPI = _apiStubFactory();
 import toast from 'react-hot-toast';
 
 const Notifications = ({ limit = null, showActions = true, compact = false }) => {

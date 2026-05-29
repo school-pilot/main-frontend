@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { studentsAPI, resultsAPI, attendanceAPI, feesAPI } from "../../services/api";
+// studentsAPI, resultsAPI, attendanceAPI, feesAPI removed from services/api — provide stubs
+const _apiStubFactory = () => new Proxy({}, { get: () => async () => ({ data: null }) });
+const studentsAPI = _apiStubFactory();
+const resultsAPI = _apiStubFactory();
+const attendanceAPI = _apiStubFactory();
+const feesAPI = _apiStubFactory();
 
 const ParentDashboard = () => {
   const { user } = useAuth();

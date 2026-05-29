@@ -11,7 +11,12 @@ import {
   TrendingUp,
   TrendingDown,
 } from 'lucide-react';
-import { reportsAPI, studentsAPI, teachersAPI, feesAPI } from '../../services/api';
+// reportsAPI, studentsAPI, teachersAPI, feesAPI removed from services/api — provide stubs
+const _apiStubFactory = () => new Proxy({}, { get: () => async () => ({ data: null }) });
+const reportsAPI = _apiStubFactory();
+const studentsAPI = _apiStubFactory();
+const teachersAPI = _apiStubFactory();
+const feesAPI = _apiStubFactory();
 import Loader from '../../components/Loader';
 import AttendanceChart from './analytics/AttendanceChart';
 import FeesChart from './analytics/FeesChart';

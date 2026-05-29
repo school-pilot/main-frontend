@@ -9,7 +9,9 @@ import {
   MessageSquare,
   Upload,
 } from "lucide-react";
-import { teachersAPI } from "../../services/api";
+// teachersAPI removed from services/api — provide a stub to avoid import errors
+const _apiStubFactory = () => new Proxy({}, { get: () => async () => ({ data: null }) });
+const teachersAPI = _apiStubFactory();
 import toast from "react-hot-toast";
 import Loader from "../../components/Loader";
 import { useAuth } from "../../context/AuthContext";

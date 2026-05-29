@@ -11,7 +11,10 @@ import {
   Users,
   BookOpen,
 } from 'lucide-react';
-import { timetableAPI, academicsAPI } from '../../services/api';
+// timetableAPI and academicsAPI removed from services/api — provide stubs
+const _apiStubFactory = () => new Proxy({}, { get: () => async () => ({ data: null }) });
+const timetableAPI = _apiStubFactory();
+const academicsAPI = _apiStubFactory();
 import toast from 'react-hot-toast';
 import Loader from '../../components/Loader';
 

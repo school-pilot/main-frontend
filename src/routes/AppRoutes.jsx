@@ -72,6 +72,7 @@ import Home from "../pages/Home";
 import CreateNotification from "../pages/CreateNotification";
 import TimetableManagement from "../components/TimetableManagement";
 import AttendanceManagement from "../components/AttendanceManagement";
+import ThankYouWaitlist from "../pages/ThankYouWaitlist";
 
 const AppRoutes = () => {
   const { isAuthenticated, user } = useAuth();
@@ -109,6 +110,7 @@ const AppRoutes = () => {
           )
         }
       />
+      <Route path="/waitlist" element={<ThankYouWaitlist />} />
 
       {/* ================= AUTH ================= */}
       <Route element={<AuthLayout />}>

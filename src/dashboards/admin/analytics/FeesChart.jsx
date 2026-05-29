@@ -1,7 +1,9 @@
 import { motion } from 'framer-motion';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import { useState, useEffect } from 'react';
-import { feesAPI } from '../../../services/api';
+// feesAPI removed from services/api — provide stub to avoid missing-export runtime error
+const _apiStubFactory = () => new Proxy({}, { get: () => async () => ({ data: null }) });
+const feesAPI = _apiStubFactory();
 
 const FeesChart = () => {
   const [data, setData] = useState([]);

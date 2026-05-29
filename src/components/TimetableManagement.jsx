@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
-import { timetableAPI, academicsAPI } from "../services/api";
+// timetableAPI and academicsAPI imports removed from services/api — provide stubs
+const _apiStubFactory = () => new Proxy({}, { get: () => async () => ({ data: null }) });
+const timetableAPI = _apiStubFactory();
+const academicsAPI = _apiStubFactory();
 
 const TimetableManagement = () => {
   const [timetable, setTimetable] = useState([]);

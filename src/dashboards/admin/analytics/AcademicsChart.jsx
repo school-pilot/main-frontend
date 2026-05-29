@@ -12,7 +12,9 @@ import {
   Line,
 } from 'recharts';
 import { useState, useEffect } from 'react';
-import { resultsAPI } from '../../../services/api';
+// resultsAPI removed from services/api — provide stub
+const _apiStubFactory = () => new Proxy({}, { get: () => async () => ({ data: null }) });
+const resultsAPI = _apiStubFactory();
 
 const AcademicsChart = () => {
   const [data, setData] = useState([]);

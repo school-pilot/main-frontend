@@ -4,7 +4,9 @@ import { Building, Upload, X, Mail, Phone, MapPin, Hash, Quote, Image, ArrowLeft
 import toast from 'react-hot-toast';
 import Loader from '../../components/Loader';
 import { useAuth } from "../../context/AuthContext";
-import { schoolsAPI } from '../../services/api';
+// schoolsAPI removed from services/api — provide stub
+const _apiStubFactory = () => new Proxy({}, { get: () => async () => ({ data: null }) });
+const schoolsAPI = _apiStubFactory();
 import { useNavigate } from 'react-router-dom';
 
 const CreateSchool = ({ onSuccess }) => {

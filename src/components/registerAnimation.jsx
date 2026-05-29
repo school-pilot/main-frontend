@@ -247,59 +247,47 @@ const RegisterAnimation = () => {
       return;
     }
 
-    // Validate school required fields if school name is provided
-    if (formData.schoolName && !formData.schoolEmail) {
-      toast.error("School email is required when school name is provided");
-      return;
-    }
-
     setLoading(true);
     setSuccess(false);
 
+    // Prepare data for backend (matching your schema)
     const userData = {
-      first_name: formData.firstName,
-      last_name: formData.lastName,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
       email: formData.email,
-      username: formData.username,
       password: formData.password,
-      password2: formData.confirmPassword,
       phone: formData.phone || undefined,
       image: formData.image || undefined,
-      role: "school_admin",
-      school_name: formData.schoolName || undefined,
-      school_email: formData.schoolEmail || undefined,
+      schoolName: formData.schoolName || undefined,
+      schoolEmail: formData.schoolEmail || undefined,
       logo: formData.logo || undefined,
-      phone_number: formData.phoneNumber || undefined,
+      phoneNumber: formData.phoneNumber || undefined,
       website: formData.website || undefined,
       address: formData.address || undefined,
       city: formData.city || undefined,
       state: formData.state || undefined,
       country: formData.country || undefined,
-      cover_image: formData.coverImage || undefined,
-      is_registered: formData.isRegistered,
-      registration_number: formData.registrationNumber || undefined,
-      registration_document: formData.registrationDocument || undefined,
-      principal_name: formData.principalName || undefined,
-      established_year: formData.establishedYear || undefined,
+      coverImage: formData.coverImage || undefined,
+      isRegistered: formData.isRegistered,
+      registrationNumber: formData.registrationNumber || undefined,
+      registrationDocument: formData.registrationDocument || undefined,
+      principalName: formData.principalName || undefined,
+      establishedYear: formData.establishedYear
+        ? parseInt(formData.establishedYear)
+        : undefined,
     };
 
     try {
       const result = await register(userData);
-      setLoading(false);
 
       if (result) {
         setSuccess(true);
-        toast.success("Registration successful! Redirecting to login...");
-        setTimeout(() => {
-          navigate("/login");
-        }, 2000);
+        // Redirect happens inside register function
       }
     } catch (error) {
+      console.error("Registration error:", error);
+    } finally {
       setLoading(false);
-      console.error("🔥 Registration error caught:", error);
-      toast.error(
-        error.message || "An unexpected error occurred. Please try again.",
-      );
     }
   };
 
@@ -421,7 +409,6 @@ const RegisterAnimation = () => {
                   <div className="flex items-center gap-2 text-gray-700 mb-2">
                     <User className="w-5 h-5" />
                     <h3 className="font-semibold">Personal Information</h3>
-                  
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -463,7 +450,10 @@ const RegisterAnimation = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Phone <span className="text-gray-400 text-xs">(Optional)</span>
+                        Phone{" "}
+                        <span className="text-gray-400 text-xs">
+                          (Optional)
+                        </span>
                       </label>
                       <div className="relative">
                         <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -480,7 +470,10 @@ const RegisterAnimation = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Profile Image <span className="text-gray-400 text-xs">(Optional)</span>
+                        Profile Image{" "}
+                        <span className="text-gray-400 text-xs">
+                          (Optional)
+                        </span>
                       </label>
                       <div className="relative">
                         <UserCircle className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -528,7 +521,10 @@ const RegisterAnimation = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        School Name <span className="text-gray-400 text-xs">(Optional)</span>
+                        School Name{" "}
+                        <span className="text-gray-400 text-xs">
+                          (Optional)
+                        </span>
                       </label>
                       <input
                         type="text"
@@ -542,7 +538,10 @@ const RegisterAnimation = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        School Email <span className="text-gray-400 text-xs">(Optional)</span>
+                        School Email{" "}
+                        <span className="text-gray-400 text-xs">
+                          (Optional)
+                        </span>
                       </label>
                       <input
                         type="email"
@@ -556,7 +555,10 @@ const RegisterAnimation = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        School Phone <span className="text-gray-400 text-xs">(Optional)</span>
+                        School Phone{" "}
+                        <span className="text-gray-400 text-xs">
+                          (Optional)
+                        </span>
                       </label>
                       <input
                         type="tel"
@@ -570,7 +572,10 @@ const RegisterAnimation = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Website <span className="text-gray-400 text-xs">(Optional)</span>
+                        Website{" "}
+                        <span className="text-gray-400 text-xs">
+                          (Optional)
+                        </span>
                       </label>
                       <input
                         type="url"
@@ -584,7 +589,10 @@ const RegisterAnimation = () => {
 
                     <div className="sm:col-span-2">
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Address <span className="text-gray-400 text-xs">(Optional)</span>
+                        Address{" "}
+                        <span className="text-gray-400 text-xs">
+                          (Optional)
+                        </span>
                       </label>
                       <input
                         type="text"
@@ -598,7 +606,10 @@ const RegisterAnimation = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        City <span className="text-gray-400 text-xs">(Optional)</span>
+                        City{" "}
+                        <span className="text-gray-400 text-xs">
+                          (Optional)
+                        </span>
                       </label>
                       <input
                         type="text"
@@ -612,7 +623,10 @@ const RegisterAnimation = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        State <span className="text-gray-400 text-xs">(Optional)</span>
+                        State{" "}
+                        <span className="text-gray-400 text-xs">
+                          (Optional)
+                        </span>
                       </label>
                       <input
                         type="text"
@@ -626,7 +640,10 @@ const RegisterAnimation = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Country <span className="text-gray-400 text-xs">(Optional)</span>
+                        Country{" "}
+                        <span className="text-gray-400 text-xs">
+                          (Optional)
+                        </span>
                       </label>
                       <input
                         type="text"
@@ -640,7 +657,10 @@ const RegisterAnimation = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Principal Name <span className="text-gray-400 text-xs">(Optional)</span>
+                        Principal Name{" "}
+                        <span className="text-gray-400 text-xs">
+                          (Optional)
+                        </span>
                       </label>
                       <input
                         type="text"
@@ -654,7 +674,10 @@ const RegisterAnimation = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Established Year <span className="text-gray-400 text-xs">(Optional)</span>
+                        Established Year{" "}
+                        <span className="text-gray-400 text-xs">
+                          (Optional)
+                        </span>
                       </label>
                       <input
                         type="number"
@@ -670,7 +693,10 @@ const RegisterAnimation = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Registration Number <span className="text-gray-400 text-xs">(Optional)</span>
+                        Registration Number{" "}
+                        <span className="text-gray-400 text-xs">
+                          (Optional)
+                        </span>
                       </label>
                       <input
                         type="text"
@@ -684,7 +710,10 @@ const RegisterAnimation = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        School Logo <span className="text-gray-400 text-xs">(Optional)</span>
+                        School Logo{" "}
+                        <span className="text-gray-400 text-xs">
+                          (Optional)
+                        </span>
                       </label>
                       <input
                         type="file"
@@ -717,7 +746,10 @@ const RegisterAnimation = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Cover Image <span className="text-gray-400 text-xs">(Optional)</span>
+                        Cover Image{" "}
+                        <span className="text-gray-400 text-xs">
+                          (Optional)
+                        </span>
                       </label>
                       <input
                         type="file"
@@ -752,7 +784,10 @@ const RegisterAnimation = () => {
 
                     <div className="sm:col-span-2">
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Registration Document (PDF/Image) <span className="text-gray-400 text-xs">(Optional)</span>
+                        Registration Document (PDF/Image){" "}
+                        <span className="text-gray-400 text-xs">
+                          (Optional)
+                        </span>
                       </label>
                       <input
                         type="file"
@@ -814,7 +849,6 @@ const RegisterAnimation = () => {
                   <div className="flex items-center gap-2 text-gray-700 mb-2">
                     <UserCircle className="w-5 h-5" />
                     <h3 className="font-semibold">Account Information</h3>
-                  
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -861,7 +895,6 @@ const RegisterAnimation = () => {
                   <div className="flex items-center gap-2 text-gray-700 mb-2">
                     <Lock className="w-5 h-5" />
                     <h3 className="font-semibold">Password</h3>
-                  
                   </div>
 
                   <div className="space-y-4">
@@ -953,7 +986,8 @@ const RegisterAnimation = () => {
                       className="mt-0.5 rounded text-blue-600 focus:ring-blue-500"
                     />
                     <label htmlFor="terms" className="cursor-pointer">
-                      I agree to the Terms of Service and Privacy Policy <span className="text-red-500">*</span>
+                      I agree to the Terms of Service and Privacy Policy{" "}
+                      <span className="text-red-500">*</span>
                     </label>
                   </div>
                 </motion.div>

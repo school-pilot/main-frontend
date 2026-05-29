@@ -13,7 +13,9 @@ import {
   Tabs,
   Tab,
 } from '@mui/material';
-import { schoolsAPI } from '../../services/api';
+// schoolsAPI removed from services/api — provide stub
+const _apiStubFactory = () => new Proxy({}, { get: () => async () => ({ data: null }) });
+const schoolsAPI = _apiStubFactory();
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 

@@ -2,19 +2,18 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import toast from "react-hot-toast";
-
 import { authAPI } from "../services/api";
-import {
-  getAccessToken,
-  clearTokens,
-} from "../utils/token";
 
 const AuthContext = createContext(null);
 export const useAuth = () => useContext(AuthContext);
 
+// Token utilities
+const getAccessToken = () => localStorage.getItem("access_token");
+const setAccessToken = (token) => localStorage.setItem("access_token", token);
+const clearTokens = () => localStorage.removeItem("access_token");
+
 export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
-
   const [user, setUser] = useState(null);
   const [loadingAuth, setLoadingAuth] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -22,7 +21,6 @@ export const AuthProvider = ({ children }) => {
   /* =========================================
      INITIAL AUTH CHECK
   ========================================= */
-
   useEffect(() => {
     const initAuth = async () => {
       const token = getAccessToken();
@@ -35,18 +33,20 @@ export const AuthProvider = ({ children }) => {
       try {
         const decoded = jwtDecode(token);
 
-        // Token expired
+        // Check if token is expired
         if (decoded.exp * 1000 < Date.now()) {
           clearTokens();
           setLoadingAuth(false);
           return;
         }
 
-        // 🔥 Get role + user from backend (NOT email)
-        const res = await authAPI.getUser(decoded.user_id);
-        const userData = res.data;
-
-        setUser(userData);
+        // Set user from decoded token
+        setUser({
+          id: decoded.id,
+          email: decoded.email,
+          role: decoded.role,
+          schoolId: decoded.schoolId,
+        });
         setIsAuthenticated(true);
       } catch (error) {
         console.error("Auth init failed:", error);
@@ -60,56 +60,58 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   /* =========================================
-     LOGIN
+     REGISTER
   ========================================= */
-
-  const login = async (credentials) => {
+  const register = async (userData) => {
     try {
-      const res = await authAPI.login(credentials);
-      const { access, refresh } = res.data;
-
-      // Tokens saved in localStorage
-      localStorage.setItem("access_token", access);
-      localStorage.setItem("refresh_token", refresh);
-
-      const decoded = jwtDecode(access);
-
-      // Get full user (includes role from backend)
-      const userRes = await authAPI.getUser(decoded.user_id);
-
-      setUser(userRes.data);
-      setIsAuthenticated(true);
-
-      toast.success("Login successful");
-      navigate("/dashboard");
-
-      return true;
+      const response = await authAPI.register(userData);
+      
+      if (response.success) {
+        toast.success(response.message || "Registration successful! Please login.");
+        navigate("/login");
+        return true;
+      } else {
+        throw new Error(response.message || "Registration failed");
+      }
     } catch (error) {
-      toast.error(
-        error.response?.data?.detail || "Login failed"
-      );
+      console.error("Registration error:", error);
+      toast.error(error.response?.data?.message || error.message || "Registration failed");
       return false;
     }
   };
 
   /* =========================================
-     REGISTER
+     LOGIN
   ========================================= */
-
-  const register = async (data) => {
+  const login = async (credentials) => {
     try {
-      await authAPI.register(data);
-
-      toast.success("Registration successful. Please login.");
-      navigate("/login");
-      return true;
+      const response = await authAPI.login(credentials);
+      
+      if (response.success && response.data) {
+        // Token is already stored in api interceptor
+        const token = getAccessToken();
+        
+        if (token) {
+          const decoded = jwtDecode(token);
+          setUser({
+            id: decoded.id,
+            email: decoded.email,
+            role: decoded.role,
+            schoolId: decoded.schoolId,
+          });
+          setIsAuthenticated(true);
+          toast.success(response.message || "Login successful");
+          navigate("/dashboard");
+          return true;
+        } else {
+          throw new Error("No token received");
+        }
+      } else {
+        throw new Error(response.message || "Login failed");
+      }
     } catch (error) {
-      const errData = error.response?.data;
-      const firstError = errData
-        ? Object.values(errData)[0]?.[0]
-        : "Registration failed";
-
-      toast.error(firstError);
+      console.error("Login error:", error);
+      toast.error(error.response?.data?.message || error.message || "Login failed");
       return false;
     }
   };
@@ -117,58 +119,21 @@ export const AuthProvider = ({ children }) => {
   /* =========================================
      LOGOUT
   ========================================= */
-
   const logout = () => {
     clearTokens();
     setUser(null);
     setIsAuthenticated(false);
     navigate("/login");
-    toast.success("Logged out");
-  };
-
-  /* =========================================
-     UPDATE PROFILE
-  ========================================= */
-
-  const updateProfile = async (data) => {
-    try {
-      if (!user?.id) throw new Error("User not loaded");
-
-      const res = await authAPI.updateUser(user.id, data);
-
-      setUser(res.data);
-      toast.success("Profile updated");
-      return true;
-    } catch (error) {
-      toast.error("Profile update failed");
-      return false;
-    }
-  };
-
-  /* =========================================
-     CHANGE PASSWORD
-  ========================================= */
-
-  const changePassword = async (data) => {
-    try {
-      await authAPI.changePassword(data);
-      toast.success("Password changed successfully");
-      return true;
-    } catch (error) {
-      toast.error("Password change failed");
-      return false;
-    }
+    toast.success("Logged out successfully");
   };
 
   const value = {
     user,
     isAuthenticated,
     loadingAuth,
-    login,
     register,
+    login,
     logout,
-    updateProfile,
-    changePassword,
   };
 
   return (

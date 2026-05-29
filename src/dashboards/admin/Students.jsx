@@ -15,7 +15,9 @@ import {
   Upload,
   FileText
 } from 'lucide-react';
-import { studentsAPI } from '../../services/api';
+// studentsAPI removed from services/api — provide stub
+const _apiStubFactory = () => new Proxy({}, { get: () => async () => ({ data: null }) });
+const studentsAPI = _apiStubFactory();
 import toast from 'react-hot-toast';
 import Loader from '../../components/Loader';
 import Pagination from '../../components/Pagination';

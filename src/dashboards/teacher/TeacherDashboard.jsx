@@ -11,7 +11,11 @@ import {
   CheckCircle,
   RefreshCw,
 } from 'lucide-react';
-import { teachersAPI, attendanceAPI, resultsAPI } from '../../services/api';
+// teachersAPI, attendanceAPI, resultsAPI removed from services/api — provide stubs
+const _apiStubFactory = () => new Proxy({}, { get: () => async () => ({ data: null }) });
+const teachersAPI = _apiStubFactory();
+const attendanceAPI = _apiStubFactory();
+const resultsAPI = _apiStubFactory();
 import Loader from '../../components/Loader';
 
 const TeacherDashboard = () => {

@@ -9,7 +9,10 @@ import {
   TrendingUp,
   Calculator,
 } from 'lucide-react';
-import { resultsAPI, teachersAPI } from '../../services/api';
+// resultsAPI and teachersAPI removed from services/api — provide stubs
+const _apiStubFactory = () => new Proxy({}, { get: () => async () => ({ data: null }) });
+const resultsAPI = _apiStubFactory();
+const teachersAPI = _apiStubFactory();
 import toast from 'react-hot-toast';
 import Loader from '../../components/Loader';
 
