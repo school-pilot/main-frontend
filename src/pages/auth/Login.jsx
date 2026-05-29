@@ -1,5 +1,5 @@
 import React from "react";
-import LoginAnimation from "../../components/LoginAnimation.jsx";
+import LoginAnimation from '../../components/loginAnimation.jsx'
 import Image from "../../assets/image.js";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -37,7 +37,7 @@ const Login = () => {
 
       {/* Form section */}
       <div className="w-full md:w-1/2 overflow-y-auto bg-white">
-        <LoginAnimation />
+       <LoginAnimation />
       </div>
     </div>
   );
