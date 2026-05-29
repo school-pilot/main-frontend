@@ -75,7 +75,9 @@ import AttendanceManagement from "../components/AttendanceManagement";
 import ThankYouWaitlist from "../pages/ThankYouWaitlist";
 
 const AppRoutes = () => {
-  const { isAuthenticated, user } = useAuth();
+  const auth = useAuth();
+  const isAuthenticated = auth?.isAuthenticated ?? false;
+  const user = auth?.user ?? null;
 
   const getDefaultRoute = () => {
     if (!isAuthenticated || !user) return "/";
@@ -110,7 +112,6 @@ const AppRoutes = () => {
           )
         }
       />
-      <Route path="/waitlist" element={<ThankYouWaitlist />} />
 
       {/* ================= AUTH ================= */}
       <Route element={<AuthLayout />}>
@@ -120,6 +121,8 @@ const AppRoutes = () => {
 
       {/* ================= PROTECTED ================= */}
       <Route element={<RequireAuth />}>
+        {" "}
+        <Route path="/waitlist" element={<ThankYouWaitlist />} />
         <Route element={<DashboardLayout />}>
           <Route index element={<Dashboard />} />
           <Route path="notifications" element={<NotificationsPage />} />

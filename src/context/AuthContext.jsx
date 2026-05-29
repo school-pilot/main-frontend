@@ -4,8 +4,14 @@ import { jwtDecode } from "jwt-decode";
 import toast from "react-hot-toast";
 import { authAPI } from "../services/api";
 
-const AuthContext = createContext(null);
-export const useAuth = () => useContext(AuthContext);
+const AuthContext = createContext(undefined);
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+};
 
 // Token utilities
 const getAccessToken = () => localStorage.getItem("access_token");
@@ -101,7 +107,7 @@ export const AuthProvider = ({ children }) => {
           });
           setIsAuthenticated(true);
           toast.success(response.message || "Login successful");
-          navigate("/dashboard");
+          navigate("/");
           return true;
         } else {
           throw new Error("No token received");

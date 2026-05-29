@@ -1,11 +1,11 @@
 import axios from "axios";
 
 // Get API URL from environment variables
-const API_URL = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_URL_TEST || "http://localhost:3000";
+const API_URL =  import.meta.env.VITE_API_URL_TEST || "http://localhost:3000";
 
 // Create axios instance
 const api = axios.create({
-  baseURL: `${API_URL}/api`,
+  baseURL: `${API_URL}/api/`,
   headers: {
     "Content-Type": "application/json",
   },
@@ -33,13 +33,13 @@ api.interceptors.request.use(
 export const authAPI = {
   // Register new school and admin
   register: async (userData) => {
-    const response = await api.post("/school/register", userData);
+    const response = await api.post("auth/school/register", userData);
     return response.data;
   },
 
   // Login user
   login: async (credentials) => {
-    const response = await api.post("/login", credentials);
+    const response = await api.post("auth/login", credentials);
     
     // Store token if returned
     if (response.data.data) {

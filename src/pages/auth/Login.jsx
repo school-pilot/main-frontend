@@ -26,7 +26,7 @@ const Login = () => {
         
         {/* Background Image */}
         <img 
-          src={Image.Logo} 
+          src={Image.SideImage} 
           alt="School Registration" 
           className="absolute inset-0 w-full h-full object-cover object-center"
         />

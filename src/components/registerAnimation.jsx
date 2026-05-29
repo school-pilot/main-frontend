@@ -7,13 +7,10 @@ import {
   Eye,
   EyeOff,
   Building,
-  GraduationCap,
   Shield,
   UserCircle,
-  ArrowLeft,
   Phone,
   X,
-  Image as ImageIcon,
   FileText,
 } from "lucide-react";
 import toast from "react-hot-toast";
@@ -94,8 +91,7 @@ const RegisterAnimation = () => {
 
   // Get Cloudinary config from environment variables
   const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
-  const CLOUDINARY_UPLOAD_PRESET = import.meta.env
-    .VITE_CLOUDINARY_UPLOAD_PRESET;
+  const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
   const handleChange = (e) => {
     const { name, type, value, checked } = e.target;
@@ -132,17 +128,17 @@ const RegisterAnimation = () => {
   const uploadToCloudinary = async (file, type) => {
     setUploadingImages((prev) => ({ ...prev, [type]: true }));
 
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+    const formDataCloud = new FormData();
+    formDataCloud.append("file", file);
+    formDataCloud.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
 
     try {
       const response = await fetch(
         `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
         {
           method: "POST",
-          body: formData,
-        },
+          body: formDataCloud,
+        }
       );
 
       const data = await response.json();
@@ -177,16 +173,12 @@ const RegisterAnimation = () => {
 
     if (uploadType === "registrationDocument") {
       if (![...allowedImageTypes, ...allowedDocTypes].includes(file.type)) {
-        toast.error(
-          "Please upload a valid file (PDF, JPEG, PNG, WEBP, or JPG)",
-        );
+        toast.error("Please upload a valid file (PDF, JPEG, PNG, WEBP, or JPG)");
         return;
       }
     } else {
       if (!allowedImageTypes.includes(file.type)) {
-        toast.error(
-          "Please upload a valid image file (JPEG, PNG, WEBP, or JPG)",
-        );
+        toast.error("Please upload a valid image file (JPEG, PNG, WEBP, or JPG)");
         return;
       }
     }
@@ -198,10 +190,7 @@ const RegisterAnimation = () => {
     }
 
     // Create local preview for images (not for PDFs)
-    if (
-      uploadType !== "registrationDocument" ||
-      file.type !== "application/pdf"
-    ) {
+    if (uploadType !== "registrationDocument" || file.type !== "application/pdf") {
       createLocalPreview(file, uploadType);
     } else {
       // For PDFs, show file name instead
@@ -234,7 +223,7 @@ const RegisterAnimation = () => {
       return;
     }
 
-    // Basic validation for required fields
+    // Basic validation for required fields (only user account fields are required)
     if (
       !formData.firstName ||
       !formData.lastName ||
@@ -250,32 +239,40 @@ const RegisterAnimation = () => {
     setLoading(true);
     setSuccess(false);
 
-    // Prepare data for backend (matching your schema)
-    const userData = {
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      email: formData.email,
-      password: formData.password,
-      phone: formData.phone || undefined,
-      image: formData.image || undefined,
-      schoolName: formData.schoolName || undefined,
-      schoolEmail: formData.schoolEmail || undefined,
-      logo: formData.logo || undefined,
-      phoneNumber: formData.phoneNumber || undefined,
-      website: formData.website || undefined,
-      address: formData.address || undefined,
-      city: formData.city || undefined,
-      state: formData.state || undefined,
-      country: formData.country || undefined,
-      coverImage: formData.coverImage || undefined,
-      isRegistered: formData.isRegistered,
-      registrationNumber: formData.registrationNumber || undefined,
-      registrationDocument: formData.registrationDocument || undefined,
-      principalName: formData.principalName || undefined,
-      establishedYear: formData.establishedYear
-        ? parseInt(formData.establishedYear)
-        : undefined,
-    };
+    // Build userData object - ONLY include fields that have values
+    const userData = {};
+    
+    // Required user fields
+    userData.firstName = formData.firstName;
+    userData.lastName = formData.lastName;
+    userData.email = formData.email;
+    userData.password = formData.password;
+    
+    // Optional user fields - only add if they have values
+    if (formData.username) userData.username = formData.username;
+    if (formData.phone && formData.phone.trim() !== "") userData.phone = formData.phone;
+    if (formData.image && formData.image.trim() !== "") userData.image = formData.image;
+    
+    // Optional school fields - only add if they have values
+    if (formData.schoolName && formData.schoolName.trim() !== "") userData.schoolName = formData.schoolName;
+    if (formData.schoolEmail && formData.schoolEmail.trim() !== "") userData.schoolEmail = formData.schoolEmail;
+    if (formData.logo && formData.logo.trim() !== "") userData.logo = formData.logo;
+    if (formData.phoneNumber && formData.phoneNumber.trim() !== "") userData.phoneNumber = formData.phoneNumber;
+    if (formData.website && formData.website.trim() !== "") userData.website = formData.website;
+    if (formData.address && formData.address.trim() !== "") userData.address = formData.address;
+    if (formData.city && formData.city.trim() !== "") userData.city = formData.city;
+    if (formData.state && formData.state.trim() !== "") userData.state = formData.state;
+    if (formData.country && formData.country.trim() !== "") userData.country = formData.country;
+    if (formData.coverImage && formData.coverImage.trim() !== "") userData.coverImage = formData.coverImage;
+    if (formData.registrationNumber && formData.registrationNumber.trim() !== "") userData.registrationNumber = formData.registrationNumber;
+    if (formData.registrationDocument && formData.registrationDocument.trim() !== "") userData.registrationDocument = formData.registrationDocument;
+    if (formData.principalName && formData.principalName.trim() !== "") userData.principalName = formData.principalName;
+    if (formData.establishedYear && formData.establishedYear.toString().trim() !== "") {
+      userData.establishedYear = parseInt(formData.establishedYear);
+    }
+    
+    // Boolean field
+    userData.isRegistered = formData.isRegistered;
 
     try {
       const result = await register(userData);
@@ -363,16 +360,10 @@ const RegisterAnimation = () => {
               </motion.div>
 
               <div className="text-center sm:text-left">
-                <motion.h2
-                  className="text-xl sm:text-2xl font-bold text-gray-800"
-                  variants={itemVariants}
-                >
+                <motion.h2 className="text-xl sm:text-2xl font-bold text-gray-800">
                   Create Your School Account
                 </motion.h2>
-                <motion.p
-                  className="text-sm text-gray-600 mt-1"
-                  variants={itemVariants}
-                >
+                <motion.p className="text-sm text-gray-600 mt-1">
                   Please enter your details to get started
                 </motion.p>
               </div>
@@ -382,30 +373,19 @@ const RegisterAnimation = () => {
           {/* Scrollable form container */}
           <div className="max-h-[calc(100vh-200px)] overflow-y-auto px-6 py-4">
             {success ? (
-              <motion.div
-                className="p-4 bg-green-50 border border-green-200 rounded-lg text-center"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-              >
+              <motion.div className="p-4 bg-green-50 border border-green-200 rounded-lg text-center">
                 <Shield className="w-12 h-12 text-green-500 mx-auto mb-3" />
                 <h3 className="text-lg font-semibold text-green-800">
                   Registration Successful!
                 </h3>
                 <p className="text-green-600 mt-1">
-                  Your account has been created successfully. Redirecting to
-                  login...
+                  Your account has been created successfully. Redirecting to login...
                 </p>
               </motion.div>
             ) : (
-              <motion.form
-                onSubmit={handleSubmit}
-                className="space-y-6"
-                variants={containerVariants}
-                initial="hidden"
-                animate="visible"
-              >
-                {/* Personal Information Section - All fields are REQUIRED except Phone and Image */}
-                <motion.div className="space-y-4" variants={itemVariants}>
+              <motion.form onSubmit={handleSubmit} className="space-y-6">
+                {/* Personal Information Section */}
+                <motion.div className="space-y-4">
                   <div className="flex items-center gap-2 text-gray-700 mb-2">
                     <User className="w-5 h-5" />
                     <h3 className="font-semibold">Personal Information</h3>
@@ -450,10 +430,7 @@ const RegisterAnimation = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Phone{" "}
-                        <span className="text-gray-400 text-xs">
-                          (Optional)
-                        </span>
+                        Phone <span className="text-gray-400 text-xs">(Optional)</span>
                       </label>
                       <div className="relative">
                         <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -470,23 +447,15 @@ const RegisterAnimation = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Profile Image{" "}
-                        <span className="text-gray-400 text-xs">
-                          (Optional)
-                        </span>
+                        Profile Image <span className="text-gray-400 text-xs">(Optional)</span>
                       </label>
-                      <div className="relative">
-                        <UserCircle className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) =>
-                            handleFileUpload(e, "image", "profileImage")
-                          }
-                          className="w-full bg-blue-50 px-10 py-2 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors text-sm file:mr-2 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-sm file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200"
-                          disabled={uploadingImages.profileImage}
-                        />
-                      </div>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleFileUpload(e, "image", "profileImage")}
+                        className="w-full bg-blue-50 px-4 py-2 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors text-sm file:mr-2 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-sm file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200"
+                        disabled={uploadingImages.profileImage}
+                      />
                       <ImagePreview
                         preview={imagePreviews.profileImage}
                         type="profileImage"
@@ -497,34 +466,25 @@ const RegisterAnimation = () => {
                       {uploadingImages.profileImage && (
                         <div className="flex items-center gap-2 mt-1">
                           <Loader size="sm" />
-                          <span className="text-xs text-gray-500">
-                            Uploading...
-                          </span>
+                          <span className="text-xs text-gray-500">Uploading...</span>
                         </div>
-                      )}
-                      {formData.image && !imagePreviews.profileImage && (
-                        <p className="text-xs text-green-600 mt-1">
-                          ✓ Image uploaded successfully
-                        </p>
                       )}
                     </div>
                   </div>
                 </motion.div>
 
-                {/* School Information Section - All fields are OPTIONAL */}
-                <motion.div className="space-y-4" variants={itemVariants}>
+                {/* School Information Section */}
+                <motion.div className="space-y-4">
                   <div className="flex items-center gap-2 text-gray-700 mb-2">
                     <Building className="w-5 h-5" />
                     <h3 className="font-semibold">School Information</h3>
+                    <span className="text-xs text-gray-500">(All fields are optional)</span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        School Name{" "}
-                        <span className="text-gray-400 text-xs">
-                          (Optional)
-                        </span>
+                        School Name
                       </label>
                       <input
                         type="text"
@@ -538,10 +498,7 @@ const RegisterAnimation = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        School Email{" "}
-                        <span className="text-gray-400 text-xs">
-                          (Optional)
-                        </span>
+                        School Email
                       </label>
                       <input
                         type="email"
@@ -555,10 +512,7 @@ const RegisterAnimation = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        School Phone{" "}
-                        <span className="text-gray-400 text-xs">
-                          (Optional)
-                        </span>
+                        School Phone
                       </label>
                       <input
                         type="tel"
@@ -572,10 +526,7 @@ const RegisterAnimation = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Website{" "}
-                        <span className="text-gray-400 text-xs">
-                          (Optional)
-                        </span>
+                        Website
                       </label>
                       <input
                         type="url"
@@ -589,10 +540,7 @@ const RegisterAnimation = () => {
 
                     <div className="sm:col-span-2">
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Address{" "}
-                        <span className="text-gray-400 text-xs">
-                          (Optional)
-                        </span>
+                        Address
                       </label>
                       <input
                         type="text"
@@ -606,10 +554,7 @@ const RegisterAnimation = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        City{" "}
-                        <span className="text-gray-400 text-xs">
-                          (Optional)
-                        </span>
+                        City
                       </label>
                       <input
                         type="text"
@@ -623,10 +568,7 @@ const RegisterAnimation = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        State{" "}
-                        <span className="text-gray-400 text-xs">
-                          (Optional)
-                        </span>
+                        State
                       </label>
                       <input
                         type="text"
@@ -640,10 +582,7 @@ const RegisterAnimation = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Country{" "}
-                        <span className="text-gray-400 text-xs">
-                          (Optional)
-                        </span>
+                        Country
                       </label>
                       <input
                         type="text"
@@ -657,10 +596,7 @@ const RegisterAnimation = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Principal Name{" "}
-                        <span className="text-gray-400 text-xs">
-                          (Optional)
-                        </span>
+                        Principal Name
                       </label>
                       <input
                         type="text"
@@ -674,10 +610,7 @@ const RegisterAnimation = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Established Year{" "}
-                        <span className="text-gray-400 text-xs">
-                          (Optional)
-                        </span>
+                        Established Year
                       </label>
                       <input
                         type="number"
@@ -693,10 +626,7 @@ const RegisterAnimation = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Registration Number{" "}
-                        <span className="text-gray-400 text-xs">
-                          (Optional)
-                        </span>
+                        Registration Number
                       </label>
                       <input
                         type="text"
@@ -710,10 +640,7 @@ const RegisterAnimation = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        School Logo{" "}
-                        <span className="text-gray-400 text-xs">
-                          (Optional)
-                        </span>
+                        School Logo
                       </label>
                       <input
                         type="file"
@@ -729,34 +656,16 @@ const RegisterAnimation = () => {
                         label="Logo"
                         onRemove={removePreview}
                       />
-                      {uploadingImages.logo && (
-                        <div className="flex items-center gap-2 mt-1">
-                          <Loader size="sm" />
-                          <span className="text-xs text-gray-500">
-                            Uploading...
-                          </span>
-                        </div>
-                      )}
-                      {formData.logo && !imagePreviews.logo && (
-                        <p className="text-xs text-green-600 mt-1">
-                          ✓ Logo uploaded successfully
-                        </p>
-                      )}
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Cover Image{" "}
-                        <span className="text-gray-400 text-xs">
-                          (Optional)
-                        </span>
+                        Cover Image
                       </label>
                       <input
                         type="file"
                         accept="image/*"
-                        onChange={(e) =>
-                          handleFileUpload(e, "coverImage", "coverImage")
-                        }
+                        onChange={(e) => handleFileUpload(e, "coverImage", "coverImage")}
                         className="w-full bg-blue-50 px-4 py-2 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors text-sm file:mr-2 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-sm file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200"
                         disabled={uploadingImages.coverImage}
                       />
@@ -767,38 +676,16 @@ const RegisterAnimation = () => {
                         label="Cover"
                         onRemove={removePreview}
                       />
-                      {uploadingImages.coverImage && (
-                        <div className="flex items-center gap-2 mt-1">
-                          <Loader size="sm" />
-                          <span className="text-xs text-gray-500">
-                            Uploading...
-                          </span>
-                        </div>
-                      )}
-                      {formData.coverImage && !imagePreviews.coverImage && (
-                        <p className="text-xs text-green-600 mt-1">
-                          ✓ Cover image uploaded successfully
-                        </p>
-                      )}
                     </div>
 
                     <div className="sm:col-span-2">
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Registration Document (PDF/Image){" "}
-                        <span className="text-gray-400 text-xs">
-                          (Optional)
-                        </span>
+                        Registration Document (PDF/Image)
                       </label>
                       <input
                         type="file"
                         accept=".pdf,.jpg,.jpeg,.png,.webp"
-                        onChange={(e) =>
-                          handleFileUpload(
-                            e,
-                            "registrationDocument",
-                            "registrationDocument",
-                          )
-                        }
+                        onChange={(e) => handleFileUpload(e, "registrationDocument", "registrationDocument")}
                         className="w-full bg-blue-50 px-4 py-2 rounded-lg outline-none border border-transparent focus:border-blue-300 transition-colors text-sm file:mr-2 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-sm file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200"
                         disabled={uploadingImages.registrationDocument}
                       />
@@ -809,20 +696,6 @@ const RegisterAnimation = () => {
                         label="Document"
                         onRemove={removePreview}
                       />
-                      {uploadingImages.registrationDocument && (
-                        <div className="flex items-center gap-2 mt-1">
-                          <Loader size="sm" />
-                          <span className="text-xs text-gray-500">
-                            Uploading...
-                          </span>
-                        </div>
-                      )}
-                      {formData.registrationDocument &&
-                        !imagePreviews.registrationDocument && (
-                          <p className="text-xs text-green-600 mt-1">
-                            ✓ Document uploaded successfully
-                          </p>
-                        )}
                     </div>
 
                     <div className="sm:col-span-2 flex items-center gap-2">
@@ -834,18 +707,15 @@ const RegisterAnimation = () => {
                         onChange={handleChange}
                         className="rounded text-blue-600 focus:ring-blue-500"
                       />
-                      <label
-                        htmlFor="isRegistered"
-                        className="cursor-pointer text-sm text-gray-700"
-                      >
+                      <label htmlFor="isRegistered" className="cursor-pointer text-sm text-gray-700">
                         School is registered with the government
                       </label>
                     </div>
                   </div>
                 </motion.div>
 
-                {/* Account Information Section - ALL fields are REQUIRED */}
-                <motion.div className="space-y-4" variants={itemVariants}>
+                {/* Account Information Section */}
+                <motion.div className="space-y-4">
                   <div className="flex items-center gap-2 text-gray-700 mb-2">
                     <UserCircle className="w-5 h-5" />
                     <h3 className="font-semibold">Account Information</h3>
@@ -854,13 +724,12 @@ const RegisterAnimation = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Username <span className="text-red-500">*</span>
+                        Username <span className="text-gray-400 text-xs">(Optional)</span>
                       </label>
                       <div className="relative">
                         <UserCircle className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                         <input
                           type="text"
-                          required
                           name="username"
                           value={formData.username}
                           onChange={handleChange}
@@ -890,8 +759,8 @@ const RegisterAnimation = () => {
                   </div>
                 </motion.div>
 
-                {/* Password Section - ALL fields are REQUIRED */}
-                <motion.div className="space-y-4" variants={itemVariants}>
+                {/* Password Section */}
+                <motion.div className="space-y-4">
                   <div className="flex items-center gap-2 text-gray-700 mb-2">
                     <Lock className="w-5 h-5" />
                     <h3 className="font-semibold">Password</h3>
@@ -919,11 +788,7 @@ const RegisterAnimation = () => {
                           onClick={() => setShowPassword1(!showPassword1)}
                           className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                         >
-                          {showPassword1 ? (
-                            <EyeOff className="w-4 h-4" />
-                          ) : (
-                            <Eye className="w-4 h-4" />
-                          )}
+                          {showPassword1 ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                         </button>
                       </div>
                       <p className="text-xs text-gray-500 mt-1.5">
@@ -952,32 +817,15 @@ const RegisterAnimation = () => {
                           onClick={() => setShowPassword2(!showPassword2)}
                           className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                         >
-                          {showPassword2 ? (
-                            <EyeOff className="w-4 h-4" />
-                          ) : (
-                            <Eye className="w-4 h-4" />
-                          )}
+                          {showPassword2 ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                         </button>
                       </div>
-                    </div>
-
-                    <div className="flex items-center gap-2 text-sm text-gray-700">
-                      <input
-                        type="checkbox"
-                        id="showPassword1"
-                        checked={showPassword1}
-                        onChange={() => setShowPassword1(!showPassword1)}
-                        className="rounded text-blue-600 focus:ring-blue-500"
-                      />
-                      <label htmlFor="showPassword1" className="cursor-pointer">
-                        Show Password
-                      </label>
                     </div>
                   </div>
                 </motion.div>
 
                 {/* Terms and Conditions */}
-                <motion.div className="pt-2" variants={itemVariants}>
+                <motion.div className="pt-2">
                   <div className="flex items-start gap-2 text-sm text-gray-600">
                     <input
                       type="checkbox"
@@ -986,22 +834,16 @@ const RegisterAnimation = () => {
                       className="mt-0.5 rounded text-blue-600 focus:ring-blue-500"
                     />
                     <label htmlFor="terms" className="cursor-pointer">
-                      I agree to the Terms of Service and Privacy Policy{" "}
-                      <span className="text-red-500">*</span>
+                      I agree to the Terms of Service and Privacy Policy <span className="text-red-500">*</span>
                     </label>
                   </div>
                 </motion.div>
 
                 {/* Submit Button */}
-                <motion.div className="pt-4" variants={itemVariants}>
+                <motion.div className="pt-4">
                   <button
                     type="submit"
-                    disabled={
-                      loading ||
-                      Object.values(uploadingImages).some(
-                        (uploading) => uploading,
-                      )
-                    }
+                    disabled={loading || Object.values(uploadingImages).some((uploading) => uploading)}
                     className="w-full py-3 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold shadow-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
                   >
                     {loading ? (
@@ -1025,12 +867,9 @@ const RegisterAnimation = () => {
           <div className="p-4 border-t border-gray-100 bg-gray-50/50">
             <p className="text-center text-sm text-gray-600">
               Already have an account?{" "}
-              <a
-                href="/login"
-                className="text-blue-600 font-semibold hover:underline"
-              >
+              <Link to="/login" className="text-blue-600 font-semibold hover:underline">
                 Sign In
-              </a>
+              </Link>
             </p>
           </div>
         </div>
