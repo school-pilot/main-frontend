@@ -107,7 +107,7 @@ export const AuthProvider = ({ children }) => {
           });
           setIsAuthenticated(true);
           toast.success(response.message || "Login successful");
-          navigate("/");
+          navigate("/waitlist");
           return true;
         } else {
           throw new Error("No token received");
