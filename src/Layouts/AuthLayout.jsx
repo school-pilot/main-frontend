@@ -8,7 +8,7 @@ const AuthLayout = () => {
   const { isAuthenticated } = useAuth();
 
   if (isAuthenticated) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/waitlist" replace />;
   }
 
   const floatVariants = {
