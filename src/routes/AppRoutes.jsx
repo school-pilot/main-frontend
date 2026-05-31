@@ -113,6 +113,8 @@ const AppRoutes = () => {
         }
       />
 
+      <Route path="/waitlist" element={<ThankYouWaitlist />} />
+
       {/* ================= AUTH ================= */}
       <Route element={<AuthLayout />}>
         <Route path="/login" element={<Login />} />
@@ -121,8 +123,6 @@ const AppRoutes = () => {
 
       {/* ================= PROTECTED ================= */}
       <Route element={<RequireAuth />}>
-        {" "}
-        <Route path="/waitlist" element={<ThankYouWaitlist />} />
         <Route element={<DashboardLayout />}>
           <Route index element={<Dashboard />} />
           <Route path="notifications" element={<NotificationsPage />} />

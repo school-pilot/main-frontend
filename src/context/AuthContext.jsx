@@ -73,8 +73,8 @@ export const AuthProvider = ({ children }) => {
       const response = await authAPI.register(userData);
       
       if (response.success) {
-        toast.success(response.message || "Registration successful! Please login.");
-        navigate("/login");
+        toast.success(response.message || "Registration successful! Redirecting to waitlist.");
+        navigate("/waitlist", { replace: true });
         return true;
       } else {
         throw new Error(response.message || "Registration failed");
@@ -107,7 +107,6 @@ export const AuthProvider = ({ children }) => {
           });
           setIsAuthenticated(true);
           toast.success(response.message || "Login successful");
-          navigate("/waitlist");
           return true;
         } else {
           throw new Error("No token received");
