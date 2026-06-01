@@ -20,7 +20,7 @@ export const NotificationProvider = ({ children }) => {
       if (!refresh) throw new Error("No refresh token available");
 
       const res = await fetch(
-        `${import.meta.env.VITE_API_URL_TEST}/api/accounts/token/refresh/`,
+        `${import.meta.env.VITE_API_URL}/api/accounts/token/refresh/`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

@@ -7,17 +7,17 @@ import {
   Users,
   Sparkles,
   ArrowRight,
-  Linkedin,
-  Twitter,
-  Instagram,
   Globe,
   Award,
   TrendingUp,
   Shield,
   Star,
+  School,
+  Check,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import Loader from "../components/Loader.jsx";
+import { authAPI } from "../services/api.js"; // Adjust import path as needed
 
 /* ================= Animations ================= */
 
@@ -39,18 +39,38 @@ const staggerContainer = {
   },
 };
 
-const floatAnimation = {
-  y: [0, -10, 0],
-  transition: { duration: 3, repeat: Infinity, ease: "easeInOut" },
-};
-
 /* ================= Component ================= */
 
 const ThankYouWaitlist = () => {
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [daysUntilLaunch, setDaysUntilLaunch] = useState(0);
   const [waitlistPosition, setWaitlistPosition] = useState(0);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
+    // Fetch current user data
+    const fetchUserData = async () => {
+      try {
+        setLoading(true);
+        const response = await authAPI.getCurrentUser();
+        
+        if (response.success && response.data) {
+          setUserData(response.data);
+        } else {
+          setError("Failed to load user data");
+        }
+      } catch (err) {
+        console.error("Error fetching user data:", err);
+        setError("Unable to load your information. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
+
     // Calculate days until next quarter launch (example: next quarter start)
     const today = new Date();
     const currentQuarter = Math.floor((today.getMonth() / 3));
@@ -61,6 +81,26 @@ const ThankYouWaitlist = () => {
     // Random waitlist position for demo (in real app, this would come from API)
     setWaitlistPosition(Math.floor(Math.random() * 500) + 1);
   }, []);
+
+  const handleCopyLink = async () => {
+    const currentUrl = window.location.origin + "/register";
+    try {
+      await navigator.clipboard.writeText(currentUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 3000);
+    } catch (err) {
+      console.error("Failed to copy:", err);
+      // Fallback for older browsers
+      const textarea = document.createElement("textarea");
+      textarea.value = currentUrl;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textarea);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 3000);
+    }
+  };
 
   const features = [
     {
@@ -92,6 +132,29 @@ const ThankYouWaitlist = () => {
     { value: "24/7", label: "Support Available", icon: Shield },
   ];
 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-red-600 text-xl mb-4">{error}</div>
+          <Link to="/login">
+            <button className="px-6 py-2 bg-blue-600 text-white rounded-lg">
+              Go to Login
+            </button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
       {/* Background Decorative Elements */}
@@ -112,7 +175,37 @@ const ThankYouWaitlist = () => {
         >
           <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 rounded-full px-4 py-2 mb-6">
             <CheckCircle className="w-5 h-5" />
-            <span className="text-sm font-semibold">Successfully Joined</span>
+            <span className="text-sm font-semibold">Successfully Registered</span>
+          </div>
+        </motion.div>
+
+        {/* Welcome Card with User Info */}
+        <motion.div
+          variants={fadeInUp}
+          initial="hidden"
+          animate="visible"
+          className="bg-white rounded-2xl shadow-xl p-6 mb-8"
+        >
+          <div className="flex items-center gap-4 flex-wrap">
+            {userData?.image && (
+              <img
+                src={userData.image}
+                alt={userData.firstName}
+                className="w-16 h-16 rounded-full object-cover border-2 border-blue-500"
+              />
+            )}
+            <div className="flex-1">
+              <h2 className="text-2xl font-bold text-gray-800">
+                Welcome, {userData?.firstName} {userData?.lastName}! 👋
+              </h2>
+              <p className="text-gray-600">{userData?.email}</p>
+            </div>
+            <div className="flex items-center gap-2 bg-blue-50 px-4 py-2 rounded-lg">
+              <School className="w-5 h-5 text-blue-600" />
+              <span className="font-semibold text-gray-800">
+                {userData?.school?.schoolName}
+              </span>
+            </div>
           </div>
         </motion.div>
 
@@ -123,7 +216,7 @@ const ThankYouWaitlist = () => {
           animate="visible"
           className="bg-white rounded-3xl shadow-2xl overflow-hidden mb-12"
         >
-          {/* Header Section with Confetti Effect */}
+          {/* Header Section */}
           <div className="relative bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 px-6 py-12 md:py-16 text-center overflow-hidden">
             {/* Animated Background Particles */}
             <div className="absolute inset-0 overflow-hidden">
@@ -171,8 +264,7 @@ const ThankYouWaitlist = () => {
               transition={{ delay: 0.1 }}
               className="text-lg md:text-xl text-blue-100 max-w-2xl mx-auto"
             >
-              Thank you for joining our waitlist. We're thrilled to have you on
-              board for this exciting journey!
+              Thank you for joining our waitlist, {userData?.firstName}! We're thrilled to have {userData?.school?.schoolName} on board for this exciting journey!
             </motion.p>
           </div>
 
@@ -189,24 +281,78 @@ const ThankYouWaitlist = () => {
                 <div className="flex items-center justify-center gap-2 mb-3">
                   <Mail className="w-5 h-5 text-blue-600" />
                   <span className="text-blue-600 font-semibold">
-                    Confirmation Email Sent
+                    Keep Your Inbox Ready!
                   </span>
                 </div>
-                <p className="text-gray-700">
-                  We've sent a confirmation email to your inbox. Please check
-                  your email and confirm your subscription to stay updated on
-                  our launch progress.
+                <p className="text-gray-700 mb-4">
+                  We'll send updates and exclusive content to <strong>{userData?.email}</strong> about our progress. 
+                  You'll be the first to know when we're ready to launch!
                 </p>
-                <div className="mt-4 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
-                  <p className="text-sm text-yellow-800">
-                    📫 Didn't receive the email? Check your spam folder or{" "}
-                    <button className="text-blue-600 hover:underline font-semibold">
-                      click here to resend
-                    </button>
+                <div className="mt-4 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                  <div className="flex items-start gap-3">
+                    <Mail className="w-5 h-5 text-yellow-600 mt-0.5" />
+                    <div className="text-left">
+                      <p className="text-sm text-yellow-800 font-semibold mb-1">
+                        📧 Email Updates Coming Soon
+                      </p>
+                      <p className="text-sm text-yellow-700">
+                        We won't spam you! You'll receive periodic updates about:
+                      </p>
+                      <ul className="text-sm text-yellow-700 mt-2 list-disc list-inside">
+                        <li>Launch progress and milestones</li>
+                        <li>Exclusive early access opportunities</li>
+                        <li>Special discounts for waitlist members</li>
+                        <li>Feature previews and beta testing invites</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-4 p-3 bg-green-50 rounded-lg border border-green-200">
+                  <p className="text-sm text-green-800">
+                    ✨ <strong>Good to know:</strong> We'll notify you via email when the system is ready. 
+                    No immediate action needed - just sit back and watch your inbox for exciting updates!
                   </p>
                 </div>
               </div>
             </motion.div>
+
+            {/* School Info Card */}
+            {userData?.school && (
+              <motion.div
+                variants={fadeInUp}
+                initial="hidden"
+                animate="visible"
+                transition={{ delay: 0.25 }}
+                className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl p-6 mb-8"
+              >
+                <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                  <School className="w-5 h-5 text-indigo-600" />
+                  Your School Information
+                </h3>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-gray-600">School Name</p>
+                    <p className="font-medium text-gray-800">{userData.school.schoolName}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Location</p>
+                    <p className="font-medium text-gray-800">
+                      {[userData.school.city, userData.school.state, userData.school.country]
+                        .filter(Boolean)
+                        .join(", ")}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Email</p>
+                    <p className="font-medium text-gray-800">{userData.school.schoolEmail}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Address</p>
+                    <p className="font-medium text-gray-800">{userData.school.address || "Not provided"}</p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
 
             {/* Stats Section */}
             <motion.div
@@ -256,10 +402,10 @@ const ThankYouWaitlist = () => {
                       1
                     </div>
                     <h3 className="font-semibold text-gray-800 mb-2">
-                      Confirmation Email
+                      Registration Complete
                     </h3>
                     <p className="text-sm text-gray-600">
-                      Verify your email address to stay updated
+                      Your school is now registered in our system
                     </p>
                   </div>
                 </div>
@@ -270,10 +416,10 @@ const ThankYouWaitlist = () => {
                       2
                     </div>
                     <h3 className="font-semibold text-gray-800 mb-2">
-                      Early Access Updates
+                      Stay Updated
                     </h3>
                     <p className="text-sm text-gray-600">
-                      Receive exclusive updates about our launch progress
+                      We'll keep you posted on launch progress via email
                     </p>
                   </div>
                 </div>
@@ -329,7 +475,7 @@ const ThankYouWaitlist = () => {
               </div>
             </motion.div>
 
-            {/* Share Section */}
+            {/* Share Section - Updated with only Copy Link */}
             <motion.div
               variants={fadeInUp}
               initial="hidden"
@@ -341,27 +487,35 @@ const ThankYouWaitlist = () => {
                 Share the Excitement!
               </h3>
               <p className="text-gray-600 mb-4">
-                Invite other schools to join the waitlist and unlock exclusive
-                rewards
+                Invite other schools to join the waitlist and unlock exclusive rewards
               </p>
               <div className="flex flex-wrap items-center justify-center gap-3">
-                <button className="flex items-center gap-2 px-4 py-2 bg-[#0077b5] text-white rounded-lg hover:opacity-90 transition-opacity">
-                  <Linkedin className="w-4 h-4" />
-                  Share
-                </button>
-                <button className="flex items-center gap-2 px-4 py-2 bg-[#1DA1F2] text-white rounded-lg hover:opacity-90 transition-opacity">
-                  <Twitter className="w-4 h-4" />
-                  Tweet
-                </button>
-                <button className="flex items-center gap-2 px-4 py-2 bg-[#E4405F] text-white rounded-lg hover:opacity-90 transition-opacity">
-                  <Instagram className="w-4 h-4" />
-                  Share
-                </button>
-                <button className="flex items-center gap-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:opacity-90 transition-opacity">
-                  <Globe className="w-4 h-4" />
-                  Copy Link
+                <button
+                  onClick={handleCopyLink}
+                  className="flex items-center gap-2 px-6 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-all duration-300 transform hover:scale-105"
+                >
+                  {copied ? (
+                    <>
+                      <Check className="w-4 h-4" />
+                      Copied!
+                    </>
+                  ) : (
+                    <>
+                      <Globe className="w-4 h-4" />
+                      Copy Registration Link
+                    </>
+                  )}
                 </button>
               </div>
+              {copied && (
+                <motion.p
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-sm text-green-600 mt-3"
+                >
+                  ✓ Link copied to clipboard!
+                </motion.p>
+              )}
             </motion.div>
           </div>
 
@@ -378,13 +532,13 @@ const ThankYouWaitlist = () => {
             </Link>
 
             <div className="flex items-center gap-4">
-              <Link to="/register">
+              <Link to="/dashboard">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className="px-6 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg font-semibold hover:opacity-90 transition-opacity flex items-center gap-2"
                 >
-                  Start Registration
+                  Go to Dashboard
                   <ArrowRight className="w-4 h-4" />
                 </motion.button>
               </Link>
@@ -392,7 +546,7 @@ const ThankYouWaitlist = () => {
           </div>
         </motion.div>
 
-        {/* Newsletter Subscription */}
+        {/* Footer */}
         <motion.div
           variants={fadeInUp}
           initial="hidden"
