@@ -7,8 +7,7 @@ import { Toaster } from 'react-hot-toast';
 function App() {
   console.log("🚀 App Starting...");
   console.log("Environment:", import.meta.env.MODE);
-  // console.log("API URL:", import.meta.env.VITE_API_URL || " https://school-pilot-2.onrender.com");
- console.log("API URL:", import.meta.env.VITE_API_URL || "https://school-pilot-2.onrender.com");
+  console.log("API URL:", import.meta.env.VITE_API_URL || " https://school-pilot-1.onrender.com");
 
   return (
     <Router>
