@@ -68,10 +68,8 @@ const LoginAnimation = () => {
 
     setLoading(false);
 
-    if (success) {
-  toast.success("Login successful! Redirecting...");
-  navigate("/waitlist", { replace: true });
-}  };
+    // Navigation is handled in AuthContext.login()
+  };
 
   return (
     <div className="relative min-h-screen flex flex-col px-4 sm:px-6 py-4 bg-gradient-to-br from-blue-50 via-white to-indigo-50">
