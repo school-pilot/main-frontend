@@ -51,7 +51,7 @@ export const authAPI = {
 
   // Get current user (from token)
   getCurrentUser: async () => {
-    const response = await api.get("/auth/me");
+    const response = await api.get("auth/me");
     return response.data;
   },
 };
