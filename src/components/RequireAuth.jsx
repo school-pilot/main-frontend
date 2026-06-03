@@ -3,10 +3,10 @@ import { useAuth } from "../context/AuthContext";
 import Loader from "./Loader";
 
 const RequireAuth = () => {
-  const { isAuthenticated, loading } = useAuth();
+  const { isAuthenticated, loadingAuth } = useAuth();
   const location = useLocation();
 
-  if (loading) {
+  if (loadingAuth) {
     return <Loader fullScreen />;
   }
 

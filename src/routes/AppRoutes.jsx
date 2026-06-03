@@ -94,24 +94,14 @@ const AppRoutes = () => {
       case "parent":
         return "/parent";
       default:
-        return "/";
+        return "/waitlist";
     }
   };
 
   return (
     <Routes>
       {/* ================= PUBLIC ================= */}
-      <Route
-        index
-        path="/"
-        element={
-          !isAuthenticated ? (
-            <Home />
-          ) : (
-            <Navigate to={getDefaultRoute()} replace />
-          )
-        }
-      />
+      <Route path="/" element={<Home />} />
 
       <Route path="/waitlist" element={<ThankYouWaitlist />} />
 
@@ -122,7 +112,7 @@ const AppRoutes = () => {
       </Route>
 
       {/* ================= PROTECTED ================= */}
-      <Route element={<RequireAuth />}>
+      <Route element={<RequireAuth />}> 
         <Route element={<DashboardLayout />}>
           <Route index element={<Dashboard />} />
           <Route path="notifications" element={<NotificationsPage />} />
@@ -143,7 +133,7 @@ const AppRoutes = () => {
           </Route>
 
           {/* ===== SCHOOL ADMIN ===== */}
-          <Route element={<RequireRole allowedRoles={["school_admin"]} />}>
+          {/* <Route element={<RequireRole allowedRoles={["school_admin"]} />}>
             <Route path="school-admin">
               <Route index element={<SchoolAdminDashboard />} />
               <Route path="create-teacher" element={<CreateTeacher />} />
@@ -170,7 +160,7 @@ const AppRoutes = () => {
               <Route path="result-approval" element={<ResultApproval />} />
               <Route path="classes" element={<MyClasses />} />
             </Route>
-          </Route>
+          </Route> */}
 
           {/* ===== ADMIN (LEGACY) ===== */}
           <Route

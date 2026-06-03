@@ -11,7 +11,7 @@ const Loader = ({ size = 'md', fullScreen = false }) => {
     <motion.div
       animate={{ rotate: 360 }}
       transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-      className={`${sizeClasses[size]} border-4 border-primary-200 border-t-primary-600 rounded-full`}
+      className={`${sizeClasses[size]} border-4 border-gray-200 border-t-blue-600 rounded-full`}
     />
   );
 

@@ -15,7 +15,7 @@ import {
   School,
   Check,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader.jsx";
 import { authAPI } from "../services/api.js"; // Adjust import path as needed
 
@@ -48,6 +48,7 @@ const ThankYouWaitlist = () => {
   const [daysUntilLaunch, setDaysUntilLaunch] = useState(0);
   const [waitlistPosition, setWaitlistPosition] = useState(0);
   const [copied, setCopied] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Fetch current user data
@@ -102,6 +103,24 @@ const ThankYouWaitlist = () => {
     }
   };
 
+  const clearUserStorage = async () => {
+    try {
+      localStorage.clear();
+      sessionStorage.clear();
+      if (window.caches && typeof window.caches.keys === "function") {
+        const cacheNames = await window.caches.keys();
+        await Promise.all(cacheNames.map((cacheName) => window.caches.delete(cacheName)));
+      }
+    } catch (err) {
+      console.error("Failed to clear storage/cache:", err);
+    }
+  };
+
+  const handleBackHome = async () => {
+    await clearUserStorage();
+    navigate("/", { replace: true });
+  };
+
   const features = [
     {
       icon: Award,
@@ -145,11 +164,12 @@ const ThankYouWaitlist = () => {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="text-red-600 text-xl mb-4">{error}</div>
-          <Link to="/login">
-            <button className="px-6 py-2 bg-blue-600 text-white rounded-lg">
-              Go to Login
-            </button>
-          </Link>
+          <button
+            onClick={handleBackHome}
+            className="px-6 py-2 bg-blue-600 text-white rounded-lg"
+          >
+            Return to Home
+          </button>
         </div>
       </div>
     );
@@ -178,6 +198,15 @@ const ThankYouWaitlist = () => {
             <span className="text-sm font-semibold">Successfully Registered</span>
           </div>
         </motion.div>
+
+        <div className="text-center mb-6">
+          <button
+            onClick={handleBackHome}
+            className="inline-flex items-center justify-center px-5 py-3 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition-all duration-200"
+          >
+            Back to Home
+          </button>
+        </div>
 
         {/* Welcome Card with User Info */}
         <motion.div
@@ -519,31 +548,7 @@ const ThankYouWaitlist = () => {
             </motion.div>
           </div>
 
-          {/* Footer Actions */}
-          <div className="px-6 py-6 bg-gray-50/50 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <Link to="/">
-              <motion.button
-                whileHover={{ x: -5 }}
-                whileTap={{ scale: 0.95 }}
-                className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
-              >
-                ← Back to Home
-              </motion.button>
-            </Link>
-
-            <div className="flex items-center gap-4">
-              <Link to="/dashboard">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="px-6 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg font-semibold hover:opacity-90 transition-opacity flex items-center gap-2"
-                >
-                  Go to Dashboard
-                  <ArrowRight className="w-4 h-4" />
-                </motion.button>
-              </Link>
-            </div>
-          </div>
+         
         </motion.div>
 
         {/* Footer */}
@@ -555,14 +560,7 @@ const ThankYouWaitlist = () => {
           className="text-center"
         >
           <p className="text-sm text-gray-500">
-            © 2024 SchoolPilot. All rights reserved. |{" "}
-            <a href="/privacy" className="hover:underline">
-              Privacy Policy
-            </a>{" "}
-            |{" "}
-            <a href="/terms" className="hover:underline">
-              Terms of Service
-            </a>
+            © 2024 SchoolPilot. All rights reserved.
           </p>
         </motion.div>
       </div>

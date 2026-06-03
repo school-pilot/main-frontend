@@ -3,9 +3,9 @@ import { useAuth } from "../context/AuthContext";
 import Loader from "./Loader";
 
 const RequireRole = ({ allowedRoles }) => {
-  const { user, loading } = useAuth();
+  const { user, loadingAuth } = useAuth();
 
-  if (loading) {
+  if (loadingAuth) {
     return <Loader fullScreen />;
   }
 
