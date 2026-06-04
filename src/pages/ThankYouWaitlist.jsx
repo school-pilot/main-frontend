@@ -14,10 +14,11 @@ import {
   Star,
   School,
   Check,
+  LayoutDashboard,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader.jsx";
-import { authAPI } from "../services/api.js"; // Adjust import path as needed
+import { authAPI } from "../services/authApi";
 
 /* ================= Animations ================= */
 
@@ -103,22 +104,21 @@ const ThankYouWaitlist = () => {
     }
   };
 
-  const clearUserStorage = async () => {
-    try {
-      localStorage.clear();
-      sessionStorage.clear();
-      if (window.caches && typeof window.caches.keys === "function") {
-        const cacheNames = await window.caches.keys();
-        await Promise.all(cacheNames.map((cacheName) => window.caches.delete(cacheName)));
-      }
-    } catch (err) {
-      console.error("Failed to clear storage/cache:", err);
+  const handleGoToDashboard = () => {
+    // Navigate to dashboard without clearing tokens
+    // Check user role to determine which dashboard to go to
+    if (userData?.role === "SCHOOL_ADMIN") {
+      navigate("/admin/dashboard");
+    } else if (userData?.role === "SUPER_ADMIN") {
+      navigate("/super-admin/dashboard");
+    } else if (userData?.role === "TEACHER") {
+      navigate("/teacher/dashboard");
+    } else if (userData?.role === "STUDENT") {
+      navigate("/student/dashboard");
+    } else {
+      // Default to admin dashboard
+      navigate("/admin/dashboard");
     }
-  };
-
-  const handleBackHome = async () => {
-    await clearUserStorage();
-    navigate("/", { replace: true });
   };
 
   const features = [
@@ -165,10 +165,10 @@ const ThankYouWaitlist = () => {
         <div className="text-center">
           <div className="text-red-600 text-xl mb-4">{error}</div>
           <button
-            onClick={handleBackHome}
+            onClick={handleGoToDashboard}
             className="px-6 py-2 bg-blue-600 text-white rounded-lg"
           >
-            Return to Home
+            Go to Dashboard
           </button>
         </div>
       </div>
@@ -201,10 +201,11 @@ const ThankYouWaitlist = () => {
 
         <div className="text-center mb-6">
           <button
-            onClick={handleBackHome}
-            className="inline-flex items-center justify-center px-5 py-3 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition-all duration-200"
+            onClick={handleGoToDashboard}
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
           >
-            Back to Home
+            <LayoutDashboard className="w-5 h-5" />
+            Go to Dashboard
           </button>
         </div>
 
@@ -232,7 +233,7 @@ const ThankYouWaitlist = () => {
             <div className="flex items-center gap-2 bg-blue-50 px-4 py-2 rounded-lg">
               <School className="w-5 h-5 text-blue-600" />
               <span className="font-semibold text-gray-800">
-                {userData?.school?.schoolName}
+                {userData?.school?.schoolName || userData?.schoolName}
               </span>
             </div>
           </div>
@@ -293,7 +294,7 @@ const ThankYouWaitlist = () => {
               transition={{ delay: 0.1 }}
               className="text-lg md:text-xl text-blue-100 max-w-2xl mx-auto"
             >
-              Thank you for joining our waitlist, {userData?.firstName}! We're thrilled to have {userData?.school?.schoolName} on board for this exciting journey!
+              Thank you for joining our waitlist, {userData?.firstName}! We're thrilled to have {userData?.school?.schoolName || userData?.schoolName} on board for this exciting journey!
             </motion.p>
           </div>
 
@@ -547,8 +548,6 @@ const ThankYouWaitlist = () => {
               )}
             </motion.div>
           </div>
-
-         
         </motion.div>
 
         {/* Footer */}

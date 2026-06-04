@@ -13,7 +13,7 @@ import {
   Camera,
 } from 'lucide-react';
 // studentsAPI removed from services/api — provide stub; keep authAPI import
-import { authAPI } from '../../services/api';
+import { authAPI } from '../../services/authApi';
 const _apiStubFactory = () => new Proxy({}, { get: () => async () => ({ data: null }) });
 const studentsAPI = _apiStubFactory();
 import { useAuth } from '../../context/AuthContext';

@@ -9,7 +9,7 @@ import {
   Filter,
   MoreVertical,
 } from 'lucide-react';
-import { authAPI } from '../../services/api';
+import { authAPI } from '../../services/authApi';
 import toast from 'react-hot-toast';
 import Loader from '../../components/Loader';
 import Pagination from '../../components/Pagination';

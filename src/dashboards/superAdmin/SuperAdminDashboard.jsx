@@ -14,7 +14,7 @@ import {
   Clock1,
 } from 'lucide-react';
 // schoolsAPI removed from services/api.js — provide stub; keep authAPI import
-import { authAPI } from '../../services/api.js';
+import { authAPI } from '../../services/authApi';
 const _apiStubFactory = () => new Proxy({}, { get: () => async () => ({ data: null }) });
 const schoolsAPI = _apiStubFactory();
 import toast from 'react-hot-toast';
