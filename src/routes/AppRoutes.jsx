@@ -72,7 +72,7 @@ import Home from "../pages/Home";
 import CreateNotification from "../pages/CreateNotification";
 import TimetableManagement from "../components/TimetableManagement";
 import AttendanceManagement from "../components/AttendanceManagement";
-import ThankYouWaitlist from "../pages/ThankYouWaitlist";
+
 
 const AppRoutes = () => {
   const auth = useAuth();
@@ -103,7 +103,6 @@ const AppRoutes = () => {
       {/* ================= PUBLIC ================= */}
       <Route path="/" element={<Home />} />
 
-      <Route path="/waitlist" element={<ThankYouWaitlist />} />
 
       {/* ================= AUTH ================= */}
       <Route element={<AuthLayout />}>
@@ -133,7 +132,7 @@ const AppRoutes = () => {
           </Route>
 
           {/* ===== SCHOOL ADMIN ===== */}
-          {/* <Route element={<RequireRole allowedRoles={["school_admin"]} />}>
+          <Route element={<RequireRole allowedRoles={["school_admin"]} />}>
             <Route path="school-admin">
               <Route index element={<SchoolAdminDashboard />} />
               <Route path="create-teacher" element={<CreateTeacher />} />
@@ -160,7 +159,7 @@ const AppRoutes = () => {
               <Route path="result-approval" element={<ResultApproval />} />
               <Route path="classes" element={<MyClasses />} />
             </Route>
-          </Route> */}
+          </Route>
 
           {/* ===== ADMIN (LEGACY) ===== */}
           <Route

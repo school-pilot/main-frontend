@@ -18,6 +18,23 @@ const getAccessToken = () => localStorage.getItem("access_token");
 const setAccessToken = (token) => localStorage.setItem("access_token", token);
 const clearTokens = () => localStorage.removeItem("access_token");
 
+// Helper function to get role-based dashboard route
+const getDashboardRoute = (role) => {
+  if (!role) return "/";
+  
+  const roleLower = role.toLowerCase();
+  
+  const roleRoutes = {
+    super_admin: "/super-admin",
+    school_admin: "/school-admin",
+    teacher: "/teacher",
+    student: "/student",
+    parent: "/parent",
+  };
+  
+  return roleRoutes[roleLower] || "/";
+};
+
 export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
@@ -52,6 +69,8 @@ export const AuthProvider = ({ children }) => {
           email: decoded.email,
           role: decoded.role,
           schoolId: decoded.schoolId,
+          firstName: decoded.firstName,
+          lastName: decoded.lastName,
         });
         setIsAuthenticated(true);
       } catch (error) {
@@ -87,7 +106,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   /* =========================================
-     LOGIN
+     LOGIN - Navigate to role-based dashboard
   ========================================= */
   const login = async (credentials) => {
     try {
@@ -99,15 +118,25 @@ export const AuthProvider = ({ children }) => {
         
         if (token) {
           const decoded = jwtDecode(token);
-          setUser({
+          
+          // Set user state with all available info
+          const userData = {
             id: decoded.id,
             email: decoded.email,
             role: decoded.role,
             schoolId: decoded.schoolId,
-          });
+            firstName: decoded.firstName || decoded.first_name,
+            lastName: decoded.lastName || decoded.last_name,
+          };
+          
+          setUser(userData);
           setIsAuthenticated(true);
-          toast.success(response.message || "Login successful");
-          navigate("/waitlist", { replace: true });
+          toast.success(response.message || `Welcome back, ${userData.firstName || 'User'}!`);
+          
+          // Navigate to role-based dashboard
+          const dashboardRoute = getDashboardRoute(decoded.role);
+          navigate(dashboardRoute, { replace: true });
+          
           return true;
         } else {
           throw new Error("No token received");
@@ -129,8 +158,8 @@ export const AuthProvider = ({ children }) => {
     clearTokens();
     setUser(null);
     setIsAuthenticated(false);
-    navigate("/login");
     toast.success("Logged out successfully");
+    navigate("/login", { replace: true });
   };
 
   const value = {
@@ -141,6 +170,7 @@ export const AuthProvider = ({ children }) => {
     register,
     login,
     logout,
+    getDashboardRoute, // Expose helper if needed in components
   };
 
   return (
