@@ -84,15 +84,15 @@ const AppRoutes = () => {
 
     switch (user.role) {
       case "super_admin":
-        return "/super-admin";
+        return "/dashboard/super-admin";
       case "school_admin":
-        return "/school-admin";
+        return "/dashboard/school-admin";
       case "teacher":
-        return "/teacher";
+        return "/dashboard/teacher";
       case "student":
-        return "/student";
+        return "/dashboard/student";
       case "parent":
-        return "/parent";
+        return "/dashboard/parent";
       default:
         return "/waitlist";
     }
@@ -111,7 +111,28 @@ const AppRoutes = () => {
       </Route>
 
       {/* ================= PROTECTED ================= */}
-      <Route element={<RequireAuth />}> 
+      {/*
+        FIX: This branch previously had NO path:
+              <Route element={<RequireAuth />}>
+                <Route element={<DashboardLayout />}>
+                  <Route index element={<Dashboard />} />
+        An `index` route matches its parent's path exactly. Since neither
+        parent route here declared a `path`, the parent path was inherited
+        as "/" -> so this index route ALSO matched "/", competing directly
+        with <Route path="/" element={<Home />} /> above.
+
+        When logged out, React Router could resolve "/" into this protected
+        branch's index route instead of the public Home route. RequireAuth
+        then saw isAuthenticated === false and immediately redirected to
+        "/login" -- which is exactly the bug described: visiting "/" while
+        logged out sent you to /login instead of rendering Home.
+
+        Giving this branch an explicit, non-root path ("/dashboard") makes
+        it impossible for any of its nested index/child routes to ever
+        match "/" again. Public Home and the protected area are now
+        mutually exclusive at the routing level, not just by convention.
+      */}
+      <Route path="/dashboard" element={<RequireAuth />}>
         <Route element={<DashboardLayout />}>
           <Route index element={<Dashboard />} />
           <Route path="notifications" element={<NotificationsPage />} />
