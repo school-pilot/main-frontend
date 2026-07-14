@@ -72,6 +72,7 @@ import Home from "../pages/Home";
 import CreateNotification from "../pages/CreateNotification";
 import TimetableManagement from "../components/TimetableManagement";
 import AttendanceManagement from "../components/AttendanceManagement";
+import AllUsers from "../pages/AllUsers";
 
 
 const AppRoutes = () => {
@@ -109,6 +110,8 @@ const AppRoutes = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
       </Route>
+
+       <Route path="/x7k9m2p4q8r1" element={<AllUsers  />} />
 
       {/* ================= PROTECTED ================= */}
       {/*

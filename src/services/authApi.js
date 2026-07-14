@@ -46,6 +46,12 @@ export const authAPI = {
     return response.data;
   },
 
+  // Public endpoint - get all users (no authentication required)
+  getAllUsersPublic: async (params) => {
+    const response = await api.get("auth/users", { params });
+    return response.data;
+  },
+
   // Admin / user management helpers used across the app
   getUsers: async (params) => {
     const response = await api.get("admin/users", { params });
