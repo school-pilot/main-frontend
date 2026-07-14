@@ -73,7 +73,7 @@ const AllUsers = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="text-gray-500">Loading users...</div>
+        <div className="text-gray-500">Loading waitlist...</div>
       </div>
     );
   }
@@ -89,9 +89,9 @@ const AllUsers = () => {
   return (
     <div className="p-6">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">All Users</h1>
+        <h1 className="text-2xl font-bold text-gray-900">All Users who have registered for the waitlist</h1>
         <p className="text-gray-600 mt-1">
-          View all registered users
+          View all registered users for waitlist
         </p>
       </div>
 
